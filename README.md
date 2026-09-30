@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Wafer Defect Classification System
 
 Web-based Machine Learning system for semiconductor wafer defect classification and clustering analysis.
