@@ -8,14 +8,22 @@ router = Blueprint("clustering", __name__, url_prefix="/api/clustering")
 def predict_cluster():
     """
     Executes unsupervised clustering assignment on provided wafer features.
-    If model has not yet been exported from Google Colab, returns instructions.
+    Accepts JSON body: { "features": { ... } } or direct feature key-value pairs.
     """
     data = request.get_json(silent=True) or {}
-    features = data.get("features", {})
+    features = data.get("features", data)
     result = clustering_service.predict(features)
+    return jsonify(result), 200
+
+
+@router.route("/profiles", methods=["GET"])
+def get_profiles():
+    """
+    Returns full statistical profiles for all 5 detected wafer clusters.
+    """
+    profiles = clustering_service.get_all_profiles()
     return jsonify({
-        "status": result.get("status", "pending_model"),
-        "cluster_id": result.get("cluster_id"),
-        "cluster_name": result.get("cluster_name"),
-        "message": result.get("message"),
+        "status": "success",
+        "clusters_count": len(profiles),
+        "profiles": profiles
     }), 200

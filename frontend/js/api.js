@@ -1,6 +1,6 @@
 /**
- * Central API Client Configuration for Wafer Defect Classification System
- * Single source of truth for backend communication.
+ * Central API Client Configuration for Wafer Defect Classification & Control System
+ * Single source of truth for communication between Frontend and Backend (Flask).
  */
 const API_BASE_URL = "http://localhost:5000/api";
 
@@ -34,15 +34,16 @@ const ApiClient = {
     },
 
     /**
-     * Fetch model evaluation metrics and artifact statuses
+     * Fetch model evaluation metrics and artifact statuses across Supervised,
+     * Unsupervised, and Reinforcement Learning models
      */
-    async getModelMetrics() {
+    async getModelStatus() {
         try {
-            const response = await fetch(`${API_BASE_URL}/model/metrics`);
+            const response = await fetch(`${API_BASE_URL}/model/status`);
             if (!response.ok) throw new Error(`HTTP error ${response.status}`);
             return await response.json();
         } catch (error) {
-            console.error("Failed to fetch model metrics:", error);
+            console.error("Failed to fetch model status:", error);
             throw error;
         }
     },
@@ -51,28 +52,79 @@ const ApiClient = {
      * Send feature inputs to Supervised Classification model
      */
     async predictClassification(features) {
-        const response = await fetch(`${API_BASE_URL}/classification/predict`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ features: features || {} })
-        });
-        return await response.json();
+        try {
+            const response = await fetch(`${API_BASE_URL}/classification/predict`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ features: features || {} })
+            });
+            return await response.json();
+        } catch (error) {
+            console.error("Classification API error:", error);
+            throw error;
+        }
     },
 
     /**
-     * Send feature inputs to Unsupervised Clustering model
+     * Send feature inputs to Unsupervised Clustering model (KMeans pipeline)
      */
     async predictClustering(features) {
-        const response = await fetch(`${API_BASE_URL}/clustering/predict`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ features: features || {} })
-        });
-        return await response.json();
+        try {
+            const response = await fetch(`${API_BASE_URL}/clustering/predict`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ features: features || {} })
+            });
+            return await response.json();
+        } catch (error) {
+            console.error("Clustering API error:", error);
+            throw error;
+        }
+    },
+
+    /**
+     * Fetch 5 statistical cluster profiles from Unsupervised learning
+     */
+    async getClusterProfiles() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/clustering/profiles`);
+            if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Clustering profiles API error:", error);
+            throw error;
+        }
+    },
+
+    /**
+     * Send sensor telemetry to Reinforcement Learning Process Controller (Q-Table)
+     */
+    async predictControl(sensorInputs) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/control-optimization/recommend`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sensor_inputs: sensorInputs || {} })
+            });
+            return await response.json();
+        } catch (error) {
+            console.error("RL Control API error:", error);
+            throw error;
+        }
+    },
+
+    /**
+     * Get Reinforcement Learning metadata, action space, and state bounds
+     */
+    async getControlInfo() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/control-optimization/info`);
+            if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error("RL Info API error:", error);
+            throw error;
+        }
     },
 
     /**
@@ -89,7 +141,7 @@ const ApiClient = {
         const health = await this.getHealth();
         if (health && health.status === "ok") {
             dot.className = "status-dot online";
-            text.textContent = "API: Online (8001)";
+            text.textContent = "API: Online (5000)";
         } else {
             dot.className = "status-dot offline";
             text.textContent = "API: Offline";
@@ -100,6 +152,5 @@ const ApiClient = {
 // Automatically initiate health check when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
     ApiClient.updateNavbarStatus();
-    // Re-check periodically every 30 seconds
     setInterval(() => ApiClient.updateNavbarStatus(), 30000);
 });

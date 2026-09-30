@@ -8,11 +8,12 @@ from .routes.dataset import router as dataset_router
 from .routes.model import router as model_router
 from .routes.classification import router as classification_router
 from .routes.clustering import router as clustering_router
+from .routes.control import router as control_router
 
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.config["APP_NAME"] = "Wafer Defect Classification API"
+app.config["APP_NAME"] = "Wafer Defect Classification & Process Control API"
 app.config["VERSION"] = "1.0.0"
 
 # CORS configuration
@@ -29,21 +30,31 @@ def shutdown_session(exception=None):
         SessionLocal.remove()
 
 
-# Register API Blueprints
+# Register API Blueprints across all 3 Machine Learning paradigms
 app.register_blueprint(health_router)
 app.register_blueprint(dataset_router)
 app.register_blueprint(model_router)
+# Support plural alias /api/models as well
+app.register_blueprint(model_router, name="models_alias", url_prefix="/api/models")
 app.register_blueprint(classification_router)
 app.register_blueprint(clustering_router)
+app.register_blueprint(control_router)
 
 
 @app.route("/", methods=["GET"])
 def root():
     return jsonify({
-        "message": "Wafer Defect Classification API",
+        "message": "Wafer Defect Classification & Process Control API",
         "version": "1.0.0",
-        "health": "/api/health",
-        "database_health": "/api/health/database",
+        "endpoints": {
+            "health": "/api/health",
+            "models_status": "/api/models/status",
+            "classification": "/api/classification/predict",
+            "clustering": "/api/clustering/predict",
+            "clustering_profiles": "/api/clustering/profiles",
+            "control_optimization": "/api/control-optimization/recommend",
+            "control_info": "/api/control-optimization/info",
+        }
     }), 200
 
 
