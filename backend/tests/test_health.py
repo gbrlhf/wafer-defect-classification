@@ -14,3 +14,13 @@ def test_health_check():
         "status": "ok",
         "service": "wafer-defect-api",
     }
+def test_database_health_check_disconnected():
+    """
+    Test that database health check returns disconnected status when DB is not reachable.
+    """
+    response = client.get("/api/health/database")
+    assert response.status_code == 503
+    assert response.json() == {
+        "status": "error",
+        "database": "disconnected",
+    }

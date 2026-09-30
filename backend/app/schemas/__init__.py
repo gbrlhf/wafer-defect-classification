@@ -1,5 +1,5 @@
 """
 Pydantic schemas package for request validation and response serialization.
 Domain schemas (classification, clustering, prediction history, metrics)
-will be defined here following dataset analysis.
+are structured here and will define specific feature contracts following EDA.
 """
