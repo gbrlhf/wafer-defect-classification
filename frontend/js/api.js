@@ -99,7 +99,49 @@ const ApiClient = {
     /**
      * Send sensor telemetry to Reinforcement Learning Process Controller (Q-Table)
      */
-    async predictControl(sensorInputs) {
+        /**
+     * Fetch clustering evaluation metrics (Silhouette, Davies-Bouldin, etc.)
+     */
+    
+    /**
+     * Fetch recent clustering runs recorded in PostgreSQL database
+     */
+    async getClusteringHistory(limit = 10) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/clustering/history?limit=${limit}`);
+            if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Clustering history API error:", error);
+            throw error;
+        }
+    },
+
+    /**
+     * Fetch prediction history records from PostgreSQL database
+     */
+    async getPredictions(type = "clustering", limit = 10) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/predictions?type=${type}&limit=${limit}`);
+            if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Predictions API error:", error);
+            throw error;
+        }
+    },
+async getClusterMetrics() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/clustering/metrics`);
+            if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Clustering metrics API error:", error);
+            throw error;
+        }
+    },
+
+async predictControl(sensorInputs) {
         try {
             const response = await fetch(`${API_BASE_URL}/control-optimization/recommend`, {
                 method: "POST",

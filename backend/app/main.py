@@ -1,4 +1,4 @@
-import logging
+﻿import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
 from .core.config import settings
@@ -9,6 +9,7 @@ from .routes.model import router as model_router
 from .routes.classification import router as classification_router
 from .routes.clustering import router as clustering_router
 from .routes.control import router as control_router
+from .routes.prediction import router as prediction_router
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ app.register_blueprint(model_router, name="models_alias", url_prefix="/api/model
 app.register_blueprint(classification_router)
 app.register_blueprint(clustering_router)
 app.register_blueprint(control_router)
+app.register_blueprint(prediction_router)
 
 
 @app.route("/", methods=["GET"])
@@ -52,6 +54,8 @@ def root():
             "classification": "/api/classification/predict",
             "clustering": "/api/clustering/predict",
             "clustering_profiles": "/api/clustering/profiles",
+            "clustering_history": "/api/clustering/history",
+            "predictions": "/api/predictions",
             "control_optimization": "/api/control-optimization/recommend",
             "control_info": "/api/control-optimization/info",
         }

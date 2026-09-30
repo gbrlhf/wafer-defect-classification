@@ -8,14 +8,9 @@ router = Blueprint("classification", __name__, url_prefix="/api/classification")
 def predict_defect():
     """
     Executes supervised classification inference on provided wafer features.
-    If model has not yet been exported from Google Colab, returns instructions.
+    Returns predicted class (0: Normal, 1: Defect), confidence score, and probabilities.
     """
     data = request.get_json(silent=True) or {}
-    features = data.get("features", {})
+    features = data.get("features", data)
     result = classification_service.predict(features)
-    return jsonify({
-        "status": result.get("status", "pending_model"),
-        "prediction": result.get("prediction"),
-        "confidence": result.get("confidence"),
-        "message": result.get("message"),
-    }), 200
+    return jsonify(result), 200

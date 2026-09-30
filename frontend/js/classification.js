@@ -1,7 +1,7 @@
 /**
  * Classification Page JavaScript
- * Handles form telemetry submission, demo state tabs, and graceful display of
- * Supervised Classification results.
+ * Menghubungkan formulir metrology wafer dengan model Supervised Learning (RandomForest) di Backend Flask.
+ * TIDAK MENGUBAH markup/CSS HTML sama sekali.
  */
 document.addEventListener("DOMContentLoaded", () => {
     const waferForm = document.getElementById("wafer-form");
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnPresetDefect = document.getElementById("btn-preset-defect");
     const stateTabButtons = document.querySelectorAll(".state-tab-btn");
 
-    // Input elements
+    // Input fields dari wafer-form
     const inputTemp = document.getElementById("input-temp");
     const inputPressure = document.getElementById("input-pressure");
     const inputGas = document.getElementById("input-gas");
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputCurrent = document.getElementById("input-current");
     const inputStep = document.getElementById("input-step");
 
-    // Views
+    // View containers yang sudah ada di classification.html
     const views = {
         normal: document.getElementById("view-normal"),
         defect: document.getElementById("view-defect"),
@@ -30,10 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function showView(stateName) {
-        Object.keys(views).forEach(k => {
-            if (views[k]) {
-                views[k].classList.add("hidden");
-                views[k].classList.remove("flex");
+        Object.keys(views).forEach(key => {
+            if (views[key]) {
+                views[key].classList.add("hidden");
+                views[key].classList.remove("flex");
             }
         });
 
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
             views[stateName].classList.add("flex");
         }
 
-        // Update tab button active states
+        // Sinkronisasi status tab demo tombol
         stateTabButtons.forEach(btn => {
             const state = btn.getAttribute("data-state");
             if (state === stateName) {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Connect Tab Buttons
+    // Sambungkan tab switcher manual jika user mengklik
     stateTabButtons.forEach(btn => {
         btn.addEventListener("click", () => {
             const state = btn.getAttribute("data-state");
@@ -61,54 +61,56 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Preset Buttons
+    // Preset: Sampel Normal (Nominal baseline run)
     if (btnPresetNormal) {
         btnPresetNormal.addEventListener("click", () => {
-            if (inputTemp) inputTemp.value = "420.5";
-            if (inputPressure) inputPressure.value = "15.2";
+            if (inputTemp) inputTemp.value = "450.0";
+            if (inputPressure) inputPressure.value = "760.0";
             if (inputGas) inputGas.value = "120.0";
-            if (inputEtch) inputEtch.value = "310.8";
+            if (inputEtch) inputEtch.value = "95.0";
             if (inputVoltage) inputVoltage.value = "5.0";
-            if (inputCurrent) inputCurrent.value = "20.1";
-            if (inputStep) inputStep.value = "Lithography";
+            if (inputCurrent) inputCurrent.value = "20.0";
+            if (inputStep) inputStep.value = "DUV";
             showView("normal");
         });
     }
 
+    // Preset: Sampel Defect (Drift / Anomali thermal & pressure)
     if (btnPresetDefect) {
         btnPresetDefect.addEventListener("click", () => {
-            if (inputTemp) inputTemp.value = "458.2";
-            if (inputPressure) inputPressure.value = "22.8";
-            if (inputGas) inputGas.value = "142.5";
-            if (inputEtch) inputEtch.value = "388.0";
-            if (inputVoltage) inputVoltage.value = "7.8";
-            if (inputCurrent) inputCurrent.value = "34.5";
-            if (inputStep) inputStep.value = "Etching";
+            if (inputTemp) inputTemp.value = "490.0";
+            if (inputPressure) inputPressure.value = "680.0";
+            if (inputGas) inputGas.value = "120.0";
+            if (inputEtch) inputEtch.value = "135.0";
+            if (inputVoltage) inputVoltage.value = "5.2";
+            if (inputCurrent) inputCurrent.value = "28.0";
+            if (inputStep) inputStep.value = "RIE";
             showView("defect");
         });
     }
 
+    // Tombol Clear
     if (btnClear) {
         btnClear.addEventListener("click", () => {
-            if (inputTemp) inputTemp.value = "400.0";
-            if (inputPressure) inputPressure.value = "15.0";
-            if (inputGas) inputGas.value = "100.0";
-            if (inputEtch) inputEtch.value = "300.0";
+            if (inputTemp) inputTemp.value = "450.0";
+            if (inputPressure) inputPressure.value = "760.0";
+            if (inputGas) inputGas.value = "120.0";
+            if (inputEtch) inputEtch.value = "95.0";
             if (inputVoltage) inputVoltage.value = "5.0";
             if (inputCurrent) inputCurrent.value = "20.0";
             showView("empty");
         });
     }
 
-    // Form Submission & API Call
-    async function handlePredict() {
+    // Eksekusi Prediksi Supervised Model
+    async function executePrediction() {
         const features = {
-            temperature_c: parseFloat(inputTemp ? inputTemp.value : 420.5) || 420.5,
-            pressure_torr: parseFloat(inputPressure ? inputPressure.value : 15.2) || 15.2,
+            temperature_c: parseFloat(inputTemp ? inputTemp.value : 450.0) || 450.0,
+            pressure_torr: parseFloat(inputPressure ? inputPressure.value : 760.0) || 760.0,
             gas_flow_sccm: parseFloat(inputGas ? inputGas.value : 120.0) || 120.0,
-            etch_rate_nm_min: parseFloat(inputEtch ? inputEtch.value : 310.8) || 310.8,
+            etch_rate_nm_min: parseFloat(inputEtch ? inputEtch.value : 95.0) || 95.0,
             voltage_v: parseFloat(inputVoltage ? inputVoltage.value : 5.0) || 5.0,
-            current_ma: parseFloat(inputCurrent ? inputCurrent.value : 20.1) || 20.1,
+            current_ma: parseFloat(inputCurrent ? inputCurrent.value : 20.0) || 20.0,
             process_step: inputStep ? inputStep.value : "Lithography"
         };
 
@@ -117,41 +119,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const result = await ApiClient.predictClassification(features);
-            console.log("Classification result from backend:", result);
+            console.log("Supervised Model Result:", result);
 
-            if (result.status === "pending_model") {
-                // Render informative pending model message in view-empty or custom alert
+            if (result.status === "success") {
+                const isDefect = result.prediction === 1 || result.label === "Defect";
+                const targetViewName = isDefect ? "defect" : "normal";
+                showView(targetViewName);
+
+                // Update angka confidence aktual dari model di dalam kartu UI
+                const activeCard = views[targetViewName];
+                if (activeCard) {
+                    const confidenceText = activeCard.querySelector("span.font-title-md.font-bold");
+                    if (confidenceText && result.confidence_percent !== undefined) {
+                        confidenceText.textContent = `${result.confidence_percent}%`;
+                    }
+                    const progressBar = activeCard.querySelector("div.rounded-full.bg-gradient-to-r");
+                    if (progressBar && result.confidence_percent !== undefined) {
+                        progressBar.style.width = `${result.confidence_percent}%`;
+                    }
+                }
+            } else if (result.status === "pending_model") {
                 showView("empty");
-                const emptyView = views.empty;
-                if (emptyView) {
-                    emptyView.innerHTML = `
-                        <div class="max-w-md mx-auto p-6 rounded-3xl bg-surface-container-low border border-primary-fixed flex flex-col items-center gap-3 text-center shadow-sm">
-                            <span class="material-symbols-outlined text-[48px] text-primary">model_training</span>
-                            <h3 class="font-title-lg text-title-lg text-on-surface">Model Supervised: Siap Diintegrasikan</h3>
-                            <p class="font-body-md text-body-md text-on-surface-variant">
-                                Backend Flask berhasil merespons request Anda. Model supervised (<code>classifier.joblib</code>) saat ini belum diekspor dari Colab.
-                            </p>
-                            <div class="w-full p-3 rounded-2xl bg-surface-container text-left text-xs font-mono text-on-surface-variant">
-                                <div><strong>Backend Status:</strong> ${result.status}</div>
-                                <div><strong>Pesan:</strong> ${result.message}</div>
-                            </div>
-                            <span class="font-label-sm text-label-sm text-secondary">
-                                Gunakan demo tabs (Normal / Defect) di atas untuk melihat preview visualisasi inferensi.
-                            </span>
-                        </div>
-                    `;
-                }
-            } else if (result.status === "success") {
-                if (result.prediction === 1 || result.prediction === "Defect") {
-                    showView("defect");
-                } else {
-                    showView("normal");
-                }
             } else {
                 showView("error");
             }
         } catch (error) {
-            console.error("API call error:", error);
+            console.error("Supervised inference error:", error);
             showView("error");
         } finally {
             if (btnPredict) btnPredict.disabled = false;
@@ -159,13 +152,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (btnPredict) {
-        btnPredict.addEventListener("click", handlePredict);
+        btnPredict.addEventListener("click", executePrediction);
     }
 
     if (waferForm) {
         waferForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            handlePredict();
+            executePrediction();
         });
     }
 });

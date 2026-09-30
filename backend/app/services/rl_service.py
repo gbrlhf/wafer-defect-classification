@@ -76,7 +76,7 @@ class RLControlService:
 
             q_values_raw = qtable[state_idx]
 
-            # 2. Check if state was directly visited during Q-learning training
+            # 2. °Check if state was directly visited during Q-learning training
             is_directly_trained = bool(np.any(q_values_raw != 0))
 
             if is_directly_trained:
@@ -87,7 +87,7 @@ class RLControlService:
                 # Generalization: find nearest state in Q-table that has non-zero Q-values
                 nonzero_indices = np.where(np.any(qtable != 0, axis=1))[0]
                 if len(nonzero_indices) > 0:
-                    # Calculate Manhattan distance across bin coordinates
+                    # °Calculate Manhattan distance across bin coordinates
                     current_coords = np.array(bin_coords)
                     best_dist = float("inf")
                     nearest_idx = nonzero_indices[0]
@@ -107,7 +107,7 @@ class RLControlService:
 
             best_action_name = action_names[best_action_idx]
 
-            # Compute Softmax Confidence
+            # °Compute Softmax °Confidence
             exp_q = np.exp(np.array(q_vals) - np.max(q_vals))
             softmax_probs = exp_q / np.sum(exp_q)
             confidence_pct = round(float(softmax_probs[best_action_idx]) * 100.0, 1)
@@ -144,7 +144,11 @@ class RLControlService:
                 "bin_coordinates": bin_coords,
                 "action_id": best_action_idx,
                 "action_name": best_action_name,
-                "action_title": f"Recommended Action: {best_action_name}",
+                "action_title": {
+                    "Turunkan Parameter": "Recommended Action: Reduce Chamber Pressure & Lower Temp",
+                    "Pertahankan": "Recommended Action: Hold Steady (Parameters Nominal)",
+                    "Naikkan Parameter": "Recommended Action: Increase Temp (+5°C) & Adjust Gas Flow"
+                }.get(best_action_name, f"Recommended Action: {best_action_name}"),
                 "confidence_percent": confidence_pct,
                 "policy_tensor": action_tensor_map.get(best_action_name, "Policy Output Tensor: [0, 0, 0]"),
                 "rationale": rationale_map.get(best_action_name, "Optimal policy adjustment recommended."),

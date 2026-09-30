@@ -1,10 +1,21 @@
 import json
 import logging
 import pickle
+import sys
 from pathlib import Path
 from typing import Optional, Any, Dict
 
 logger = logging.getLogger(__name__)
+
+# Ensure compatibility shim for ColumnTransformer pickled in Scikit-Learn 1.6
+try:
+    import sklearn.compose._column_transformer
+    if not hasattr(sklearn.compose._column_transformer, "_RemainderColsList"):
+        class _RemainderColsList(list):
+            pass
+        sklearn.compose._column_transformer._RemainderColsList = _RemainderColsList
+except Exception as e:
+    logger.debug(f"ColumnTransformer shim notice: {e}")
 
 
 class ModelService:
@@ -57,7 +68,6 @@ class ModelService:
             logger.info(f"Successfully loaded pickle '{filename}' from {filepath}")
             return loaded_obj
         except Exception as e:
-            # If pickle fails, try joblib fallback
             try:
                 import joblib
                 return joblib.load(filepath)
@@ -81,7 +91,6 @@ class ModelService:
         """
         Returns the trained unsupervised clustering model pipeline (KMeans pipeline),
         or None if not available.
-        Checks for 'kmeans_pipeline.pkl' first, then fallbacks to 'clustering.joblib'.
         """
         if self._clustering is None:
             pipeline = self._load_joblib_file("kmeans_pipeline.pkl")
@@ -103,7 +112,7 @@ class ModelService:
         return self._cluster_profiles
 
     def get_rl_metadata(self) -> Optional[Dict[str, Any]]:
-        """Returns metadata for Reinforcement Learning process control (state bounds, bins, actions)."""
+        """Returns metadata for Reinforcement Learning process control."""
         if self._rl_metadata is None:
             self._rl_metadata = self._load_pickle_file("rl_semiconductor_metadata.pkl")
         return self._rl_metadata
@@ -111,7 +120,6 @@ class ModelService:
     def get_rl_qtable(self) -> Optional[Any]:
         """Returns trained Q-table numpy array for Reinforcement Learning process control."""
         if self._rl_qtable is None:
-            # Q-table was persisted with joblib
             self._rl_qtable = self._load_joblib_file("rl_semiconductor_qtable.pkl")
             if self._rl_qtable is None:
                 self._rl_qtable = self._load_pickle_file("rl_semiconductor_qtable.pkl")
@@ -120,6 +128,7 @@ class ModelService:
     def get_models_status(self) -> Dict[str, Any]:
         """Provides status report of all model artifacts across the three ML paradigms."""
         classifier_path = self.models_dir / "classifier.joblib"
+        scaler_path = self.models_dir / "scaler.joblib"
         clustering_path = self.models_dir / "kmeans_pipeline.pkl"
         if not clustering_path.exists():
             clustering_path = self.models_dir / "clustering.joblib"
@@ -129,9 +138,10 @@ class ModelService:
         return {
             "models_directory": str(self.models_dir),
             "supervised": {
-                "name": "Supervised Defect Classifier",
-                "available": classifier_path.exists(),
-                "file": "classifier.joblib",
+                "name": "Supervised Defect Classifier (RandomForest)",
+                "available": classifier_path.exists() and scaler_path.exists(),
+                "classifier_file": "classifier.joblib",
+                "scaler_file": "scaler.joblib",
             },
             "unsupervised": {
                 "name": "K-Means Clustering Pipeline",
@@ -145,7 +155,7 @@ class ModelService:
                 "metadata_file": "rl_semiconductor_metadata.pkl",
                 "qtable_file": "rl_semiconductor_qtable.pkl",
             },
-            "ready_for_inference": clustering_path.exists() and rl_qtable_path.exists(),
+            "ready_for_inference": classifier_path.exists() and clustering_path.exists() and rl_qtable_path.exists(),
         }
 
     def reload(self) -> None:
