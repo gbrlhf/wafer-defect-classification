@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Wafer Defect Classification System
 
 Web-based Machine Learning system for semiconductor wafer defect classification and clustering analysis.
@@ -358,3 +359,7 @@ Prefix tipe:
 ## Project Screenshots
 
 *(Tangkapan layar UI Dashboard, Halaman Klasifikasi, Clustering, dan Swagger API docs akan ditambahkan di sini)*
+=======
+# Wafer Defect Classification
+Proyek kelompok Machine Learning untuk klasifikasi defect dan clustering wafer.
+>>>>>>> 8b1b0e6d28a3f6b643bac00bbb65d43872047d0c
