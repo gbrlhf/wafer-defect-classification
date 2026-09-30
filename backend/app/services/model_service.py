@@ -1,10 +1,9 @@
-import os
 import logging
 from pathlib import Path
 from typing import Optional, Any, Dict
-import joblib
 
 logger = logging.getLogger(__name__)
+
 
 class ModelService:
     """
@@ -31,6 +30,7 @@ class ModelService:
             return None
 
         try:
+            import joblib
             loaded_model = joblib.load(filepath)
             logger.info(f"Successfully loaded '{filename}' from {filepath}")
             return loaded_model
@@ -67,7 +67,7 @@ class ModelService:
             "classifier_available": classifier_path.exists(),
             "scaler_available": scaler_path.exists(),
             "clustering_available": clustering_path.exists(),
-            "ready_for_inference": classifier_path.exists() and clustering_path.exists()
+            "ready_for_inference": classifier_path.exists() and clustering_path.exists(),
         }
 
     def reload(self) -> None:
@@ -76,6 +76,7 @@ class ModelService:
         self._scaler = None
         self._clustering = None
         logger.info("Model cache invalidated. Next request will reload from disk.")
+
 
 # Singleton instance for application use
 model_service = ModelService()

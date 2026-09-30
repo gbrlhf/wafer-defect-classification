@@ -15,8 +15,12 @@ SessionLocal = None
 
 if settings.database_url:
     try:
+        db_url = settings.database_url
+        if db_url.startswith("postgresql://"):
+            db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+
         engine = create_engine(
-            settings.database_url,
+            db_url,
             pool_pre_ping=True,
         )
         SessionLocal = scoped_session(

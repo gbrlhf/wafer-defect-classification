@@ -1,9 +1,9 @@
 import logging
 from typing import Dict, Any
-import pandas as pd
 from .model_service import model_service
 
 logger = logging.getLogger(__name__)
+
 
 class ClusteringService:
     """
@@ -30,7 +30,7 @@ class ClusteringService:
                 "message": (
                     "Clustering model ('clustering.joblib') is not yet available. "
                     "Please complete unsupervised training in Google Colab, then place the file in backend/app/models/."
-                )
+                ),
             }
 
         if not features:
@@ -38,10 +38,12 @@ class ClusteringService:
                 "status": "error",
                 "cluster_id": None,
                 "cluster_name": None,
-                "message": "Input feature dictionary cannot be empty."
+                "message": "Input feature dictionary cannot be empty.",
             }
 
         try:
+            import pandas as pd
+
             # Convert incoming dictionary into a single-row DataFrame
             input_df = pd.DataFrame([features])
 
@@ -59,14 +61,14 @@ class ClusteringService:
                     "status": "error",
                     "cluster_id": None,
                     "cluster_name": None,
-                    "message": "The loaded clustering model does not support out-of-sample prediction."
+                    "message": "The loaded clustering model does not support out-of-sample prediction.",
                 }
 
             return {
                 "status": "success",
                 "cluster_id": cluster_val,
                 "cluster_name": f"Cluster {cluster_val}",
-                "message": "Clustering assignment completed successfully."
+                "message": "Clustering assignment completed successfully.",
             }
 
         except Exception as e:
@@ -75,7 +77,8 @@ class ClusteringService:
                 "status": "error",
                 "cluster_id": None,
                 "cluster_name": None,
-                "message": f"Clustering inference failed: {str(e)}"
+                "message": f"Clustering inference failed: {str(e)}",
             }
+
 
 clustering_service = ClusteringService()

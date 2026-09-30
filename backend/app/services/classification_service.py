@@ -1,10 +1,9 @@
 import logging
 from typing import Dict, Any
-import numpy as np
-import pandas as pd
 from .model_service import model_service
 
 logger = logging.getLogger(__name__)
+
 
 class ClassificationService:
     """
@@ -31,7 +30,7 @@ class ClassificationService:
                 "message": (
                     "Classification model ('classifier.joblib') is not yet available. "
                     "Please complete training and export in Google Colab, then place the file in backend/app/models/."
-                )
+                ),
             }
 
         if not features:
@@ -39,10 +38,13 @@ class ClassificationService:
                 "status": "error",
                 "prediction": None,
                 "confidence": None,
-                "message": "Input feature dictionary cannot be empty."
+                "message": "Input feature dictionary cannot be empty.",
             }
 
         try:
+            import numpy as np
+            import pandas as pd
+
             # Convert incoming dictionary into a single-row DataFrame
             input_df = pd.DataFrame([features])
 
@@ -66,7 +68,7 @@ class ClassificationService:
                 "status": "success",
                 "prediction": prediction_label,
                 "confidence": confidence_val,
-                "message": "Inference completed successfully."
+                "message": "Inference completed successfully.",
             }
 
         except Exception as e:
@@ -75,7 +77,8 @@ class ClassificationService:
                 "status": "error",
                 "prediction": None,
                 "confidence": None,
-                "message": f"Inference execution failed: {str(e)}"
+                "message": f"Inference execution failed: {str(e)}",
             }
+
 
 classification_service = ClassificationService()
