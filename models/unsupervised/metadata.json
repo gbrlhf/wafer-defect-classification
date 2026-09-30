@@ -1,0 +1,52 @@
+{
+  "algorithm": "KMeans",
+  "n_clusters": 5,
+  "input_features": [
+    "temperature_c",
+    "pressure_torr",
+    "gas_flow_sccm",
+    "etch_rate_nm_min",
+    "voltage_v",
+    "current_ma",
+    "process_step"
+  ],
+  "numeric_features": [
+    "temperature_c",
+    "pressure_torr",
+    "gas_flow_sccm",
+    "etch_rate_nm_min",
+    "voltage_v",
+    "current_ma"
+  ],
+  "categorical_features": [
+    "process_step"
+  ],
+  "process_step_categories": [
+    "CMP",
+    "Deposition",
+    "Etching",
+    "Lithography",
+    "Oxidation"
+  ],
+  "transformed_features": [
+    "temperature_c",
+    "pressure_torr",
+    "gas_flow_sccm",
+    "etch_rate_nm_min",
+    "voltage_v",
+    "current_ma",
+    "process_step_CMP",
+    "process_step_Deposition",
+    "process_step_Etching",
+    "process_step_Lithography",
+    "process_step_Oxidation"
+  ],
+  "versions": {
+    "python": "3.14.6",
+    "scikit_learn": "1.9.0",
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "joblib": "1.5.3"
+  },
+  "interpretation": "Cluster terutama mengikuti tahapan proses. Nomor cluster bukan label normal/rusak."
+}
