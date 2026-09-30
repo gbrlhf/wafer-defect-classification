@@ -1,0 +1,218 @@
+/* =========================================
+   CLASSIFICATION PAGE
+   ========================================= */
+
+
+/* ---------- Base ---------- */
+
+@layer base {
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        overscroll-behavior: none;
+        font-family: "Plus Jakarta Sans", sans-serif;
+    }
+    main> :first-child {
+        margin-top: 0 !important;
+    }
+    main> :last-child {
+        margin-bottom: 0 !important;
+    }
+}
+
+
+/* ---------- Scrollbar ---------- */
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* ---------- Global ---------- */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+}
+
+
+/* ---------- Images ---------- */
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* ---------- Material Symbols ---------- */
+
+.material-symbols-outlined {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/* ---------- Form Elements ---------- */
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+}
+
+
+/* ---------- Header ---------- */
+
+header {
+    width: 100%;
+}
+
+header>div {
+    min-height: 64px;
+}
+
+
+/* ---------- Main ---------- */
+
+main {
+    width: 100%;
+    min-height: calc(100vh - 140px);
+}
+
+
+/* ---------- Classification Form ---------- */
+
+#wafer-form input,
+#wafer-form select {
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+#wafer-form input:focus,
+#wafer-form select:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+
+/* ---------- Prediction States ---------- */
+
+.state-view {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.state-view.hidden {
+    display: none;
+}
+
+
+/* ---------- State Tabs ---------- */
+
+.state-tab-btn {
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.state-tab-btn:hover {
+    transform: translateY(-1px);
+}
+
+
+/* ---------- Progress Bars ---------- */
+
+.state-view .rounded-full>div {
+    transition: width 0.7s ease, background-color 0.3s ease;
+}
+
+
+/* ---------- Wafer Visualization ---------- */
+
+svg {
+    max-width: 100%;
+    height: auto;
+}
+
+svg rect,
+svg circle,
+svg path {
+    transition: opacity 0.2s ease;
+}
+
+
+/* ---------- Buttons ---------- */
+
+button {
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+button:active {
+    transform: scale(0.99);
+}
+
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 767px) {
+    header>div {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+    header nav {
+        display: none !important;
+    }
+    main {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    header>div {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+    }
+}
+
+
+/* ---------- Accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
