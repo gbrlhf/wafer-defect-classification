@@ -2,7 +2,7 @@
  * Central API Client Configuration for Wafer Defect Classification System
  * Single source of truth for backend communication.
  */
-const API_BASE_URL = "http://localhost:8001/api";
+const API_BASE_URL = "http://localhost:5000/api";
 
 const ApiClient = {
     /**
