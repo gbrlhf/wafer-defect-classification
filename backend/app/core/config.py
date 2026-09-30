@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     APP_ENV: str = "development"
     APP_NAME: str = "Wafer Defect Classification API"
-    API_PORT: int = 8001
+    API_PORT: int = 5000
     DATABASE_URL: str = "postgresql://wafer_user:wafer_password@postgres:5432/wafer_db"
     ALLOWED_ORIGINS: str = "http://localhost:8080,http://127.0.0.1:8080"
     MODELS_DIR: str = "app/models"
