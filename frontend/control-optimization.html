@@ -180,54 +180,55 @@
 </head>
 
 <body class="bg-background font-body-md text-body-md text-on-surface min-h-screen flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
-    <header class="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest/85 backdrop-blur-xl shadow-[0_2px_16px_-4px_rgba(124,58,237,0.06)]">
-        <div class="h-20 max-w-[1320px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex items-center justify-between gap-space-md">
-            <div class="flex items-center gap-3 flex-shrink-0">
-                <a class="flex items-center gap-2" href="#"><img alt="WaferDefect AI Logo" class="h-10 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VxEChLUR839WNbnXTK2dfEtl0IrnpPMlEUM6GRuESwsSWO3R-yBXkU7cBTo28fqDkGjT9Zfp_H2wq408GUhkUwGzF7YDoFAXQtFVw3GuCr_0E7N4iPBNWzXB9iCzCTBWTYN4vHr_l5IQ6w0Y6dpDDXByzS_iV4YZFi2TOiNEOLaLGQlZbEs4la51425WuhVsH3bkiW-jzrQQT0xEiQ2VLvn8XpkntaYP0mXeIXmcHiLjdup2zWagsLOX6g"
-                    /></a>
-                <div class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high border-0 text-on-surface-variant font-label-sm text-[11px]"><span class="material-symbols-outlined text-[14px] text-primary">school</span><span>Capstone ML Project · Group 04</span></div>
-            </div>
-            <nav class="hidden md:flex items-center gap-1.5 p-1 bg-surface-container-low rounded-full">
-                <a href="index.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#f1eee8]">
+        <div class="h-24 max-w-[1400px] mx-auto px-8 flex items-center justify-between">
+
+            <!-- LOGO UTUH -->
+            <a href="index.html" class="flex items-center">
+                <img src="assets/logo.png" alt="WaferDefect AI" class="w-[300px] h-auto object-contain" />
+            </a>
+
+            <!-- NAVBAR -->
+            <nav class="flex items-center gap-1.5 px-2 py-1.5 bg-[#f8f4ee] rounded-full">
+
+                <!-- HOME ACTIVE -->
+                <a href="index.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
                 Home
             </a>
-                <a aria-current="page" href="classification.html" class="px-4 py-1.5 bg-primary-container text-on-primary-container font-label-lg text-label-lg rounded-full">
+
+                <a href="classification.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
                 Classification
             </a>
-                <a href="clustering.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">
+
+                <a href="clustering.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
                 Clustering
             </a>
-                <a href="control-optimization.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">
+
+                <a href="control-optimization.html" class="px-7 py-3 bg-[#7c3aed] text-white font-label-lg text-label-lg rounded-full">
                 Control Optimization
             </a>
-                <a href="about.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">
+
+                <a href="about.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
                 About
             </a>
+
             </nav>
-            <div class="flex items-center gap-space-sm sm:gap-space-md flex-shrink-0">
-                <div class="flex items-center gap-2 px-space-md py-1.5 rounded-full bg-surface-container-lowest shadow-sm"><span class="w-2.5 h-2.5 rounded-full bg-secondary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface font-semibold">ML Ready</span></div>
-                <div class="w-9 h-9 rounded-full bg-primary-fixed flex items-center justify-center text-primary shadow-sm hover:opacity-95 cursor-pointer"><span class="material-symbols-outlined text-[20px]">account_circle</span></div>
-            </div>
+
         </div>
     </header>
     <main class="w-full pt-20 flex-1 bg-surface">
         <div class="flex flex-col w-full">
             <div class="relative w-full max-w-[1320px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop py-space-xl flex flex-col gap-space-xl">
-                <!-- Ambient glowing backdrop accents -->
-                <div class="absolute -top-12 left-1/4 w-96 h-96 bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
-                <div class="absolute top-72 right-10 w-80 h-80 bg-secondary-fixed/35 rounded-full blur-3xl pointer-events-none -z-10"></div>
-                <!-- Page Header & Friendly Capstone Notification -->
+                <!-- Page Title -->
                 <div class="flex flex-col gap-space-sm">
-                    <div class="inline-flex items-center gap-space-xs self-start px-space-md py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">neurology</span><span>Reinforcement Learning Process Tuning (PPO Agent)</span></div>
-                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
-                        <div>
-                            <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Control Optimization</h1>
-                            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mt-1">Explore optimized process control actions using reinforcement learning to dynamically stabilize wafer fabrication.</p>
-                        </div>
-                        <div class="flex items-center gap-space-sm bg-surface-container-lowest px-space-md py-space-sm rounded-2xl shadow-sm self-start md:self-auto">
-                            <div class="w-3 h-3 rounded-full bg-secondary-container animate-ping"></div><span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Episode #48 · Discount Factor γ = 0.99</span></div>
-                    </div>
+                    <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+                        Control Optimization
+                    </h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                        Explore optimized process control actions using reinforcement learning to dynamically stabilize wafer fabrication.
+                    </p>
                 </div>
+
                 <!-- Top Grid: 2 Columns (Environment Input vs Action Selection) -->
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
                     <!-- Left Column: Input / Environment -->
@@ -352,26 +353,6 @@
             </span>
                             </div>
                         </div>
-                        <!-- Environment Configuration Dropdowns -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm pt-space-xs">
-                            <div class="flex flex-col gap-1">
-                                <label class="font-label-sm text-label-sm text-on-surface-variant">Initial State Formulation</label>
-                                <select class="w-full px-space-md py-2.5 rounded-xl bg-surface-container text-on-surface font-label-lg text-label-lg focus:outline-none focus:bg-surface-container-high transition-colors">
-<option selected="">Thermal Drift Condition (ΔT &gt; 8°C)</option>
-<option>Pressure Surge Fluctuation</option>
-<option>Nominal Center State</option>
-<option>Radial Non-uniformity Etch Pattern</option>
-</select>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <label class="font-label-sm text-label-sm text-on-surface-variant">Optimization Objective</label>
-                                <select class="w-full px-space-md py-2.5 rounded-xl bg-surface-container text-on-surface font-label-lg text-label-lg focus:outline-none focus:bg-surface-container-high transition-colors">
-<option selected="">Maximize Yield &amp; Prevent Defects</option>
-<option>Minimize Precursor Gas Consumption</option>
-<option>Rapid 3-Step Convergence</option>
-</select>
-                            </div>
-                        </div>
                         <!-- Simulation Controller Bar -->
                         <div class="pt-space-xs flex flex-wrap items-center gap-space-sm">
                             <button class="flex-1 min-w-[130px] flex items-center justify-center gap-1.5 py-3 px-space-md rounded-xl bg-primary text-on-primary font-label-lg text-label-lg shadow-sm hover:opacity-95 active:scale-[0.98] transition-all" id="btn-step">
@@ -454,231 +435,51 @@
 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <!-- Middle Section: Step Feedback & Markov Dynamics -->
-                <div class="bg-surface-container-lowest p-space-xl rounded-[2rem] shadow-sm flex flex-col gap-space-md">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-surface-container pb-space-md">
-                        <div class="flex items-center gap-space-sm">
-                            <div class="w-10 h-10 rounded-xl bg-primary-fixed/50 flex items-center justify-center text-primary">
-                                <span class="material-symbols-outlined text-[22px]">insights</span>
+
+                        <!-- Chart 1: Convergence Curve (Reward per Episode) -->
+                        <div class="p-space-xl rounded-[2rem] bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+                            <div class="flex items-start justify-between mb-space-md">
+                                <div>
+                                    <h4 class="font-title-lg text-title-lg text-on-surface font-bold">Convergence Curve</h4>
+                                    <p class="font-body-sm text-body-sm text-on-surface-variant">Reward per episode across 50 rollouts with PPO clipping (ε = 0.2)</p>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-xl bg-primary-fixed text-primary font-label-sm text-label-sm font-semibold">+9.1 Peak</span>
                             </div>
-                            <div>
-                                <h3 class="font-title-lg text-title-lg text-on-surface font-bold">Step Feedback &amp; Markov Dynamics</h3>
-                                <p class="font-body-sm text-body-sm text-on-surface-variant">Evaluation of state-space transitions and reward function per episode</p>
+                            <!-- Soft Vector Line Chart -->
+                            <div class="w-full h-48 relative flex items-center">
+                                <svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 340 160">
+                        <defs>
+                        <lineargradient id="pastelRewardGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+                        <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.25"></stop>
+                        <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.0"></stop>
+                        </lineargradient>
+                        </defs>
+                        <!-- Reference grids (soft background guides) -->
+                        <line stroke="#f2ede6" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="340" y1="30" y2="30"></line>
+                        <line stroke="#f2ede6" stroke-width="1" x1="0" x2="340" y1="80" y2="80"></line>
+                        <line stroke="#f2ede6" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="340" y1="130" y2="130"></line>
+                        <!-- Filled area under curve -->
+                        <polygon fill="url(#pastelRewardGrad)" points="10,135 45,130 90,110 140,85 190,55 240,42 290,26 330,22 330,150 10,150"></polygon>
+                        <!-- Smooth pastel trendline -->
+                        <path d="M 10 135 C 45 130, 70 120, 90 110 C 115 95, 130 85, 150 78 C 180 65, 210 52, 240 42 C 270 32, 300 24, 330 22" fill="none" stroke="#7c3aed" stroke-linecap="round" stroke-width="3.5"></path>
+                        <!-- Key milestone circles -->
+                        <circle cx="10" cy="135" fill="#fef9f2" r="4.5" stroke="#ba1a1a" stroke-width="2"></circle>
+                        <circle cx="150" cy="78" fill="#fef9f2" r="4.5" stroke="#7c3aed" stroke-width="2"></circle>
+                        <circle cx="330" cy="22" fill="#7c3aed" r="5"></circle>
+                        </svg>
                             </div>
-                        </div>
-                        <span class="px-space-md py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold self-start sm:self-auto">Status: Converged</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md pt-2">
-                        <!-- Metric 1: Current State -->
-                        <div class="p-space-md rounded-2xl bg-surface-container-low flex flex-col gap-1.5">
-                            <span class="font-label-sm text-label-sm text-on-surface-variant">Current State (St)</span>
-                            <div class="font-title-md text-title-md text-on-surface font-bold">Mild Thermal Drift</div>
-                            <span class="font-label-sm text-label-sm text-tertiary font-semibold flex items-center gap-1">
-<span class="material-symbols-outlined text-[15px]">trending_up</span> Radial Drift +4.2%
-                            </span>
-                            <span class="font-body-sm text-[12px] text-on-surface-variant">Classified: Ring Pattern Risk</span>
-                        </div>
-                        <!-- Metric 2: Next State Prediction -->
-                        <div class="p-space-md rounded-2xl bg-surface-container-low flex flex-col gap-1.5">
-                            <span class="font-label-sm text-label-sm text-on-surface-variant">Next State / Prediction (St+1)</span>
-                            <div class="font-title-md text-title-md text-primary font-bold">Nominal Bounds</div>
-                            <span class="font-label-sm text-label-sm text-primary font-semibold flex items-center gap-1">
-<span class="material-symbols-outlined text-[15px]">check_circle</span> Tolerance &lt; 0.8% Target
-                            </span>
-                            <span class="font-body-sm text-[12px] text-on-surface-variant">Stabilized within 2 simulation steps</span>
-                        </div>
-                        <!-- Metric 3: Instant Step Reward -->
-                        <div class="p-space-md rounded-2xl bg-surface-container-low flex flex-col gap-1.5">
-                            <span class="font-label-sm text-label-sm text-on-surface-variant">Instant Step Reward (r(s,a))</span>
-                            <div class="font-title-md text-title-md text-on-surface font-bold">+8.74 / 10.0</div>
-                            <span class="font-label-sm text-label-sm text-secondary font-semibold flex items-center gap-1">
-<span class="material-symbols-outlined text-[15px]">arrow_circle_up</span> Top 5% Percentile
-                            </span>
-                            <span class="font-body-sm text-[12px] text-on-surface-variant">Penalty minimized: -0.12 cost</span>
-                        </div>
-                        <!-- Metric 4: Optimization Status -->
-                        <div class="p-space-md rounded-2xl bg-surface-container-low flex flex-col gap-1.5">
-                            <span class="font-label-sm text-label-sm text-on-surface-variant">Optimization Status</span>
-                            <div class="font-title-md text-title-md text-on-surface font-bold">High Yield: 99.2% Expected</div>
-                            <span class="font-label-sm text-label-sm text-primary font-semibold flex items-center gap-1">
-<span class="material-symbols-outlined text-[15px]">verified</span> Converged
-                            </span>
-                            <span class="font-body-sm text-[12px] text-on-surface-variant">Defect Density: -3.1 die/wafer</span>
+                            <div class="flex justify-between items-center text-on-surface-variant font-label-sm text-label-sm pt-space-xs">
+                                <span>Ep 0 (-2.4)</span>
+                                <span>Ep 25 (+4.2)</span>
+                                <span class="text-primary font-bold">Ep 50 (+9.1)</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- Bottom Section: Clean & Friendly Simulation Visualizations -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg">
-                    <!-- Chart 1: Convergence Curve (Reward per Episode) -->
-                    <div class="p-space-xl rounded-[2rem] bg-surface-container-lowest shadow-sm flex flex-col justify-between">
-                        <div class="flex items-start justify-between mb-space-md">
-                            <div>
-                                <h4 class="font-title-lg text-title-lg text-on-surface font-bold">Convergence Curve</h4>
-                                <p class="font-body-sm text-body-sm text-on-surface-variant">Reward per episode across 50 rollouts with PPO clipping (ε = 0.2)</p>
-                            </div>
-                            <span class="px-2.5 py-1 rounded-xl bg-primary-fixed text-primary font-label-sm text-label-sm font-semibold">+9.1 Peak</span>
-                        </div>
-                        <!-- Soft Vector Line Chart -->
-                        <div class="w-full h-48 relative flex items-center">
-                            <svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 340 160">
-<defs>
-<lineargradient id="pastelRewardGrad" x1="0%" x2="0%" y1="0%" y2="100%">
-<stop offset="0%" stop-color="#7c3aed" stop-opacity="0.25"></stop>
-<stop offset="100%" stop-color="#7c3aed" stop-opacity="0.0"></stop>
-</lineargradient>
-</defs>
-<!-- Reference grids (soft background guides) -->
-<line stroke="#f2ede6" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="340" y1="30" y2="30"></line>
-<line stroke="#f2ede6" stroke-width="1" x1="0" x2="340" y1="80" y2="80"></line>
-<line stroke="#f2ede6" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="340" y1="130" y2="130"></line>
-<!-- Filled area under curve -->
-<polygon fill="url(#pastelRewardGrad)" points="10,135 45,130 90,110 140,85 190,55 240,42 290,26 330,22 330,150 10,150"></polygon>
-<!-- Smooth pastel trendline -->
-<path d="M 10 135 C 45 130, 70 120, 90 110 C 115 95, 130 85, 150 78 C 180 65, 210 52, 240 42 C 270 32, 300 24, 330 22" fill="none" stroke="#7c3aed" stroke-linecap="round" stroke-width="3.5"></path>
-<!-- Key milestone circles -->
-<circle cx="10" cy="135" fill="#fef9f2" r="4.5" stroke="#ba1a1a" stroke-width="2"></circle>
-<circle cx="150" cy="78" fill="#fef9f2" r="4.5" stroke="#7c3aed" stroke-width="2"></circle>
-<circle cx="330" cy="22" fill="#7c3aed" r="5"></circle>
-</svg>
-                        </div>
-                        <div class="flex justify-between items-center text-on-surface-variant font-label-sm text-label-sm pt-space-xs">
-                            <span>Ep 0 (-2.4)</span>
-                            <span>Ep 25 (+4.2)</span>
-                            <span class="text-primary font-bold">Ep 50 (+9.1)</span>
-                        </div>
-                    </div>
-                    <!-- Chart 2: Agent Reward Function & Yield Trajectory -->
-                    <div class="p-space-xl rounded-[2rem] bg-surface-container-lowest shadow-sm flex flex-col justify-between">
-                        <div class="flex items-start justify-between mb-space-md">
-                            <div>
-                                <h4 class="font-title-lg text-title-lg text-on-surface font-bold">Agent Reward Function &amp; Yield Trajectory</h4>
-                                <p class="font-body-sm text-body-sm text-on-surface-variant">3-step transition from thermal drift to stability</p>
-                            </div>
-                            <span class="px-2.5 py-1 rounded-xl bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">3 Steps</span>
-                        </div>
-                        <!-- Step flow visual pipeline -->
-                        <div class="flex flex-col gap-space-sm my-auto">
-                            <!-- Step 1 -->
-                            <div class="flex items-center gap-space-sm p-space-sm rounded-2xl bg-surface-container-low">
-                                <span class="w-8 h-8 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center font-bold text-label-md">0</span>
-                                <div class="flex-1">
-                                    <p class="font-label-lg text-label-lg text-on-surface leading-tight">Initial Anomaly</p>
-                                    <p class="font-body-sm text-body-sm text-on-surface-variant">Wafer edge cold spot ΔT = -8°C</p>
-                                </div>
-                                <span class="material-symbols-outlined text-tertiary text-[18px]">warning</span>
-                            </div>
-                            <div class="flex justify-center -my-2">
-                                <span class="material-symbols-outlined text-primary text-[18px]">south</span>
-                            </div>
-                            <!-- Step 2 -->
-                            <div class="flex items-center gap-space-sm p-space-sm rounded-2xl bg-primary-fixed/30">
-                                <span class="w-8 h-8 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-bold text-label-md">1</span>
-                                <div class="flex-1">
-                                    <p class="font-label-lg text-label-lg text-on-surface leading-tight">Action 1: Raise Temp &amp; Flow</p>
-                                    <p class="font-body-sm text-body-sm text-on-surface-variant">ΔT +5°C · Radial deviation → 1.9%</p>
-                                </div>
-                                <span class="material-symbols-outlined text-primary text-[18px]">sync</span>
-                            </div>
-                            <div class="flex justify-center -my-2">
-                                <span class="material-symbols-outlined text-secondary text-[18px]">south</span>
-                            </div>
-                            <!-- Step 3 -->
-                            <div class="flex items-center gap-space-sm p-space-sm rounded-2xl bg-secondary-fixed/40">
-                                <span class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-label-md">2</span>
-                                <div class="flex-1">
-                                    <p class="font-label-lg text-label-lg text-on-surface leading-tight">Action 2: Vent Pressure</p>
-                                    <p class="font-body-sm text-body-sm text-on-secondary-fixed-variant">-2 mTorr · Nominal target reached</p>
-                                </div>
-                                <span class="material-symbols-outlined text-secondary text-[18px]">check</span>
-                            </div>
-                        </div>
-                        <div class="pt-space-xs text-center font-label-sm text-label-sm text-on-surface-variant">
-                            Total convergence latency: <strong class="text-on-surface">18.4 seconds</strong>
-                        </div>
-                    </div>
-                    <!-- Chart 3: Optimization Episode History -->
-                    <div class="p-space-xl rounded-[2rem] bg-surface-container-lowest shadow-sm flex flex-col justify-between">
-                        <div class="flex items-start justify-between mb-space-md">
-                            <div>
-                                <h4 class="font-title-lg text-title-lg text-on-surface font-bold">Optimization Episode History</h4>
-                                <p class="font-body-sm text-body-sm text-on-surface-variant">Autonomous RL Agent vs Manual Recipe</p>
-                            </div>
-                            <span class="px-2.5 py-1 rounded-xl bg-primary-fixed text-primary font-label-sm text-label-sm font-semibold">+14.2% Uplift</span>
-                        </div>
-                        <!-- Comparative Chart Representation -->
-                        <div class="flex flex-col gap-space-md my-auto">
-                            <!-- RL Agent Bar -->
-                            <div class="flex flex-col gap-1.5">
-                                <div class="flex justify-between items-center font-label-md text-label-md">
-                                    <span class="text-primary font-bold flex items-center gap-1">
-<span class="material-symbols-outlined text-[16px]">smart_toy</span> RL PPO Agent
-                                    </span>
-                                    <span class="font-bold text-primary">99.2% Final Yield</span>
-                                </div>
-                                <div class="w-full h-4 bg-surface-container rounded-full overflow-hidden p-0.5">
-                                    <div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: 99.2%;"></div>
-                                </div>
-                                <span class="font-label-sm text-label-sm text-on-surface-variant">Near zero wafer scrap under severe drift conditions</span>
-                            </div>
-                            <!-- Static / Manual Recipe Bar -->
-                            <div class="flex flex-col gap-1.5">
-                                <div class="flex justify-between items-center font-label-md text-label-md">
-                                    <span class="text-on-surface-variant font-medium flex items-center gap-1">
-<span class="material-symbols-outlined text-[16px]">person</span> Manual Operator Rules
-                                    </span>
-                                    <span class="font-medium text-on-surface-variant">85.0% Final Yield</span>
-                                </div>
-                                <div class="w-full h-4 bg-surface-container rounded-full overflow-hidden p-0.5">
-                                    <div class="h-full bg-outline rounded-full transition-all duration-1000" style="width: 85%;"></div>
-                                </div>
-                                <span class="font-label-sm text-label-sm text-on-surface-variant">Incurs 6-minute human response latency</span>
-                            </div>
-                            <div class="p-space-sm rounded-xl bg-surface-container-low flex items-center justify-between">
-                                <span class="font-label-sm text-label-sm text-on-surface-variant">Scrap Cost Savings</span>
-                                <span class="font-label-md text-label-md text-primary font-bold">-$42,800 per lot</span>
-                            </div>
-                        </div>
-                        <div class="pt-space-xs flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
-                            <span>Verified Simulation</span>
-                            <span class="text-primary font-semibold">Fab Standard Certified</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Student & Researcher Pedagogical Note / Cleanroom Context -->
-                <div class="p-space-lg rounded-[2rem] bg-surface-container-low flex flex-col md:flex-row items-center gap-space-md justify-between">
-                    <div class="flex items-center gap-space-md">
-                        <div class="w-12 h-12 rounded-2xl bg-surface-container-lowest flex items-center justify-center text-primary shadow-sm flex-shrink-0">
-                            <span class="material-symbols-outlined text-[26px]">school</span>
-                        </div>
-                        <div>
-                            <h4 class="font-title-md text-title-md text-on-surface">Curriculum Context: Reinforcement Learning in Modern IC Fabrication</h4>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant max-w-3xl">
-                                This module showcases continuous state-space exploration over chamber chemical gas flows and substrate temperature gradients. The policy network prevents microscopic slip dislocation line formations during advanced 5nm/3nm process runs.
-                            </p>
-                        </div>
-                    </div>
-                    <a class="px-space-md py-2.5 rounded-xl bg-surface-container-lowest hover:bg-surface-container-high text-primary font-label-lg text-label-lg transition-colors flex-shrink-0 flex items-center gap-1 shadow-sm" data-path="about" href="#">
-                        <span>Read Model Whitepaper</span>
-                        <span class="material-symbols-outlined text-[16px]">open_in_new</span>
-                    </a>
-                </div>
+
             </div>
         </div>
     </main>
-    <footer class="w-full bg-surface-container-low py-space-xl shadow-[0_-2px_12px_rgba(0,0,0,0.02)]">
-        <div class="max-w-[1320px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-lg">
-            <div class="flex flex-col items-center md:items-start gap-space-xs text-center md:text-left">
-                <div class="flex items-center gap-space-sm"><span class="font-title-md text-title-md text-on-surface font-bold">WaferDefect AI</span><span class="px-2 py-0.5 rounded-full bg-primary-fixed/60 text-primary font-label-sm text-label-sm font-semibold">Machine Learning Metrology &amp; Spatial Analysis</span></div>
-                <p class="font-body-sm text-body-sm text-on-surface-variant max-w-md">Interactive wafer defect detection, mixed-type pattern decomposition, and in-line semiconductor fabrication yield optimization.</p>
-            </div>
-            <div class="flex flex-wrap items-center justify-center gap-space-lg"><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" data-path="dataset" href="#">WM-811K Benchmark</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors"
-                    data-path="about" href="#">PyTorch &amp; UMAP</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" data-path="classification" href="#">ResNet-50 Metrics</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors"
-                    data-path="optimization" href="#">PPO Policy Specs</a></div>
-            <div class="flex flex-col items-center md:items-end gap-space-xs text-center md:text-right"><span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Undergraduate Capstone Research Project</span><span class="font-label-sm text-label-sm text-on-surface-variant">© 2025 WaferDefect AI Initiative · Semiconductor ML Laboratory</span></div>
-        </div>
-    </footer>
 </body>
 
 </html>
