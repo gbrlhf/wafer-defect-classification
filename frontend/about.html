@@ -27,39 +27,39 @@
          NAVBAR
     ========================== -->
 
-    <header class="navbar">
-        <div class="navbar-container">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#f1eee8]">
+        <div class="h-24 max-w-[1400px] mx-auto px-8 flex items-center justify-between">
 
-            <a href="index.html" class="brand">
-                <img src="assets/logo.png" alt="WaferDefect AI Logo">
-                <span class="brand-name">WaferDefect AI</span>
+            <!-- LOGO UTUH -->
+            <a href="index.html" class="flex items-center">
+                <img src="assets/logo.png" alt="WaferDefect AI" class="w-[300px] h-auto object-contain" />
             </a>
 
-            <span class="project-badge">
-                ML Capstone · Group 04
-            </span>
+            <!-- NAVBAR -->
+            <nav class="flex items-center gap-1.5 px-2 py-1.5 bg-[#f8f4ee] rounded-full">
 
-            <nav class="nav-menu">
-                <a href="index.html">Home</a>
-                <a href="classification.html">Classification</a>
-                <a href="clustering.html">Clustering</a>
-                <a href="index.html#optimization">Control Optimization</a>
-                <a href="about.html" class="active">About</a>
+                <!-- HOME ACTIVE -->
+                <a href="index.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                Home
+            </a>
+
+                <a href="classification.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                Classification
+            </a>
+
+                <a href="clustering.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                Clustering
+            </a>
+
+                <a href="control-optimization.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                Control Optimization
+            </a>
+
+                <a href="about.html" class="px-7 py-3 bg-[#7c3aed] text-white font-label-lg text-label-lg rounded-full">
+                About
+            </a>
+
             </nav>
-
-            <div class="nav-right">
-
-                <div class="ml-status">
-                    <span class="status-dot"></span> ML Ready
-                </div>
-
-                <div class="profile-button">
-                    <span class="material-symbols-outlined">
-                        person
-                    </span>
-                </div>
-
-            </div>
 
         </div>
     </header>
@@ -321,7 +321,7 @@
                     </h2>
 
                     <p>
-                        Combining supervised classification, unsupervised clustering, and control optimization for wafer process analysis.
+                        Menggabungkan metode pembelajaran terawasi, clustering, dan optimasi untuk membantu menganalisis proses wafer.
                     </p>
 
                 </div>
@@ -352,19 +352,19 @@
                         </h3>
 
                         <p>
-                            Classifies wafer samples into Normal or Defective status based on process parameters.
+                            Mengelompokkan sampel wafer menjadi Normal atau Defect berdasarkan parameter proses.
                         </p>
 
                         <div class="engine-details">
 
                             <div>
                                 <span>Input</span>
-                                <strong>Process Parameters</strong>
+                                <strong>Parameter Proses</strong>
                             </div>
 
                             <div>
                                 <span>Algorithm</span>
-                                <strong>Classification Model</strong>
+                                <strong>Model Klasifikasi</strong>
                             </div>
 
                             <div>
@@ -409,24 +409,24 @@
                         </h3>
 
                         <p>
-                            Groups wafer samples based on their characteristics and reveals hidden patterns in the dataset.
+                            Mengelompokkan sampel wafer berdasarkan karakteristiknya untuk menemukan pola yang terdapat di dalam dataset.
                         </p>
 
                         <div class="engine-details">
 
                             <div>
                                 <span>Input</span>
-                                <strong>Wafer Features</strong>
+                                <strong>Karakteristik Wafer</strong>
                             </div>
 
                             <div>
                                 <span>Algorithm</span>
-                                <strong>Clustering Model</strong>
+                                <strong>Model Clustering</strong>
                             </div>
 
                             <div>
                                 <span>Visualization</span>
-                                <strong>2D Projection</strong>
+                                <strong>Proyeksi 2D</strong>
                             </div>
 
                         </div>
@@ -435,7 +435,7 @@
 
                             <div>
                                 <strong>Clustering</strong>
-                                <span>Pattern Discovery</span>
+                                <span>Penemuan Pola</span>
                             </div>
 
                         </div>
@@ -466,24 +466,24 @@
                         </h3>
 
                         <p>
-                            Analyzes process parameters and model results to provide recommended settings for improved process control.
+                            Menganalisis parameter proses untuk memberikan rekomendasi pengaturan yang dapat membantu menjaga kestabilan proses.
                         </p>
 
                         <div class="engine-details">
 
                             <div>
                                 <span>Input</span>
-                                <strong>Process Parameters</strong>
+                                <strong>Parameter Proses</strong>
                             </div>
 
                             <div>
                                 <span>Method</span>
-                                <strong>Parameter Optimization</strong>
+                                <strong>Optimasi Parameter</strong>
                             </div>
 
                             <div>
                                 <span>Output</span>
-                                <strong>Recommended Settings</strong>
+                                <strong>Rekomendasi Pengaturan</strong>
                             </div>
 
                         </div>
@@ -492,7 +492,7 @@
 
                             <div>
                                 <strong>Optimization</strong>
-                                <span>Process Recommendation</span>
+                                <span>Rekomendasi Proses</span>
                             </div>
 
                         </div>
