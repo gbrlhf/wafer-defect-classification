@@ -1,0 +1,89 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+.venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Jupyter / Google Colab
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+*.ipynb_checkpoints
+
+# Machine Learning Artifacts & Datasets
+# Note: Keep placeholder directories, ignore actual large datasets and serialized weights
+data/*.csv
+data/*.xlsx
+data/*.parquet
+data/*.zip
+data/*.tar.gz
+data/*.json
+!data/README.md
+!data/.gitkeep
+
+# Model weights (only keep .gitkeep)
+backend/app/models/*.joblib
+backend/app/models/*.pkl
+backend/app/models/*.h5
+backend/app/models/*.pt
+backend/app/models/*.onnx
+!backend/app/models/.gitkeep
+
+training/models/*.joblib
+training/models/*.pkl
+!training/models/.gitkeep
+!training/models/README.md
+
+# Node / Frontend build (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.docker/
+
+# IDE & OS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/

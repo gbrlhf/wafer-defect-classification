@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Project & Team | Wafer Defect Classification System</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="index.html">
+                <div class="brand-icon-wrapper">
+                    <i class="bi bi-cpu"></i>
+                </div>
+                <div>
+                    <span class="fw-bold">WaferAI</span>
+                    <span class="text-secondary small d-none d-sm-inline ms-1">| Defect System</span>
+                </div>
+            </a>
+
+            <button class="navbar-toggler border-0 text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <i class="bi bi-list fs-2"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="classification.html">
+                            <i class="bi bi-check2-circle me-1"></i> Classification
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="clustering.html">
+                            <i class="bi bi-diagram-3-fill me-1"></i> Clustering
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dataset.html">
+                            <i class="bi bi-database me-1"></i> Dataset
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="about.html">
+                            <i class="bi bi-info-circle me-1"></i> About
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Live API Health Indicator -->
+                <div class="d-flex align-items-center">
+                    <div class="api-status-badge">
+                        <span id="api-status-dot" class="status-dot checking"></span>
+                        <span id="api-status-text" class="text-light">Checking API...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-fluid px-4 py-4">
+
+        <!-- Page Header -->
+        <div class="mb-4">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge badge-custom badge-custom-blue">Documentation</span>
+                <span class="text-secondary small">/ Project Overview & Team</span>
+            </div>
+            <h2 class="fw-bold mb-1">About The Project</h2>
+            <p class="text-secondary mb-0">
+                Informasi arsitektur sistem, metodologi Machine Learning, dependensi teknologi, dan susunan tim pengembang.
+            </p>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Project Overview & ML Methods -->
+            <div class="col-lg-7">
+                <div class="card card-custom p-4 mb-4">
+                    <h5 class="mb-3 text-white">
+                        <i class="bi bi-cpu-fill text-primary me-2"></i> Wafer Defect Classification System
+                    </h5>
+                    <p class="text-secondary">
+                        Aplikasi web Machine Learning ini dirancang khusus untuk industri manufaktur semikonduktor guna mendeteksi serta mengklasifikasikan anomali dan cacat pada wafer silikon. Melalui integrasi model berbasis AI, teknisi dapat mendeteksi kegagalan proses fabrikasi lebih awal sehingga efisiensi produksi meningkat.
+                    </p>
+
+                    <h6 class="text-white mt-4 mb-2 fw-bold">Metodologi Machine Learning:</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 h-100" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color);">
+                                <div class="fw-bold text-info mb-1"><i class="bi bi-check2-square me-1"></i> Supervised Learning</div>
+                                <div class="text-secondary small">
+                                    Klasifikasi multi-kelas untuk memprediksi label defect spesifik (misal: Center, Donut, Edge-Ring, Loc, Scratch) menggunakan Scikit-learn classifier.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 h-100" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color);">
+                                <div class="fw-bold text-warning mb-1"><i class="bi bi-diagram-3-fill me-1"></i> Unsupervised Learning</div>
+                                <div class="text-secondary small">
+                                    Clustering tanpa label untuk mengelompokkan pola sebaran die cacat pada wafer dan mengeksplorasi cluster anomali baru yang belum terpetakan.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology Stack Badges -->
+                <div class="card card-custom p-4">
+                    <h5 class="mb-3 text-white">
+                        <i class="bi bi-stack text-info me-2"></i> Technology Stack
+                    </h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge badge-custom badge-custom-blue fs-6">FastAPI</span>
+                        <span class="badge badge-custom badge-custom-blue fs-6">Python 3</span>
+                        <span class="badge badge-custom badge-custom-blue fs-6">Scikit-learn</span>
+                        <span class="badge badge-custom badge-custom-blue fs-6">Pandas & NumPy</span>
+                        <span class="badge badge-custom badge-custom-blue fs-6">Joblib</span>
+                        <span class="badge badge-custom badge-custom-green fs-6">Bootstrap 5</span>
+                        <span class="badge badge-custom badge-custom-green fs-6">Chart.js</span>
+                        <span class="badge badge-custom badge-custom-green fs-6">Vanilla JS (Fetch API)</span>
+                        <span class="badge badge-custom badge-custom-amber fs-6">Google Colab</span>
+                        <span class="badge badge-custom badge-custom-amber fs-6">Docker & Docker Compose</span>
+                        <span class="badge badge-custom badge-custom-amber fs-6">Nginx</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members Table -->
+            <div class="col-lg-5">
+                <div class="card card-custom p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-white">
+                            <i class="bi bi-people-fill text-success me-2"></i> Anggota Tim Pengembang
+                        </h5>
+                        <span class="badge badge-custom badge-custom-green">Colab & Git Team</span>
+                    </div>
+
+                    <p class="text-secondary small mb-3">
+                        Setiap anggota bekerja pada branch masing-masing dan menerapkan workflow Pull Request dengan minimal 3 commit/hari.
+                    </p>
+
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Peran</th>
+                                    <th>Branch</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong class="text-white">Gibral</strong></td>
+                                    <td><span class="badge bg-primary">Project Lead / Fullstack</span></td>
+                                    <td><code>Gibral</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-white">Nama 2</strong></td>
+                                    <td><span class="badge bg-secondary">ML Engineer</span></td>
+                                    <td><code>Nama2</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-white">Nama 3</strong></td>
+                                    <td><span class="badge bg-secondary">Data / EDA Specialist</span></td>
+                                    <td><code>Nama3</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-white">Nama 4</strong></td>
+                                    <td><span class="badge bg-secondary">Backend API Dev</span></td>
+                                    <td><code>Nama4</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-white">Nama 5</strong></td>
+                                    <td><span class="badge bg-secondary">Frontend & Visuals</span></td>
+                                    <td><code>Nama5</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-custom mt-auto">
+        <div class="container-fluid px-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+                <div>
+                    <strong>Wafer Defect Classification System</strong> &copy; 2026. All rights reserved.
+                </div>
+                <div class="d-flex gap-3">
+                    <a href="http://localhost:8001/docs" target="_blank" class="text-secondary text-decoration-none">
+                        <i class="bi bi-journal-code me-1"></i> Swagger API Docs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Central API Client -->
+    <script src="js/api.js"></script>
+</body>
+</html>
