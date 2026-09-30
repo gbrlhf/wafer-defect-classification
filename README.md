@@ -34,8 +34,12 @@ Seluruh proses training, exploratory data analysis (EDA), dan validasi model dil
 - **Data Visualization:** Chart.js
 - **Web Server:** Nginx (Alpine)
 
-### Backend ML API
+### Backend ML API & Database
 - **Framework:** FastAPI
+- **Database:** PostgreSQL 16
+- **ORM:** SQLAlchemy 2.0
+- **Database Migrations:** Alembic
+- **Database Driver:** `psycopg2-binary`
 - **ASGI Server:** Uvicorn
 - **Data Validation & Schemas:** Pydantic
 - **ML Runtime & Data Processing:** Scikit-learn, Pandas, NumPy, Joblib
@@ -64,18 +68,21 @@ Browser Interface
        ▼
 Frontend Container (Nginx :8080)
        │
-       │ Reverse Proxy / Direct API Call
+       │ HTTP / REST (Fetch API)
        ▼
 Backend Container (FastAPI :8001)
        │
        ├── CORS Middleware & Request Validation (Pydantic)
        ├── Model Service (Cached In-Memory Loader)
        │
-       ▼
-Trained Models (backend/app/models/*.joblib)
-  ├── classifier.joblib  (Supervised)
-  ├── scaler.joblib      (Preprocessing)
-  └── clustering.joblib  (Unsupervised)
+       ├──► Trained Models (backend/app/models/*.joblib)
+       │      ├── classifier.joblib  (Supervised)
+       │      ├── scaler.joblib      (Preprocessing)
+       │      └── clustering.joblib  (Unsupervised)
+       │
+       └──► PostgreSQL Container (wafer-postgres :5432)
+              ├── predictions   (Inference history & confidence)
+              └── model_metrics (Model evaluation & performance)
        │
        ▼
 FastAPI JSON Response

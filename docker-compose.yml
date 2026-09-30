@@ -10,7 +10,7 @@ services:
     depends_on:
       - backend
     networks:
-      - wafer-net
+      - wafer-network
 
   backend:
     build:
@@ -22,11 +22,39 @@ services:
     environment:
       - APP_ENV=development
       - API_PORT=8001
+      - DATABASE_URL=postgresql://wafer_user:wafer_password@postgres:5432/wafer_db
       - ALLOWED_ORIGINS=http://localhost:8080,http://127.0.0.1:8080,http://localhost:8000,http://localhost
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
-      - wafer-net
+      - wafer-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: wafer-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wafer_db
+      POSTGRES_USER: wafer_user
+      POSTGRES_PASSWORD: wafer_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wafer_user -d wafer_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wafer-network
+
+volumes:
+  postgres_data:
+    driver: local
 
 networks:
-  wafer-net:
+  wafer-network:
     driver: bridge

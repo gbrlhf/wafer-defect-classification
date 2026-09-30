@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 class HealthResponse(BaseModel):
     status: str = Field(default="ok", examples=["ok"])
     service: str = Field(default="wafer-defect-api", examples=["wafer-defect-api"])
+    database: Optional[str] = Field(default=None, examples=["connected"])
 
 class MessageResponse(BaseModel):
     status: str
