@@ -1,0 +1,4 @@
+Generic single-database configuration with an async/sync migration environment.
+Migrations will be auto-generated here via:
+alembic revision --autogenerate -m "<migration message>"
+alembic upgrade head
