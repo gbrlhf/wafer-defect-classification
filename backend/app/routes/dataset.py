@@ -1,15 +1,15 @@
-from fastapi import APIRouter
-from typing import Dict, Any
+from flask import Blueprint, jsonify
 
-router = APIRouter(prefix="/api/dataset", tags=["Dataset"])
+router = Blueprint("dataset", __name__, url_prefix="/api/dataset")
 
-@router.get("/info")
-def get_dataset_info() -> Dict[str, Any]:
+
+@router.route("/info", methods=["GET"])
+def get_dataset_info():
     """
     Returns metadata about the semiconductor wafer dataset.
     Feature specifications are populated after Google Colab EDA.
     """
-    return {
+    return jsonify({
         "status": "pending_eda",
         "dataset_name": "Semiconductor Wafer Defect Classification Dataset",
         "source": "Kaggle",
@@ -22,5 +22,5 @@ def get_dataset_info() -> Dict[str, Any]:
             "Dataset semiconductor wafer defect analysis. "
             "Feature names, sample counts, and target labels will be synchronized "
             "following exploratory data analysis (EDA) and preprocessing in Google Colab."
-        )
-    }
+        ),
+    }), 200
