@@ -18,10 +18,21 @@ app.config["APP_NAME"] = "Wafer Defect Classification & Process Control API"
 app.config["VERSION"] = "1.0.0"
 
 # CORS configuration
-if settings.cors_origins:
-    CORS(app, resources={r"/api/*": {"origins": settings.cors_origins}})
-else:
-    CORS(app)
+CORS(
+    app,
+    resources={
+        r"/api/.*": {
+            "origins": [
+                "http://localhost:8080",
+                "http://127.0.0.1:8080",
+                "http://localhost:8081",
+                "http://127.0.0.1:8081",
+            ],
+            "methods": ["GET", "POST", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+        }
+    },
+)
 
 
 # Cleanup database session per request context
