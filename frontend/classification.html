@@ -1,199 +1,926 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Defect Classification | Wafer Defect Classification System</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap 5 CSS & Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="web_standard" name="shell-type" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            "darkMode": "class",
+            "theme": {
+                "extend": {
+                    "colors": {
+                        "surface-variant": "#e6e2db",
+                        "error": "#ba1a1a",
+                        "secondary": "#006398",
+                        "on-surface-variant": "#4a4455",
+                        "on-secondary-fixed": "#001d31",
+                        "on-tertiary-fixed": "#40000d",
+                        "surface-container": "#f2ede6",
+                        "tertiary": "#a0002f",
+                        "outline-variant": "#ccc3d8",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#00476e",
+                        "primary-fixed": "#eaddff",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#d2bbff",
+                        "on-secondary-fixed-variant": "#004b73",
+                        "surface-bright": "#fef9f2",
+                        "surface-tint": "#732ee4",
+                        "background": "#fef9f2",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "surface-container-highest": "#e6e2db",
+                        "surface-container-high": "#ece7e1",
+                        "primary-container": "#7c3aed",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#d2bbff",
+                        "on-background": "#1d1c18",
+                        "secondary-fixed": "#cce5ff",
+                        "surface-container-low": "#f8f3ec",
+                        "on-primary-fixed": "#25005a",
+                        "tertiary-fixed": "#ffdadb",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "outline": "#7b7487",
+                        "inverse-surface": "#32302c",
+                        "secondary-fixed-dim": "#93ccff",
+                        "surface": "#fef9f2",
+                        "on-surface": "#1d1c18",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#ded9d3",
+                        "on-tertiary-container": "#ffdedf",
+                        "tertiary-container": "#c81a42",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "on-primary-container": "#ede0ff",
+                        "primary": "#630ed4",
+                        "inverse-on-surface": "#f5f0e9",
+                        "secondary-container": "#5bb8fe",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter-desktop": "2rem",
+                        "margin-tablet": "2rem",
+                        "margin": "1.25rem",
+                        "gutter": "1.25rem",
+                        "margin-desktop": "3rem",
+                        "space-lg": "1.5rem",
+                        "space-sm": "0.5rem",
+                        "space-xs": "0.25rem",
+                        "space-xl": "2.5rem",
+                        "space-md": "1rem"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "title-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "title-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["13px", {
+                            "lineHeight": "20px",
+                            "letterSpacing": "0.005em",
+                            "fontWeight": "400"
+                        }],
+                        "body-lg": ["18px", {
+                            "lineHeight": "28px",
+                            "letterSpacing": "0em",
+                            "fontWeight": "400"
+                        }],
+                        "title-lg": ["18px", {
+                            "lineHeight": "24px",
+                            "letterSpacing": "-0.005em",
+                            "fontWeight": "600"
+                        }],
+                        "label-sm": ["11px", {
+                            "lineHeight": "14px",
+                            "letterSpacing": "0.025em",
+                            "fontWeight": "500"
+                        }],
+                        "label-lg": ["14px", {
+                            "lineHeight": "20px",
+                            "letterSpacing": "0.01em",
+                            "fontWeight": "600"
+                        }],
+                        "headline-sm": ["22px", {
+                            "lineHeight": "28px",
+                            "letterSpacing": "-0.01em",
+                            "fontWeight": "600"
+                        }],
+                        "body-md": ["15px", {
+                            "lineHeight": "24px",
+                            "letterSpacing": "0em",
+                            "fontWeight": "400"
+                        }],
+                        "headline-lg": ["40px", {
+                            "lineHeight": "48px",
+                            "letterSpacing": "-0.025em",
+                            "fontWeight": "700"
+                        }],
+                        "display": ["56px", {
+                            "lineHeight": "64px",
+                            "letterSpacing": "-0.03em",
+                            "fontWeight": "700"
+                        }],
+                        "title-md": ["16px", {
+                            "lineHeight": "22px",
+                            "letterSpacing": "0em",
+                            "fontWeight": "600"
+                        }],
+                        "label-md": ["12px", {
+                            "lineHeight": "16px",
+                            "letterSpacing": "0.02em",
+                            "fontWeight": "600"
+                        }],
+                        "headline-md": ["28px", {
+                            "lineHeight": "36px",
+                            "letterSpacing": "-0.015em",
+                            "fontWeight": "600"
+                        }],
+                        "headline-lg-mobile": ["30px", {
+                            "lineHeight": "36px",
+                            "letterSpacing": "-0.02em",
+                            "fontWeight": "700"
+                        }],
+                        "display-mobile": ["38px", {
+                            "lineHeight": "44px",
+                            "letterSpacing": "-0.02em",
+                            "fontWeight": "700"
+                        }]
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="css/classification.css" rel="stylesheet" />
+    <script defer="True" src="js/dashboard.js"></script>
+    <script defer="True" src="js/api.js"></script>
+    <script defer="True" src="js/classification.js"></script>
 </head>
-<body>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand" href="index.html">
-                <div class="brand-icon-wrapper">
-                    <i class="bi bi-cpu"></i>
-                </div>
-                <div>
-                    <span class="fw-bold">WaferAI</span>
-                    <span class="text-secondary small d-none d-sm-inline ms-1">| Defect System</span>
-                </div>
+<body
+    class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#f1eee8]">
+        <div class="h-24 max-w-[1400px] mx-auto px-8 flex items-center justify-between">
+
+            <!-- LOGO UTUH -->
+            <a href="index.html" class="flex items-center">
+                <img src="assets/logo.png" alt="WaferDefect AI" class="w-[300px] h-auto object-contain" />
             </a>
 
-            <button class="navbar-toggler border-0 text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-                <i class="bi bi-list fs-2"></i>
-            </button>
+            <!-- NAVBAR -->
+            <nav class="flex items-center gap-1.5 px-2 py-1.5 bg-[#f8f4ee] rounded-full">
 
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">
-                            <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="classification.html">
-                            <i class="bi bi-check2-circle me-1"></i> Classification
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="clustering.html">
-                            <i class="bi bi-diagram-3-fill me-1"></i> Clustering
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="dataset.html">
-                            <i class="bi bi-database me-1"></i> Dataset
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">
-                            <i class="bi bi-info-circle me-1"></i> About
-                        </a>
-                    </li>
-                </ul>
+                <a href="index.html"
+                    class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                    Home
+                </a>
 
-                <!-- Live API Health Indicator -->
-                <div class="d-flex align-items-center">
-                    <div class="api-status-badge">
-                        <span id="api-status-dot" class="status-dot checking"></span>
-                        <span id="api-status-text" class="text-light">Checking API...</span>
+                <a href="classification.html"
+                    class="px-7 py-3 bg-[#7c3aed] text-white font-label-lg text-label-lg rounded-full">
+                    Classification
+                </a>
+
+                <a href="clustering.html"
+                    class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                    Clustering
+                </a>
+
+                <a href="control-optimization.html"
+                    class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                    Control Optimization
+                </a>
+
+                <a href="about.html"
+                    class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                    About
+                </a>
+
+            </nav>
+
+
+
+        </div>
+    </header>
+    <main class="w-full pt-16 bg-surface min-h-[calc(100vh-140px)]">
+        <div class="flex flex-col w-full">
+            <div class="max-w-[1320px] mx-auto px-margin-desktop py-space-xl w-full">
+                <!-- Hero / Header Title Section -->
+                <div class="flex flex-col items-start gap-space-sm mb-space-xl max-w-3xl">
+                    <div
+                        class="inline-flex items-center gap-space-xs px-3.5 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md shadow-sm">
+                        <span class="material-symbols-outlined text-[16px] text-primary"
+                            style="font-variation-settings: 'FILL' 1;">insights</span>
+                        <span>Supervised Learning · Defect Prediction</span>
+                    </div>
+                    <h1 class="font-display text-display text-on-surface tracking-tight">
+                        Wafer Defect Classification
+                    </h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                        Analyze chamber process parameters and predict possible wafer defects in real time through
+                        high-fidelity multi-stage feature attribution.
+                    </p>
+                </div>
+                <!-- Main Two-Column Content Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+                    <!-- Left Column: Form & Presets (5 cols) -->
+                    <div class="lg:col-span-5 flex flex-col gap-space-lg">
+                        <div
+                            class="bg-surface-container-lowest rounded-3xl p-7 shadow-sm flex flex-col gap-space-md relative overflow-hidden">
+                            <!-- Subtle generative corner wash -->
+                            <div
+                                class="absolute -top-16 -right-16 w-44 h-44 rounded-full bg-secondary-fixed/40 blur-3xl pointer-events-none">
+                            </div>
+                            <div
+                                class="flex items-center justify-between pb-space-xs border-b border-surface-container">
+                                <div class="flex items-center gap-space-sm">
+                                    <span class="material-symbols-outlined text-primary text-[22px]">tune</span>
+                                    <h2 class="font-title-lg text-title-lg text-on-surface">Chamber Parameters</h2>
+                                </div>
+                                <span
+                                    class="font-label-sm text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Step
+                                    Input</span>
+                            </div>
+                            <!-- Quick presets -->
+                            <div class="flex flex-col gap-1.5 pt-1">
+                                <span class="font-label-sm text-label-sm text-on-surface-variant">Instant Presets</span>
+                                <div class="grid grid-cols-2 gap-space-sm">
+                                    <button
+                                        class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-full bg-surface-container-low hover:bg-secondary-fixed text-secondary hover:text-on-secondary-fixed font-label-md text-label-md transition-all"
+                                        id="btn-preset-normal" type="button">
+                                        <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                                        Sample: Normal
+                                    </button>
+                                    <button
+                                        class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-full bg-surface-container-low hover:bg-tertiary-fixed text-tertiary hover:text-on-tertiary-fixed font-label-md text-label-md transition-all"
+                                        id="btn-preset-defect" type="button">
+                                        <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                                        Sample: Defect
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Input Fields Form -->
+                            <form class="flex flex-col gap-3.5 pt-2" id="wafer-form">
+                                <!-- 1. Temperature -->
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between items-center px-1">
+                                        <label class="font-label-md text-label-md text-on-surface"
+                                            for="input-temp">Chamber Temperature</label>
+                                        <span
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">300 – 600 °C</span>
+                                    </div>
+                                    <input
+                                        class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
+                                        id="input-temp" step="0.1" type="number" value="450.0" placeholder="e.g. 450.0" />
+                                    <div class="invalid-feedback" id="feedback-temp"></div>
+                                </div>
+                                <!-- 2. Pressure -->
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between items-center px-1">
+                                        <label class="font-label-md text-label-md text-on-surface"
+                                            for="input-pressure">Base Chamber Pressure</label>
+                                        <span
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">500 – 1000 Torr</span>
+                                    </div>
+                                    <input
+                                        class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
+                                        id="input-pressure" step="0.1" type="number" value="760.0" placeholder="e.g. 760.0" />
+                                    <div class="invalid-feedback" id="feedback-pressure"></div>
+                                </div>
+                                <!-- 3. Gas Flow -->
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between items-center px-1">
+                                        <label class="font-label-md text-label-md text-on-surface" for="input-gas">Gas
+                                            Flow Rate</label>
+                                        <span
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">50 – 200 sccm</span>
+                                    </div>
+                                    <input
+                                        class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
+                                        id="input-gas" step="0.1" type="number" value="120.0" placeholder="e.g. 120.0" />
+                                    <div class="invalid-feedback" id="feedback-gas"></div>
+                                </div>
+                                <!-- 4. Etch Rate -->
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between items-center px-1">
+                                        <label class="font-label-md text-label-md text-on-surface" for="input-etch">Plasma
+                                            Etch Rate</label>
+                                        <span
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">50 – 200 nm/min</span>
+                                    </div>
+                                    <input
+                                        class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
+                                        id="input-etch" step="0.1" type="number" value="95.0" placeholder="e.g. 95.0" />
+                                    <div class="invalid-feedback" id="feedback-etch"></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-space-sm">
+                                    <!-- 5. Voltage -->
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex justify-between items-center px-1">
+                                            <label class="font-label-md text-label-md text-on-surface"
+                                                for="input-voltage">RF Voltage</label>
+                                            <span
+                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">2.0 – 10 V</span>
+                                        </div>
+                                        <input
+                                            class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-3 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
+                                            id="input-voltage" step="0.1" type="number" value="5.0" placeholder="e.g. 5.0" />
+                                        <div class="invalid-feedback" id="feedback-voltage"></div>
+                                    </div>
+                                    <!-- 6. Current -->
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex justify-between items-center px-1">
+                                            <label class="font-label-md text-label-md text-on-surface"
+                                                for="input-current">Plasma Current</label>
+                                            <span
+                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">10 – 40 mA</span>
+                                        </div>
+                                        <input
+                                            class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-3 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
+                                            id="input-current" step="0.1" type="number" value="20.0" placeholder="e.g. 20.0" />
+                                        <div class="invalid-feedback" id="feedback-current"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="flex flex-col sm:flex-row items-center gap-space-sm pt-4">
+                                    <button
+                                        class="w-full sm:flex-1 py-3 px-6 rounded-full bg-gradient-to-r from-primary-container to-surface-tint text-on-primary font-label-lg text-label-lg shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                        id="btn-predict" type="button">
+                                        <span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+                                        Predict Defect
+                                    </button>
+                                    <button
+                                        class="w-full sm:w-auto py-3 px-6 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-all cursor-pointer"
+                                        id="btn-clear" type="button">
+                                        Clear
+                                    </button>
+                                </div>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant/80 text-left pt-1">
+                                    All numeric fields strictly validated against supported fab metrology limits.
+                                </p>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Right Column: Prediction Result Container (7 cols) -->
+                    <div class="lg:col-span-7 flex flex-col gap-space-md">
+                        <!-- Interactive Demo State Switcher Bar -->
+                        <div
+                            class="bg-surface-container-lowest rounded-full p-1.5 shadow-sm flex items-center justify-between gap-1 overflow-x-auto">
+                            <button
+                                class="state-tab-btn flex-1 min-w-[100px] text-center py-2 px-3 rounded-full font-label-md text-label-md bg-secondary text-on-secondary shadow-sm transition-all"
+                                data-state="normal" type="button">
+                                Normal
+                            </button>
+                            <button
+                                class="state-tab-btn flex-1 min-w-[100px] text-center py-2 px-3 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all"
+                                data-state="defect" type="button">
+                                Defect
+
+                        </div>
+                        <!-- MAIN RESULT CONTAINER (Dynamic swapping content) -->
+                        <div
+                            class="bg-surface-container-lowest rounded-3xl p-7 shadow-sm relative min-h-[560px] flex flex-col justify-between overflow-hidden">
+                            <!-- STATE: INITIAL / EMPTY (Menunggu Input) -->
+                            <div class="state-view flex flex-col gap-6" id="view-empty">
+                                <div class="flex flex-wrap items-center justify-between gap-space-sm pb-4 border-b border-surface-container">
+                                    <div class="flex items-center gap-3">
+                                        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-title-md text-title-md">
+                                            <span class="material-symbols-outlined text-[20px]">hourglass_empty</span> MENUNGGU INPUT
+                                        </span>
+                                        <span class="font-label-md text-label-md text-on-surface-variant">Ready for Metrology Analysis</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-label-sm text-label-sm text-on-surface-variant">Model Engine</span>
+                                        <span class="font-label-md text-label-md px-3 py-1 rounded-full bg-surface-container text-secondary font-medium">RandomForest Ready</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface-container-low rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-3 my-auto py-8">
+                                    <div class="w-16 h-16 rounded-full bg-primary-fixed/30 flex items-center justify-center text-primary mb-1">
+                                        <span class="material-symbols-outlined text-[36px]">precision_manufacturing</span>
+                                    </div>
+                                    <span class="font-title-lg text-title-lg text-on-surface font-semibold">Chamber Metrology Telemetry Ready</span>
+                                    <p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+                                        Masukkan parameter proses chamber pada formulir atau gunakan tombol preset <strong>Sample: Normal</strong> / <strong>Sample: Defect</strong>, lalu klik <strong>Predict Defect</strong> untuk menganalisis anomali wafer.
+                                    </p>
+                                </div>
+
+                                <div class="bg-surface-container-lowest border border-surface-container rounded-2xl p-4 flex flex-col gap-2.5">
+                                    <span class="font-label-md text-label-md text-on-surface flex items-center gap-1.5 font-semibold">
+                                        <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+                                        Supported Chamber Operational Limits
+                                    </span>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left">
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Temperature</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">300 – 600 °C</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Pressure</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">500 – 1000 Torr</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Gas Flow</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">50 – 200 sccm</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Etch Rate</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">50 – 200 nm/min</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">RF Voltage</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">2.0 – 10.0 V</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Current</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">10.0 – 40.0 mA</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STATE: LOADING (Analyzing Wafer) -->
+                            <div class="state-view hidden flex-col gap-6" id="view-loading">
+                                <div class="flex flex-wrap items-center justify-between gap-space-sm pb-4 border-b border-surface-container">
+                                    <div class="flex items-center gap-3">
+                                        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary-fixed text-on-primary-fixed font-title-md text-title-md animate-pulse">
+                                            <span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> ANALYZING WAFER...
+                                        </span>
+                                        <span class="font-label-md text-label-md text-on-surface-variant">Inference in Progress</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-label-sm text-label-sm text-on-surface-variant">Engine</span>
+                                        <span class="font-label-md text-label-md px-3 py-1 rounded-full bg-surface-container text-primary font-medium">RandomForest ML</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface-container-low rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-4 my-auto py-12">
+                                    <div class="relative w-20 h-20 flex items-center justify-center">
+                                        <div class="absolute inset-0 rounded-full border-4 border-surface-container-highest border-t-primary animate-spin"></div>
+                                        <div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-sm">
+                                            <span class="material-symbols-outlined text-primary text-[24px] animate-pulse">memory</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-1 max-w-sm">
+                                        <span class="font-title-md text-title-md text-on-surface font-semibold">Evaluating Supervised Metrology Model</span>
+                                        <p class="font-body-sm text-body-sm text-on-surface-variant">
+                                            Menjalankan feature transformation StandardScaler dan voting probabilitas pada 100 decision trees...
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface-container-lowest border border-surface-container rounded-2xl p-4 flex flex-col gap-2">
+                                    <div class="flex items-center justify-between text-body-sm text-on-surface">
+                                        <span class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+                                            Validasi Schema &amp; Batas Fisik Parameter
+                                        </span>
+                                        <span class="font-label-sm text-secondary font-medium">Passed</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-body-sm text-on-surface">
+                                        <span class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-primary text-[18px] animate-spin">sync</span>
+                                            StandardScaler &amp; Random Forest Classification
+                                        </span>
+                                        <span class="font-label-sm text-primary font-medium">Running...</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STATE 1: NORMAL -->
+                            <div class="state-view hidden flex-col gap-6" id="view-normal">
+                                <!-- Header status row -->
+                                <div
+                                    class="flex flex-wrap items-center justify-between gap-space-sm pb-4 border-b border-surface-container">
+                                    <div class="flex items-center gap-3">
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-secondary-fixed text-on-secondary-fixed font-title-md text-title-md">
+                                            <span class="material-symbols-outlined text-[20px] text-secondary"
+                                                style="font-variation-settings: 'FILL' 1;">check_circle</span> NORMAL
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- Visualizations Split: Wafer Die Grid & Feature Importance -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md pt-2">
+                                    <!-- Substrate Metrology Map (Circular Wafer View) -->
+                                    <div
+                                        class="bg-surface-container-low rounded-2xl p-4 flex flex-col items-center justify-between">
+                                        <div class="w-full flex items-center justify-between pb-2">
+                                            <span class="font-label-md text-label-md text-on-surface">Die Topography
+                                                Map</span>
+                                            <span
+                                                class="font-label-sm text-label-sm text-secondary bg-secondary-fixed px-2 py-0.5 rounded-full">100%
+                                                Passed</span>
+                                        </div>
+                                        <!-- Circular Wafer SVG graphic -->
+                                        <div class="relative w-44 h-44 flex items-center justify-center my-2">
+                                            <svg class="w-40 h-40" viewbox="0 0 160 160">
+                                                <!-- Outer Wafer Disk with Notch -->
+                                                <circle class="fill-surface-container-highest" cx="80" cy="80" r="76">
+                                                </circle>
+                                                <!-- Silicon Edge ring -->
+                                                <circle class="fill-surface-container-low stroke-secondary/20" cx="80"
+                                                    cy="80" r="70" stroke-width="2"></circle>
+                                                <!-- Die Grid pattern: All Clean Blue/Lavender circles -->
+                                                <!-- Row 1 -->
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="68" y="24"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="82" y="24"></rect>
+                                                <!-- Row 2 -->
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="42" y="38"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="55" y="38"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="68" y="38"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="82" y="38"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="95" y="38"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="108" y="38"></rect>
+                                                <!-- Row 3 -->
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="30" y="52"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="43" y="52"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="56" y="52"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="69"
+                                                    y="52"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="82"
+                                                    y="52"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="95" y="52"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="108" y="52"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="121" y="52"></rect>
+                                                <!-- Row 4 (Center) -->
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="25" y="66"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="38" y="66"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="51" y="66"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="64"
+                                                    y="66"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="77"
+                                                    y="66"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="90"
+                                                    y="66"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="103" y="66"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="116" y="66"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="129" y="66"></rect>
+                                                <!-- Row 5 (Center) -->
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="25" y="80"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="38" y="80"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="51"
+                                                    y="80"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="64"
+                                                    y="80"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="77"
+                                                    y="80"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="90"
+                                                    y="80"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="103" y="80"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="116" y="80"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="129" y="80"></rect>
+                                                <!-- Row 6 -->
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="30" y="94"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="43" y="94"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="56" y="94"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="69"
+                                                    y="94"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="82"
+                                                    y="94"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="95" y="94"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="108" y="94"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="121" y="94"></rect>
+                                                <!-- Row 7 -->
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="42" y="108"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="55" y="108"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="68" y="108"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="82" y="108"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="95" y="108"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="108" y="108"></rect>
+                                                <!-- Notch cutout mark at bottom -->
+                                                <path class="stroke-on-surface-variant fill-none"
+                                                    d="M 77 155 Q 80 152 83 155" stroke-width="2"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex items-center justify-center gap-3 pt-1">
+                                            <span
+                                                class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
+                                                <span class="w-2.5 h-2.5 rounded bg-secondary"></span> Nominal Die
+                                            </span>
+                                            <span
+                                                class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
+                                                <span class="w-2.5 h-2.5 rounded bg-secondary-container"></span> Edge
+                                                Spec
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!-- Parameter Feature Importance -->
+                                    <div class="bg-surface-container-low rounded-2xl p-4 flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-center justify-between pb-3">
+                                                <span class="font-label-md text-label-md text-on-surface">Feature Importance</span>
+                                                <span class="font-label-sm text-label-sm text-on-surface-variant" id="normal-factors-badge">Model Attribution</span>
+                                            </div>
+                                            <div class="flex flex-col gap-3.5" id="normal-factors-list">
+                                                <!-- Dynamically populated from backend feature_contributions -->
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- STATE 2: DEFECT -->
+                            <div class="state-view hidden flex-col gap-6" id="view-defect">
+                                <div
+                                    class="flex flex-wrap items-center justify-between gap-space-sm pb-4 border-b border-surface-container">
+                                    <div class="flex items-center gap-3">
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-title-md text-title-md">
+                                            <span class="material-symbols-outlined text-[20px] text-tertiary"
+                                                style="font-variation-settings: 'FILL' 1;">warning</span> DEFECT
+                                            DETECTED
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- Visualizations Split: Wafer Die Grid with Defects & Feature Importance -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md pt-2">
+                                    <div
+                                        class="bg-surface-container-low rounded-2xl p-4 flex flex-col items-center justify-between">
+                                        <div class="w-full flex items-center justify-between pb-2">
+                                            <span class="font-label-md text-label-md text-on-surface">Defective Die
+                                                Spatial Cluster</span>
+                                            <span
+                                                class="font-label-sm text-label-sm text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded-full">14
+                                                Bad Dies</span>
+                                        </div>
+                                        <!-- Circular Wafer SVG graphic with defects highlighted in warm peach / tertiary -->
+                                        <div class="relative w-44 h-44 flex items-center justify-center my-2">
+                                            <svg class="w-40 h-40" viewbox="0 0 160 160">
+                                                <circle class="fill-surface-container-highest" cx="80" cy="80" r="76">
+                                                </circle>
+                                                <circle class="fill-surface-container-low stroke-tertiary/20" cx="80"
+                                                    cy="80" r="70" stroke-width="2"></circle>
+                                                <!-- Row 1 -->
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="68" y="24"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="82" y="24"></rect>
+                                                <!-- Row 2 -->
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="42" y="38">
+                                                </rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="55" y="38">
+                                                </rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="68" y="38"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="82" y="38"></rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="95" y="38">
+                                                </rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="108"
+                                                    y="38"></rect>
+                                                <!-- Row 3 -->
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="30" y="52">
+                                                </rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="43" y="52"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="56" y="52"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="69"
+                                                    y="52"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="82"
+                                                    y="52"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="95" y="52"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="108" y="52"></rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="121"
+                                                    y="52"></rect>
+                                                <!-- Row 4 -->
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="25" y="66">
+                                                </rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="38" y="66"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="51" y="66"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="64"
+                                                    y="66"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="77"
+                                                    y="66"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="90"
+                                                    y="66"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="103" y="66"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="116" y="66"></rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="129"
+                                                    y="66"></rect>
+                                                <!-- Row 5 -->
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="25" y="80">
+                                                </rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="38" y="80"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="51"
+                                                    y="80"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="64"
+                                                    y="80"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="77"
+                                                    y="80"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="90"
+                                                    y="80"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="103" y="80"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="116" y="80"></rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="129"
+                                                    y="80"></rect>
+                                                <!-- Row 6 -->
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="30" y="94">
+                                                </rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="43" y="94"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="56" y="94"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="69"
+                                                    y="94"></rect>
+                                                <rect class="fill-secondary" height="10" rx="2" width="10" x="82"
+                                                    y="94"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="95" y="94"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="108" y="94"></rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="121"
+                                                    y="94"></rect>
+                                                <!-- Row 7 -->
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="42"
+                                                    y="108"></rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="55"
+                                                    y="108"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="68" y="108"></rect>
+                                                <rect class="fill-secondary-container" height="10" rx="2" width="10"
+                                                    x="82" y="108"></rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="95"
+                                                    y="108"></rect>
+                                                <rect class="fill-tertiary" height="10" rx="2" width="10" x="108"
+                                                    y="108"></rect>
+                                            </svg>
+                                        </div>
+                                        <div class="flex items-center justify-center gap-3 pt-1">
+                                            <span
+                                                class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
+                                                <span class="w-2.5 h-2.5 rounded bg-tertiary"></span> Anomaly Ring
+                                            </span>
+                                            <span
+                                                class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
+                                                <span class="w-2.5 h-2.5 rounded bg-secondary-container"></span>
+                                                Functional
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!-- Defect Feature Importance -->
+                                    <div class="bg-surface-container-low rounded-2xl p-4 flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-center justify-between pb-3">
+                                                <span class="font-label-md text-label-md text-on-surface">Top Influential Features</span>
+                                                <span class="font-label-sm text-label-sm text-tertiary" id="defect-factors-badge">Feature Impact</span>
+                                            </div>
+                                            <div class="flex flex-col gap-3.5" id="defect-factors-list">
+                                                <!-- Dynamically populated from backend feature_contributions -->
+                                            </div>
+                                        </div>
+                                        <div class="pt-3 border-t border-surface-container text-right">
+                                            <span class="font-label-sm text-label-sm text-tertiary">Action: Recommend chamber purge &amp; recalibration</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                                        </div>
+
+                            <!-- STATE: ERROR (Validation or System Failure) -->
+                            <div class="state-view hidden flex-col gap-6" id="view-error">
+                                <div class="flex flex-wrap items-center justify-between gap-space-sm pb-4 border-b border-surface-container">
+                                    <div class="flex items-center gap-3">
+                                        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-error-container text-on-error-container font-title-md text-title-md">
+                                            <span class="material-symbols-outlined text-[20px] text-error">error</span> UNABLE TO PROCESS
+                                        </span>
+                                        <span class="font-label-md text-label-md text-error" id="error-badge-subtitle">Input Validation Error</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-label-sm text-label-sm text-on-surface-variant">Action Required</span>
+                                        <span class="font-label-md text-label-md px-3 py-1 rounded-full bg-error-container/30 text-error font-medium">Correction Needed</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-error-container/20 border border-error/30 rounded-2xl p-5 flex items-start gap-4">
+                                    <div class="p-2.5 rounded-xl bg-surface-container-lowest text-error shrink-0 mt-0.5 shadow-sm">
+                                        <span class="material-symbols-outlined text-[24px]">report_problem</span>
+                                    </div>
+                                    <div class="flex flex-col gap-1 text-left flex-1">
+                                        <span class="font-title-md text-title-md text-error font-semibold" id="error-title">
+                                            Input Parameter Out of Supported Range
+                                        </span>
+                                        <p class="font-body-md text-body-md text-on-surface-variant" id="error-message">
+                                            Nilai yang dimasukkan berada di luar batas toleransi instrumen etsa. Pastikan nilai berada di antara batas minimum dan maksimum spesifikasi wafer.
+                                        </p>
+                                        <div class="mt-2 text-label-sm text-error bg-surface-container-lowest/90 px-3 py-1.5 rounded-lg border border-error/20 inline-block font-mono" id="error-hint">
+                                            Supported Range: 50.0 - 200.0 nm/min
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface-container-low rounded-2xl p-4 flex flex-col gap-3">
+                                    <span class="font-label-md text-label-md text-on-surface flex items-center gap-1.5 font-semibold">
+                                        <span class="material-symbols-outlined text-secondary text-[18px]">build_circle</span>
+                                        Rekomendasi Pemulihan Parameter
+                                    </span>
+                                    <p class="font-body-sm text-body-sm text-on-surface-variant">
+                                        Untuk melanjutkan inferensi deteksi defect, perbaiki nilai input yang tidak valid pada formulir atau gunakan tombol preset di bawah ini:
+                                    </p>
+                                    <div class="flex flex-wrap gap-2 pt-1">
+                                        <button type="button" id="btn-fix-nominal" class="py-2 px-4 rounded-full bg-primary-container text-on-primary font-label-md hover:brightness-105 transition-all flex items-center gap-1.5 cursor-pointer">
+                                            <span class="material-symbols-outlined text-[18px]">restart_alt</span> Gunakan Preset Nominal (95 nm/min)
+                                        </button>
+                                        <button type="button" id="btn-fix-defect" class="py-2 px-4 rounded-full bg-surface-container text-on-surface font-label-md hover:bg-surface-container-high transition-all flex items-center gap-1.5 cursor-pointer">
+                                            <span class="material-symbols-outlined text-[18px]">warning</span> Gunakan Preset Defect (135 nm/min)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="container-fluid px-4 py-4">
-
-        <!-- Page Header -->
-        <div class="mb-4">
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="badge badge-custom badge-custom-blue">Supervised Learning</span>
-                <span class="text-secondary small">/ Wafer Defect Prediction</span>
-            </div>
-            <h2 class="fw-bold mb-1">Supervised Defect Classification</h2>
-            <p class="text-secondary mb-0">
-                Kirimkan pengukuran wafer untuk mengklasifikasikan jenis atau status defect menggunakan model terlatih.
+        </div>
+        </div>
+    </main>
+    <footer class="w-full bg-surface-container-low py-8 mt-space-xl">
+        <div class="max-w-[1320px] mx-auto px-margin-desktop">
+            <p class="font-body-sm text-body-sm text-on-surface-variant">
+                © 2024 WaferDefect AI. Machine Learning Metrology &amp; Spatial Analysis. All rights reserved.
             </p>
         </div>
-
-        <div class="row g-4">
-            <!-- Form Input Card -->
-            <div class="col-lg-7">
-                <div class="card card-custom p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0 text-white">
-                            <i class="bi bi-sliders text-primary me-2"></i> Input Fitur Pengukuran Wafer
-                        </h5>
-                        <span class="badge badge-custom badge-custom-amber">Dynamic Schema</span>
-                    </div>
-
-                    <div class="alert alert-custom-info mb-4">
-                        <i class="bi bi-info-circle-fill me-2"></i>
-                        <strong>Catatan Struktur Fitur:</strong> Nama fitur spesifik dan skala nilai akan disinkronkan secara otomatis setelah proses <em>Exploratory Data Analysis (EDA)</em> pada Google Colab selesai. Input di bawah ini merupakan form inspeksi interaktif yang siap terhubung dengan REST API backend.
-                    </div>
-
-                    <form id="classification-form" novalidate>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label text-secondary small fw-bold">Die / Sensor Value 1</label>
-                                <input type="number" step="any" class="form-control form-control-custom" 
-                                       data-feature-key="feature_0" placeholder="e.g. 0.452" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-secondary small fw-bold">Die / Sensor Value 2</label>
-                                <input type="number" step="any" class="form-control form-control-custom" 
-                                       data-feature-key="feature_1" placeholder="e.g. -1.238" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-secondary small fw-bold">Thickness / Roughness Metric</label>
-                                <input type="number" step="any" class="form-control form-control-custom" 
-                                       data-feature-key="feature_2" placeholder="e.g. 12.45">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-secondary small fw-bold">Radial Distance / Position</label>
-                                <input type="number" step="any" class="form-control form-control-custom" 
-                                       data-feature-key="feature_3" placeholder="e.g. 84.10">
-                            </div>
-                        </div>
-
-                        <div class="mt-4 pt-2 border-top border-secondary opacity-50"></div>
-
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <button type="reset" class="btn btn-outline-custom btn-sm">
-                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Input
-                            </button>
-                            <button type="submit" id="btn-predict" class="btn btn-primary-custom d-flex align-items-center gap-2">
-                                <span id="predict-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                                <span id="predict-btn-text">Predict Defect</span>
-                                <i class="bi bi-arrow-right"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Result Card & Guide -->
-            <div class="col-lg-5">
-                <!-- Result Container (Initially hidden until submit) -->
-                <div id="classification-result" class="d-none mb-4"></div>
-
-                <!-- Guidance & Architecture Card -->
-                <div class="card card-custom p-4">
-                    <h5 class="mb-3 text-white">
-                        <i class="bi bi-shield-check text-success me-2"></i> Workflow Klasifikasi
-                    </h5>
-                    <ol class="text-secondary small ps-3 mb-3" style="line-height: 1.8;">
-                        <li>User menginputkan parameter fitur fisik/elektrikal wafer.</li>
-                        <li>Frontend membungkus data ke JSON payload dan memanggil <code>POST /api/classification/predict</code>.</li>
-                        <li>FastAPI memvalidasi payload melalui skema Pydantic.</li>
-                        <li>Model Service menjalankan <code>classifier.joblib</code> hasil pelatihan Google Colab.</li>
-                        <li>Hasil prediksi kategori defect dan probabilitas dikembalikan ke UI.</li>
-                    </ol>
-                    <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color);">
-                        <div class="small fw-bold text-white mb-1">Model Serialization:</div>
-                        <code class="text-info small">backend/app/models/classifier.joblib</code>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer-custom mt-auto">
-        <div class="container-fluid px-4">
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-                <div>
-                    <strong>Wafer Defect Classification System</strong> &copy; 2026. All rights reserved.
-                </div>
-                <div class="d-flex gap-3">
-                    <a href="http://localhost:8001/docs" target="_blank" class="text-secondary text-decoration-none">
-                        <i class="bi bi-journal-code me-1"></i> Swagger API Docs
-                    </a>
-                </div>
-            </div>
-        </div>
     </footer>
-
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Central API Client & Page Script -->
-    <script src="js/api.js"></script>
-    <script src="js/classification.js"></script>
 </body>
+
 </html>

@@ -1,7 +1,7 @@
 import logging
 from typing import Generator
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import declarative_base, sessionmaker, Session
+from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session, Session
 from .config import settings
 
 logger = logging.getLogger(__name__)
@@ -9,37 +9,46 @@ logger = logging.getLogger(__name__)
 # SQLAlchemy declarative Base class
 Base = declarative_base()
 
-# Engine creation with connection health checking
-try:
-    engine = create_engine(
-        settings.DATABASE_URL,
-        pool_pre_ping=True,
-        echo=settings.DEBUG and settings.APP_ENV == "development"
-    )
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-except Exception as e:
-    logger.error(f"Error configuring database engine with URL {settings.DATABASE_URL}: {e}")
-    engine = None
-    SessionLocal = None
+# SQLAlchemy Engine with pool_pre_ping=True to discard stale connections
+engine = None
+SessionLocal = None
 
-def get_db() -> Generator[Session, None, None]:
+if settings.database_url:
+    try:
+        db_url = settings.database_url
+        if db_url.startswith("postgresql://"):
+            db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+
+        engine = create_engine(
+            db_url,
+            pool_pre_ping=True,
+        )
+        SessionLocal = scoped_session(
+            sessionmaker(
+                autocommit=False,
+                autoflush=False,
+                bind=engine,
+            )
+        )
+    except Exception as exc:
+        logger.error(f"Error initializing SQLAlchemy engine: {exc}")
+        engine = None
+        SessionLocal = None
+
+
+def get_db():
     """
-    FastAPI dependency that yields a SQLAlchemy database session
-    and guarantees proper session closing.
+    Returns a scoped SQLAlchemy database session.
     """
     if SessionLocal is None:
-        raise RuntimeError("Database session factory is not configured.")
+        raise RuntimeError("Database session factory is not initialized. Check DATABASE_URL configuration.")
+    return SessionLocal()
 
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 def check_db_connection() -> dict:
     """
     Utility function to verify database connectivity.
-    Returns status dictionary for health check endpoints.
+    Returns status dictionary for health check routines.
     """
     if engine is None:
         return {"status": "unconfigured", "error": "Database engine not initialized"}

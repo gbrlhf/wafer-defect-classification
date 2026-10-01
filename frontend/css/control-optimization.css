@@ -1,0 +1,97 @@
+@layer base {
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        overscroll-behavior: none;
+    }
+    main> :first-child {
+        margin-top: 0 !important;
+    }
+    main> :last-child {
+        margin-bottom: 0 !important;
+    }
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================
+   CUSTOM NAVIGATION
+========================= */
+
+.nav-link {
+    padding: 0.375rem 1rem;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a4455;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #1d1c18;
+    background: #ece7e1;
+}
+
+
+/* =========================
+   RANGE SLIDER
+========================= */
+
+input[type="range"] {
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #630ed4;
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #630ed4;
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+
+/* =========================
+   BUTTON EFFECT
+========================= */
+
+button {
+    transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.2s ease;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+    .nav-link {
+        padding: 0.35rem 0.75rem;
+        font-size: 12px;
+    }
+}

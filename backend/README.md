@@ -1,19 +1,18 @@
 # Wafer Defect Classification - Backend ML API
 
-FastAPI-based REST API service for wafer defect classification and clustering inference with PostgreSQL persistence.
+Flask-based REST API service for wafer defect classification and clustering inference with PostgreSQL persistence.
 
 ---
 
 ## Tech Stack
-- **FastAPI**: Modern, high-performance web framework for building APIs.
+- **Flask**: Lightweight and flexible Python web framework.
+- **Flask-CORS**: Cross-Origin Resource Sharing handling for Flask.
+- **Gunicorn**: Production WSGI HTTP server.
 - **PostgreSQL 16**: Relational persistent database for predictions, logs, and model metrics.
-- **SQLAlchemy 2.0**: Object Relational Mapper (ORM) for Python.
+- **SQLAlchemy 2.0**: Object Relational Mapper (ORM) with `pool_pre_ping=True` and `scoped_session`.
 - **Alembic**: Database migration tool for SQLAlchemy.
-- **Uvicorn**: Lightning-fast ASGI server.
-- **Pydantic**: Data parsing and schema validation.
-- **Scikit-learn**: Machine learning inference engine.
-- **Joblib**: Efficient serialization of Python/Scikit-learn model objects.
-- **Pandas & NumPy**: Tabular data transformations.
+- **Pydantic & Pydantic Settings**: Data parsing, schema validation, and environment configuration.
+- **Docker & Docker Compose**: Containerization for backend and PostgreSQL.
 
 ---
 
@@ -38,10 +37,29 @@ PostgreSQL runs as a dedicated container (`wafer-postgres`) within the `wafer-ne
 
 ---
 
+## Docker Compose Setup
+
+Jalankan backend dan database PostgreSQL secara terisolasi:
+
+```bash
+docker compose up --build -d
+```
+
+Cek status container:
+```bash
+docker ps
+```
+Target container yang running:
+- `wafer-defect-backend`
+- `wafer-postgres`
+
+---
+
 ## Local Development Setup
 
 ### 1. Buat Virtual Environment & Install Dependensi
 ```bash
+cd backend
 python -m venv venv
 # Windows:
 .\venv\Scripts\activate
@@ -54,7 +72,7 @@ pip install -r requirements.txt
 ### 2. Environment Variables
 Salin file `.env.example` menjadi `.env`:
 ```bash
-copy .env.example .env
+cp .env.example .env
 ```
 
 Untuk menjalankan di Docker, `DATABASE_URL` menggunakan host `postgres`:
@@ -77,13 +95,12 @@ alembic upgrade head
 
 ### 4. Menjalankan Server
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+flask --app app.main:app run --host 0.0.0.0 --port 8001 --debug
 ```
 Akses server di:
 - **Base URL:** `http://localhost:8001`
-- **Health Check:** `http://localhost:8001/api/health`
-- **Swagger Docs:** `http://localhost:8001/docs`
-- **ReDoc Docs:** `http://localhost:8001/redoc`
+- **Health Check API:** `http://localhost:8001/api/health`
+- **Health Check Database:** `http://localhost:8001/api/health/database`
 
 ---
 
@@ -91,7 +108,9 @@ Akses server di:
 
 | Method | Path | Keterangan |
 |---|---|---|
-| `GET` | `/api/health` | Status health check API & koneksi PostgreSQL |
+| `GET` | `/` | Root information |
+| `GET` | `/api/health` | Health check API backend (`{"status": "ok", "service": "wafer-defect-api"}`) |
+| `GET` | `/api/health/database` | Health check koneksi PostgreSQL via SQLAlchemy `SELECT 1` |
 | `GET` | `/api/dataset/info` | Metadata dataset wafer |
 | `GET` | `/api/model/metrics` | Metrik evaluasi model |
 | `POST` | `/api/classification/predict` | Prediksi klasifikasi defect wafer |

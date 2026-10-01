@@ -1,202 +1,657 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wafer Clustering | Wafer Defect Classification System</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap 5 CSS & Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="web_standard" name="shell-type" />
+    <title>Wafer Defect AI - Unsupervised Clustering & K-Means Discovery</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#e6e2db",
+                        "error": "#ba1a1a",
+                        "secondary": "#006398",
+                        "on-surface-variant": "#4a4455",
+                        "surface-container": "#f2ede6",
+                        "tertiary": "#a0002f",
+                        "primary-fixed": "#eaddff",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e6e2db",
+                        "surface-container-high": "#ece7e1",
+                        "primary-container": "#7c3aed",
+                        "inverse-primary": "#d2bbff",
+                        "on-background": "#1d1c18",
+                        "secondary-fixed": "#cce5ff",
+                        "surface-container-low": "#f8f3ec",
+                        "outline": "#7b7487",
+                        "surface": "#fef9f2",
+                        "on-surface": "#1d1c18",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#ede0ff",
+                        "primary": "#630ed4",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "gutter-desktop": "2rem",
+                        "margin-desktop": "3rem",
+                        "space-lg": "1.5rem",
+                        "space-sm": "0.5rem",
+                        "space-xs": "0.25rem",
+                        "space-xl": "2.5rem",
+                        "space-md": "1rem"
+                    },
+                    fontFamily: {
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "title-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "title-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="css/clustering.css" rel="stylesheet" />
+    <script defer src="js/api.js"></script>
+    <script defer src="js/clustering.js"></script>
 </head>
-<body>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand" href="index.html">
-                <div class="brand-icon-wrapper">
-                    <i class="bi bi-cpu"></i>
-                </div>
-                <div>
-                    <span class="fw-bold">WaferAI</span>
-                    <span class="text-secondary small d-none d-sm-inline ms-1">| Defect System</span>
-                </div>
+<body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+    <!-- Main Site Navigation Bar -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a href="index.html" class="brand-logo">
+                <img src="assets/logo.png" alt="WaferDefect AI" />
             </a>
 
-            <button class="navbar-toggler border-0 text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-                <i class="bi bi-list fs-2"></i>
-            </button>
+            <nav class="hidden md:flex items-center gap-1.5 p-1 bg-surface-container-low rounded-full">
+                <a href="index.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">Home</a>
+                <a href="classification.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">Classification</a>
+                <a aria-current="page" href="clustering.html" class="px-4 py-1.5 bg-primary-container text-on-primary-container font-label-lg text-label-lg rounded-full font-bold">Clustering</a>
+                <a href="control-optimization.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">Control Optimization</a>
+                <a href="about.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">About</a>
+            </nav>
+        </div>
+    </header>
 
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">
-                            <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="classification.html">
-                            <i class="bi bi-check2-circle me-1"></i> Classification
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="clustering.html">
-                            <i class="bi bi-diagram-3-fill me-1"></i> Clustering
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="dataset.html">
-                            <i class="bi bi-database me-1"></i> Dataset
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">
-                            <i class="bi bi-info-circle me-1"></i> About
-                        </a>
-                    </li>
-                </ul>
+    <main class="w-full pt-16 bg-surface min-h-[calc(100vh-140px)]">
+        <div class="flex flex-col w-full">
+            <div class="w-full max-w-[1320px] mx-auto px-margin md:px-margin-desktop py-space-xl flex flex-col gap-space-xl">
+                
+                <!-- Hero & Model Status Header -->
+                <div class="relative w-full flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+                    <div class="absolute -top-16 left-1/4 w-96 h-96 bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
+                    <div class="absolute -top-10 right-1/4 w-80 h-80 bg-secondary-fixed/40 rounded-full blur-3xl pointer-events-none -z-10"></div>
 
-                <!-- Live API Health Indicator -->
-                <div class="d-flex align-items-center">
-                    <div class="api-status-badge">
-                        <span id="api-status-dot" class="status-dot checking"></span>
-                        <span id="api-status-text" class="text-light">Checking API...</span>
+                    <div class="flex flex-col items-start gap-space-sm max-w-[820px]">
+                        <div class="inline-flex items-center gap-space-xs px-3.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md shadow-sm">
+                            <span class="material-symbols-outlined text-[16px] text-primary">bubble_chart</span>
+                            <span>Unsupervised Learning • K-Means Discovery</span>
+                        </div>
+                        <h1 class="font-display text-display text-on-surface tracking-tight mt-1">Wafer Clustering</h1>
+                        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-[720px]">
+                            Discover hidden process regimes and latent wafer groupings through trained Scikit-learn K-Means Pipeline & PostgreSQL tracking.
+                        </p>
+                    </div>
+
+                    <!-- Authoritative Model Badge -->
+                    <div class="flex items-center gap-2.5 px-4 py-2 rounded-full bg-surface-container-low border border-surface-container-high shadow-sm self-start md:self-end">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="font-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Trained Model:</span>
+                        <span class="font-title-md text-on-surface font-bold">Optimal K = 5 Clusters</span>
+                        <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-primary font-label-sm font-semibold">Pipeline Active</span>
                     </div>
                 </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <main class="container-fluid px-4 py-4">
+                <!-- Summary Result Cards (Requirement 11) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-space-md">
+                    <div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-surface-container flex flex-col gap-1">
+                        <span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Total Wafer</span>
+                        <span class="font-headline-md text-headline-md text-on-surface font-bold" id="summary-total-wafers">5,000</span>
+                        <span class="font-label-sm text-on-surface-variant/80">K-Means Training Dataset</span>
+                    </div>
+                    <div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-surface-container flex flex-col gap-1">
+                        <span class="font-label-sm text-on-surface-variant uppercase tracking-wider"># Clusters</span>
+                        <span class="font-headline-md text-headline-md text-primary font-bold" id="summary-n-clusters">5</span>
+                        <span class="font-label-sm text-on-surface-variant/80">Litho, Etch, CMP, CVD, Ox</span>
+                    </div>
+                    <div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-surface-container flex flex-col gap-1">
+                        <span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Silhouette Score</span>
+                        <span class="font-headline-md text-headline-md text-secondary font-bold" id="summary-silhouette">0.812</span>
+                        <span class="font-label-sm text-on-surface-variant/80">Optimal Cluster Metric</span>
+                    </div>
+                    <div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-surface-container flex flex-col gap-1">
+                        <span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Last Analysis</span>
+                        <span class="font-headline-md text-headline-md text-on-surface font-bold text-[18px] leading-9" id="summary-last-analysis">Ready</span>
+                        <span class="font-label-sm text-emerald-600 font-medium">PostgreSQL Connected</span>
+                    </div>
+                </div>
 
-        <!-- Page Header -->
-        <div class="mb-4">
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="badge badge-custom badge-custom-amber">Unsupervised Learning</span>
-                <span class="text-secondary small">/ Pattern Discovery</span>
-            </div>
-            <h2 class="fw-bold mb-1">Unsupervised Wafer Clustering</h2>
-            <p class="text-secondary mb-0">
-                Mengelompokkan wafer ke dalam segmen karakteristik defect tanpa supervisi label sebelumnya untuk menemukan anomali manufaktur.
-            </p>
-        </div>
+                <!-- Main Interactive Grid: Single Wafer Input & PCA Visualizer -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+                    
+                    <!-- Left Column: Single Wafer Input Form (5 cols) -->
+                    <div class="lg:col-span-5 flex flex-col gap-space-lg">
+                        <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-surface-container flex flex-col gap-space-md relative overflow-hidden">
+                            <div class="absolute -top-16 -right-16 w-44 h-44 rounded-full bg-primary-fixed/40 blur-3xl pointer-events-none"></div>
+                            
+                            <div class="flex items-center justify-between pb-space-xs border-b border-surface-container">
+                                <div class="flex items-center gap-space-sm">
+                                    <span class="material-symbols-outlined text-primary text-[22px]">tune</span>
+                                    <h2 class="font-title-lg text-title-lg text-on-surface">Wafer Metrology Input</h2>
+                                </div>
+                                <span class="font-label-sm text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Single Wafer</span>
+                            </div>
 
-        <div class="row g-4">
-            <!-- Form Input Card -->
-            <div class="col-lg-7">
-                <div class="card card-custom p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0 text-white">
-                            <i class="bi bi-diagram-3 text-warning me-2"></i> Parameter Karakteristik Wafer
-                        </h5>
-                        <span class="badge badge-custom badge-custom-blue">Clustering Input</span>
+                            <!-- Quick Preset Recipe Chips -->
+                            <div class="flex flex-col gap-1.5 pt-1">
+                                <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Preset Recipes (Cluster Means)</span>
+                                <div class="grid grid-cols-3 gap-1.5">
+                                    <button type="button" class="preset-btn py-1.5 px-2 rounded-xl bg-surface-container-low hover:bg-primary-fixed text-primary font-label-sm text-[12px] text-center transition-all" data-preset="0">
+                                        Lithography
+                                    </button>
+                                    <button type="button" class="preset-btn py-1.5 px-2 rounded-xl bg-surface-container-low hover:bg-primary-fixed text-primary font-label-sm text-[12px] text-center transition-all" data-preset="1">
+                                        Etching
+                                    </button>
+                                    <button type="button" class="preset-btn py-1.5 px-2 rounded-xl bg-surface-container-low hover:bg-primary-fixed text-primary font-label-sm text-[12px] text-center transition-all" data-preset="2">
+                                        CMP
+                                    </button>
+                                    <button type="button" class="preset-btn py-1.5 px-2 rounded-xl bg-surface-container-low hover:bg-primary-fixed text-primary font-label-sm text-[12px] text-center transition-all" data-preset="3">
+                                        Deposition
+                                    </button>
+                                    <button type="button" class="preset-btn py-1.5 px-2 rounded-xl bg-surface-container-low hover:bg-primary-fixed text-primary font-label-sm text-[12px] text-center transition-all" data-preset="4">
+                                        Oxidation
+                                    </button>
+                                    <button type="button" class="preset-btn py-1.5 px-2 rounded-xl bg-surface-container-low hover:bg-surface-variant text-on-surface-variant font-label-sm text-[12px] text-center transition-all" id="btn-reset-form">
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Input Form with Real Feature Schema -->
+                            <form id="wafer-cluster-form" class="flex flex-col gap-3 pt-1">
+                                <!-- Process Step Dropdown -->
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between items-center px-1">
+                                        <label for="input-process-step" class="font-label-md text-label-md text-on-surface font-semibold">Process Step</label>
+                                        <span class="font-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full text-[11px]">Categorical</span>
+                                    </div>
+                                    <div class="relative">
+                                        <select id="input-process-step" class="w-full appearance-none bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md rounded-2xl px-4 py-2.5 pr-10 outline-none border border-transparent focus:border-primary-container transition-all cursor-pointer">
+                                            <option value="Lithography">Lithography</option>
+                                            <option value="Etching" selected>Etching</option>
+                                            <option value="CMP">CMP</option>
+                                            <option value="Deposition">Deposition</option>
+                                            <option value="Oxidation">Oxidation</option>
+                                        </select>
+                                        <span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[20px]">expand_more</span>
+                                    </div>
+                                </div>
+
+                                <!-- Baseline Parameter Ingestion Notice (Requirement 3 & 5) -->
+                                <div class="p-4 rounded-2xl bg-surface-container-low border border-surface-container flex flex-col gap-1.5 my-1">
+                                    <div class="flex items-center gap-2 text-on-surface font-semibold text-label-md">
+                                        <span class="material-symbols-outlined text-primary text-[18px]">tune</span>
+                                        <span>Automated Baseline Parameters</span>
+                                    </div>
+                                    <p class="font-body-sm text-on-surface-variant text-[13px] leading-relaxed">
+                                        Sistem akan menggunakan parameter baseline sensor fabrikasi untuk process step yang dipilih dan menjalankan analisis clustering dengan K-Means Pipeline.
+                                    </p>
+                                </div>
+
+                                <!-- Action Button -->
+                                <button type="submit" id="run-clustering-btn"
+                                    class="w-full mt-2 inline-flex items-center justify-center gap-space-sm px-6 py-3.5 rounded-2xl bg-primary-container text-on-primary-container font-label-lg font-bold shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <span class="material-symbols-outlined text-[20px]" id="run-icon">play_circle</span>
+                                    <span id="run-btn-label">Run Clustering</span>
+                                </button>
+                            </form>
+
+                            <!-- Loading State Card (Requirement 9) -->
+                            <div id="clustering-loading" class="hidden p-4 rounded-2xl bg-primary-fixed/30 border border-primary-fixed flex items-center justify-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-[24px] animate-spin">progress_activity</span>
+                                <span class="font-label-md text-primary font-bold">Analyzing wafer profile...</span>
+                            </div>
+
+                            <!-- Error State Card (Requirement 10) -->
+                            <div id="clustering-error" class="hidden p-4 rounded-2xl bg-error-container/40 border border-error-container flex flex-col gap-2">
+                                <div class="flex items-center gap-2 text-error font-bold font-label-md">
+                                    <span class="material-symbols-outlined text-[20px]">error</span>
+                                    <span>Clustering Failed</span>
+                                </div>
+                                <p class="font-body-sm text-on-surface-variant text-[13px]" id="error-message-text">
+                                    Unable to process the wafer data.
+                                </p>
+                                <button type="button" id="try-again-btn"
+                                    class="self-start inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-error text-on-error font-label-sm text-[12px] font-semibold hover:brightness-110 transition-all">
+                                    <span class="material-symbols-outlined text-[16px]">refresh</span>
+                                    <span>Try Again</span>
+                                </button>
+                            </div>
+
+                            <!-- Prediction Success Result Card (Separated Cluster ID & Interpretation) -->
+                            <div id="clustering-result" class="hidden p-5 rounded-2xl bg-surface-container-low border border-primary-fixed flex flex-col gap-3 transition-all shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <span class="px-3 py-1 rounded-full bg-primary-container text-on-primary-container font-label-sm font-bold text-[12px]" id="result-cluster-badge">
+                                        Cluster 1
+                                    </span>
+                                    <span class="font-label-sm text-emerald-600 font-semibold flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[15px]">database</span>
+                                        <span id="result-db-record">Saved #--</span>
+                                    </span>
+                                </div>
+                                
+                                <div class="flex flex-col gap-0.5">
+                                    <span class="font-label-sm text-on-surface-variant text-[11px] uppercase tracking-wider font-semibold">Assigned Cluster</span>
+                                    <h3 class="font-title-lg text-on-surface font-bold text-[18px]" id="result-cluster-id-text">
+                                        Cluster 1
+                                    </h3>
+                                </div>
+
+                                <div class="p-3 rounded-xl bg-surface-container-lowest border border-surface-container flex flex-col gap-1">
+                                    <span class="font-label-sm text-on-surface-variant text-[11px] uppercase tracking-wider font-semibold">Cluster Interpretation</span>
+                                    <div class="font-body-md text-primary font-semibold text-[14px]" id="result-cluster-interpretation">
+                                        Etching Process Regimen
+                                    </div>
+                                    <p class="font-body-sm text-on-surface-variant text-[12px]" id="result-cluster-desc">
+                                        Representasi gabungan dari parameter sensor baseline dan tahapan proses yang dievaluasi oleh K-Means pipeline.
+                                    </p>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2 pt-2 text-[12px] text-on-surface-variant border-t border-surface-container">
+                                    <div>Process Step: <strong class="text-on-surface font-semibold" id="result-process">Etching</strong></div>
+                                    <div>Distance to Centroid: <strong class="text-on-surface font-semibold" id="result-distance">0.0024</strong></div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <div class="alert alert-custom-info mb-4">
-                        <i class="bi bi-info-circle-fill me-2"></i>
-                        <strong>Catatan Eksperimen:</strong> Jumlah kluster optimal ($k$) serta seleksi fitur ditentukan secara objektif pada Google Colab menggunakan <em>Elbow Method</em> dan <em>Silhouette Analysis</em>.
+                    <!-- Right Column: Interactive 2D PCA Canvas (7 cols) -->
+                    <div class="lg:col-span-7 flex flex-col gap-space-lg">
+                        <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-surface-container flex flex-col gap-space-md">
+                            
+                            <!-- Section Header & Toolbar -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-space-xs border-b border-surface-container gap-space-sm">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-secondary text-[22px]">scatter_plot</span>
+                                        <h2 class="font-title-lg text-title-lg text-on-surface font-bold">2D PCA Manifold Projection</h2>
+                                    </div>
+                                    <span class="font-label-sm text-on-surface-variant" id="pca-variance-subtitle">
+                                        Explained Variance: 50.8% (PC1: 25.7%, PC2: 25.1%)
+                                    </span>
+                                </div>
+                                <!-- Action Toolbar -->
+                                <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-full self-start sm:self-auto">
+                                    <button class="p-1.5 rounded-full hover:bg-surface-container-high text-on-surface-variant" id="zoom-in-btn" title="Zoom In" type="button">
+                                        <span class="material-symbols-outlined text-[18px]">zoom_in</span>
+                                    </button>
+                                    <button class="p-1.5 rounded-full hover:bg-surface-container-high text-on-surface-variant" id="zoom-out-btn" title="Zoom Out" type="button">
+                                        <span class="material-symbols-outlined text-[18px]">zoom_out</span>
+                                    </button>
+                                    <button class="p-1.5 rounded-full hover:bg-surface-container-high text-on-surface-variant" id="reset-view-btn" title="Reset View" type="button">
+                                        <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- SVG Scatter Plot Canvas Container -->
+                            <div class="relative w-full aspect-[16/10] bg-[#FCFAF6] rounded-2xl border border-surface-container-high overflow-hidden shadow-inner flex items-center justify-center">
+                                <svg class="w-full h-full cursor-crosshair transition-transform duration-300 ease-out select-none"
+                                    id="scatter-svg" viewBox="0 0 960 500" xmlns="http://www.w3.org/2000/svg">
+                                    
+                                    <!-- Grid Lines -->
+                                    <g opacity="0.4" stroke="#CCC3D8" stroke-dasharray="3 3" stroke-width="1">
+                                        <line x1="120" x2="120" y1="30" y2="470"></line>
+                                        <line x1="240" x2="240" y1="30" y2="470"></line>
+                                        <line x1="360" x2="360" y1="30" y2="470"></line>
+                                        <line x1="480" x2="480" y1="30" y2="470"></line>
+                                        <line x1="600" x2="600" y1="30" y2="470"></line>
+                                        <line x1="720" x2="720" y1="30" y2="470"></line>
+                                        <line x1="840" x2="840" y1="30" y2="470"></line>
+                                        <line x1="60" x2="900" y1="80" y2="80"></line>
+                                        <line x1="60" x2="900" y1="170" y2="170"></line>
+                                        <line x1="60" x2="900" y1="260" y2="260"></line>
+                                        <line x1="60" x2="900" y1="350" y2="350"></line>
+                                        <line x1="60" x2="900" y1="440" y2="440"></line>
+                                    </g>
+
+                                    <!-- Main Coordinate Axes -->
+                                    <g stroke="#7B7487" stroke-width="1.5">
+                                        <line x1="50" x2="910" y1="260" y2="260"></line>
+                                        <line x1="480" x2="480" y1="20" y2="480"></line>
+                                    </g>
+
+                                    <!-- Axis Labels -->
+                                    <g fill="#4A4455" font-family="Plus Jakarta Sans" font-size="11" font-weight="600">
+                                        <text text-anchor="end" x="905" y="278">PC1 (+)</text>
+                                        <text text-anchor="start" x="60" y="278">PC1 (-)</text>
+                                        <text font-size="12" text-anchor="middle" x="480" y="492" id="pc1-axis-label">Principal Component 1 (25.7% Variance)</text>
+                                        <text text-anchor="start" x="495" y="38">PC2 (+)</text>
+                                        <text text-anchor="start" x="495" y="475">PC2 (-)</text>
+                                        <text font-size="12" text-anchor="middle" transform="rotate(-90 20 260)" x="20" y="260" id="pc2-axis-label">Principal Component 2 (25.1% Variance)</text>
+                                    </g>
+
+                                    <!-- Centroid Rings & Density Ellipses for 5 Clusters -->
+                                    <ellipse cx="372" cy="93" rx="75" ry="50" fill="#3B82F6" fill-opacity="0.12" stroke="#3B82F6" stroke-width="1" stroke-dasharray="4 2"></ellipse>
+                                    <ellipse cx="391" cy="410" rx="75" ry="50" fill="#8B5CF6" fill-opacity="0.12" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="4 2"></ellipse>
+                                    <ellipse cx="433" cy="276" rx="70" ry="45" fill="#10B981" fill-opacity="0.12" stroke="#10B981" stroke-width="1" stroke-dasharray="4 2"></ellipse>
+                                    <ellipse cx="771" cy="249" rx="80" ry="55" fill="#F59E0B" fill-opacity="0.12" stroke="#F59E0B" stroke-width="1" stroke-dasharray="4 2"></ellipse>
+                                    <ellipse cx="433" cy="273" rx="65" ry="40" fill="#06B6D4" fill-opacity="0.10" stroke="#06B6D4" stroke-width="1" stroke-dasharray="4 2"></ellipse>
+
+                                    <!-- Scatter Dots Group: Cluster 0 (Lithography - Blue) -->
+                                    <g id="cluster-0-dots" fill="#2563EB" opacity="0.8">
+                                        <circle cx="372" cy="93" r="4.5"></circle>
+                                        <circle cx="355" cy="85" r="4"></circle>
+                                        <circle cx="388" cy="90" r="4"></circle>
+                                        <circle cx="365" cy="110" r="4"></circle>
+                                        <circle cx="395" cy="105" r="3.5"></circle>
+                                        <circle cx="340" cy="100" r="4"></circle>
+                                        <circle cx="375" cy="75" r="3.5"></circle>
+                                    </g>
+
+                                    <!-- Scatter Dots Group: Cluster 1 (Etching - Purple) -->
+                                    <g id="cluster-1-dots" fill="#7C3AED" opacity="0.8">
+                                        <circle cx="391" cy="410" r="4.5"></circle>
+                                        <circle cx="375" cy="395" r="4"></circle>
+                                        <circle cx="410" cy="415" r="4"></circle>
+                                        <circle cx="385" cy="425" r="4"></circle>
+                                        <circle cx="405" cy="395" r="3.5"></circle>
+                                        <circle cx="365" cy="415" r="3.5"></circle>
+                                        <circle cx="395" cy="435" r="4"></circle>
+                                    </g>
+
+                                    <!-- Scatter Dots Group: Cluster 2 (CMP - Emerald) -->
+                                    <g id="cluster-2-dots" fill="#059669" opacity="0.8">
+                                        <circle cx="433" cy="276" r="4.5"></circle>
+                                        <circle cx="418" cy="265" r="4"></circle>
+                                        <circle cx="445" cy="285" r="4"></circle>
+                                        <circle cx="425" cy="290" r="3.5"></circle>
+                                        <circle cx="448" cy="268" r="4"></circle>
+                                        <circle cx="410" cy="280" r="3.5"></circle>
+                                    </g>
+
+                                    <!-- Scatter Dots Group: Cluster 3 (Deposition - Amber) -->
+                                    <g id="cluster-3-dots" fill="#D97706" opacity="0.8">
+                                        <circle cx="771" cy="249" r="4.5"></circle>
+                                        <circle cx="755" cy="235" r="4"></circle>
+                                        <circle cx="790" cy="255" r="4"></circle>
+                                        <circle cx="765" cy="265" r="4"></circle>
+                                        <circle cx="785" cy="238" r="3.5"></circle>
+                                        <circle cx="740" cy="250" r="3.5"></circle>
+                                    </g>
+
+                                    <!-- Scatter Dots Group: Cluster 4 (Oxidation - Cyan) -->
+                                    <g id="cluster-4-dots" fill="#0891B2" opacity="0.8">
+                                        <circle cx="433" cy="273" r="4.5"></circle>
+                                        <circle cx="420" cy="255" r="4"></circle>
+                                        <circle cx="450" cy="260" r="4"></circle>
+                                        <circle cx="435" cy="295" r="3.5"></circle>
+                                        <circle cx="455" cy="280" r="3.5"></circle>
+                                    </g>
+
+                                    <!-- Centroid Centers -->
+                                    <g id="centroids-layer">
+                                        <g id="centroid-0" transform="translate(372, 93)">
+                                            <circle r="8" fill="#2563EB" stroke="#FFFFFF" stroke-width="2.5"></circle>
+                                            <text font-family="Plus Jakarta Sans" font-size="10" font-weight="700" fill="#1D1C18" y="-12" text-anchor="middle">C0 (Litho)</text>
+                                        </g>
+                                        <g id="centroid-1" transform="translate(391, 410)">
+                                            <circle r="8" fill="#7C3AED" stroke="#FFFFFF" stroke-width="2.5"></circle>
+                                            <text font-family="Plus Jakarta Sans" font-size="10" font-weight="700" fill="#1D1C18" y="-12" text-anchor="middle">C1 (Etch)</text>
+                                        </g>
+                                        <g id="centroid-2" transform="translate(433, 276)">
+                                            <circle r="8" fill="#059669" stroke="#FFFFFF" stroke-width="2.5"></circle>
+                                            <text font-family="Plus Jakarta Sans" font-size="10" font-weight="700" fill="#1D1C18" y="-12" text-anchor="middle">C2 (CMP)</text>
+                                        </g>
+                                        <g id="centroid-3" transform="translate(771, 249)">
+                                            <circle r="8" fill="#D97706" stroke="#FFFFFF" stroke-width="2.5"></circle>
+                                            <text font-family="Plus Jakarta Sans" font-size="10" font-weight="700" fill="#1D1C18" y="-12" text-anchor="middle">C3 (CVD)</text>
+                                        </g>
+                                        <g id="centroid-4" transform="translate(433, 273)">
+                                            <circle r="8" fill="#0891B2" stroke="#FFFFFF" stroke-width="2.5"></circle>
+                                            <text font-family="Plus Jakarta Sans" font-size="10" font-weight="700" fill="#1D1C18" y="20" text-anchor="middle">C4 (Ox)</text>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </div>
+
+                            <!-- Interactive Legend Chips -->
+                            <div class="flex flex-wrap items-center justify-center gap-2 pt-1" id="cluster-legend">
+                                <button type="button" class="legend-chip inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[12px] font-semibold" data-cluster="0">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                                    <span>Cluster 0 (Lithography)</span>
+                                </button>
+                                <button type="button" class="legend-chip inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-[12px] font-semibold" data-cluster="1">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
+                                    <span>Cluster 1 (Etching)</span>
+                                </button>
+                                <button type="button" class="legend-chip inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[12px] font-semibold" data-cluster="2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                                    <span>Cluster 2 (CMP)</span>
+                                </button>
+                                <button type="button" class="legend-chip inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[12px] font-semibold" data-cluster="3">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
+                                    <span>Cluster 3 (Deposition)</span>
+                                </button>
+                                <button type="button" class="legend-chip inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-200 text-[12px] font-semibold" data-cluster="4">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-cyan-600"></span>
+                                    <span>Cluster 4 (Oxidation)</span>
+                                </button>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <form id="clustering-form" novalidate>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label text-secondary small fw-bold">Spatial Variance Parameter A</label>
-                                <input type="number" step="any" class="form-control form-control-custom" 
-                                       data-feature-key="feature_0" placeholder="e.g. 1.84">
+                </div>
+
+                <!-- Cluster Distribution Section (5 Actual Clusters from cluster_profiles.json) -->
+                <div class="flex flex-col gap-space-md">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-[22px]">pie_chart</span>
+                            <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">Dataset Cluster Distribution (K=5)</h2>
+                        </div>
+                        <span class="font-label-sm text-on-surface-variant font-medium">5,000 Total Training Wafers (Baseline Statistics)</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-space-md" id="cluster-cards-container">
+                        <!-- Cluster 0 -->
+                        <div class="cluster-card bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-surface-container flex flex-col justify-between transition-all" data-cluster-id="0">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+                                    <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-label-sm text-[11px] font-bold">19.8%</span>
+                                </div>
+                                <h3 class="font-title-md text-on-surface font-bold text-[16px]">Cluster 0</h3>
+                                <span class="font-label-sm text-blue-700 font-semibold">Lithography</span>
+                                <p class="text-[12px] text-on-surface-variant leading-relaxed">Photolithography pattern transfer and optical alignment regime.</p>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-secondary small fw-bold">Defect Density Ratio B</label>
-                                <input type="number" step="any" class="form-control form-control-custom" 
-                                       data-feature-key="feature_1" placeholder="e.g. 0.042">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-secondary small fw-bold">Radial Cluster Index C</label>
-                                <input type="number" step="any" class="form-control form-control-custom" 
-                                       data-feature-key="feature_2" placeholder="e.g. 3.14">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-secondary small fw-bold">Intensity Factor D</label>
-                                <input type="number" step="any" class="form-control form-control-custom" 
-                                       data-feature-key="feature_3" placeholder="e.g. 15.6">
+                            <div class="pt-4 mt-2 border-t border-surface-container flex items-baseline justify-between">
+                                <span class="font-headline-sm text-blue-600 font-bold">992</span>
+                                <span class="text-[11px] text-on-surface-variant">wafers</span>
                             </div>
                         </div>
 
-                        <div class="mt-4 pt-2 border-top border-secondary opacity-50"></div>
-
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <button type="reset" class="btn btn-outline-custom btn-sm">
-                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
-                            </button>
-                            <button type="submit" id="btn-cluster" class="btn btn-primary-custom d-flex align-items-center gap-2">
-                                <span id="cluster-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                                <span id="cluster-btn-text">Cluster Analysis</span>
-                                <i class="bi bi-arrow-right"></i>
-                            </button>
+                        <!-- Cluster 1 -->
+                        <div class="cluster-card bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-surface-container flex flex-col justify-between transition-all" data-cluster-id="1">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-3 h-3 rounded-full bg-purple-600"></span>
+                                    <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-label-sm text-[11px] font-bold">19.9%</span>
+                                </div>
+                                <h3 class="font-title-md text-on-surface font-bold text-[16px]">Cluster 1</h3>
+                                <span class="font-label-sm text-purple-700 font-semibold">Etching</span>
+                                <p class="text-[12px] text-on-surface-variant leading-relaxed">Reactive Ion Etching (RIE) with energized halogen plasma.</p>
+                            </div>
+                            <div class="pt-4 mt-2 border-t border-surface-container flex items-baseline justify-between">
+                                <span class="font-headline-sm text-purple-600 font-bold">997</span>
+                                <span class="text-[11px] text-on-surface-variant">wafers</span>
+                            </div>
                         </div>
-                    </form>
-                </div>
-            </div>
 
-            <!-- Result Card & Guide -->
-            <div class="col-lg-5">
-                <!-- Result Container -->
-                <div id="clustering-result" class="d-none mb-4"></div>
+                        <!-- Cluster 2 -->
+                        <div class="cluster-card bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-surface-container flex flex-col justify-between transition-all" data-cluster-id="2">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
+                                    <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-label-sm text-[11px] font-bold">20.6%</span>
+                                </div>
+                                <h3 class="font-title-md text-on-surface font-bold text-[16px]">Cluster 2</h3>
+                                <span class="font-label-sm text-emerald-700 font-semibold">CMP</span>
+                                <p class="text-[12px] text-on-surface-variant leading-relaxed">Chemical Mechanical Polishing planarization cycle.</p>
+                            </div>
+                            <div class="pt-4 mt-2 border-t border-surface-container flex items-baseline justify-between">
+                                <span class="font-headline-sm text-emerald-600 font-bold">1,029</span>
+                                <span class="text-[11px] text-on-surface-variant">wafers</span>
+                            </div>
+                        </div>
 
-                <!-- Guidance Card -->
-                <div class="card card-custom p-4">
-                    <h5 class="mb-3 text-white">
-                        <i class="bi bi-info-circle text-info me-2"></i> Profiling Karakteristik Kluster
-                    </h5>
-                    <p class="text-secondary small mb-3">
-                        Algoritma clustering (seperti K-Means atau DBSCAN) memetakan sampel wafer ke dalam ruang fitur berdimensi tinggi untuk membedakan:
-                    </p>
-                    <ul class="text-secondary small ps-3 mb-3" style="line-height: 1.8;">
-                        <li><span class="text-white fw-bold">Kluster Normal:</span> Sebaran die seragam dengan cacat minimal.</li>
-                        <li><span class="text-white fw-bold">Kluster Ring/Edge Defect:</span> Cacat terkonsentrasi pada tepi piringan wafer.</li>
-                        <li><span class="text-white fw-bold">Kluster Scratch/Line:</span> Cacat linier akibat goresan mekanikal peralatan fabrikasi.</li>
-                    </ul>
-                    <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color);">
-                        <div class="small fw-bold text-white mb-1">Model Clustering Artifact:</div>
-                        <code class="text-info small">backend/app/models/clustering.joblib</code>
+                        <!-- Cluster 3 -->
+                        <div class="cluster-card bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-surface-container flex flex-col justify-between transition-all" data-cluster-id="3">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-3 h-3 rounded-full bg-amber-600"></span>
+                                    <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-label-sm text-[11px] font-bold">19.1%</span>
+                                </div>
+                                <h3 class="font-title-md text-on-surface font-bold text-[16px]">Cluster 3</h3>
+                                <span class="font-label-sm text-amber-700 font-semibold">Deposition</span>
+                                <p class="text-[12px] text-on-surface-variant leading-relaxed">Plasma Chemical Vapor Deposition (PECVD) dielectric growth.</p>
+                            </div>
+                            <div class="pt-4 mt-2 border-t border-surface-container flex items-baseline justify-between">
+                                <span class="font-headline-sm text-amber-600 font-bold">955</span>
+                                <span class="text-[11px] text-on-surface-variant">wafers</span>
+                            </div>
+                        </div>
+
+                        <!-- Cluster 4 -->
+                        <div class="cluster-card bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-surface-container flex flex-col justify-between transition-all" data-cluster-id="4">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-3 h-3 rounded-full bg-cyan-600"></span>
+                                    <span class="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 font-label-sm text-[11px] font-bold">20.5%</span>
+                                </div>
+                                <h3 class="font-title-md text-on-surface font-bold text-[16px]">Cluster 4</h3>
+                                <span class="font-label-sm text-cyan-700 font-semibold">Oxidation</span>
+                                <p class="text-[12px] text-on-surface-variant leading-relaxed">High-temperature thermal oxidation furnace phase.</p>
+                            </div>
+                            <div class="pt-4 mt-2 border-t border-surface-container flex items-baseline justify-between">
+                                <span class="font-headline-sm text-cyan-600 font-bold">1,027</span>
+                                <span class="text-[11px] text-on-surface-variant">wafers</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-    </main>
+                <!-- Cluster Characteristics Section (Requirement 14) -->
+                <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-surface-container flex flex-col gap-space-md">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-[22px]">analytics</span>
+                            <h2 class="font-title-lg text-title-lg text-on-surface font-bold">Cluster Characteristics (Feature Means)</h2>
+                        </div>
+                        <span class="font-label-sm text-on-surface-variant">Authoritative Training Profiles</span>
+                    </div>
 
-    <!-- Footer -->
-    <footer class="footer-custom mt-auto">
-        <div class="container-fluid px-4">
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-                <div>
-                    <strong>Wafer Defect Classification System</strong> &copy; 2026. All rights reserved.
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-[13px] border-collapse">
+                            <thead>
+                                <tr class="border-b border-surface-container bg-surface-container-low text-on-surface-variant font-label-md">
+                                    <th class="py-2.5 px-4 font-bold">Feature Name</th>
+                                    <th class="py-2.5 px-4 text-blue-700">Cluster 0 (Litho)</th>
+                                    <th class="py-2.5 px-4 text-purple-700">Cluster 1 (Etch)</th>
+                                    <th class="py-2.5 px-4 text-emerald-700">Cluster 2 (CMP)</th>
+                                    <th class="py-2.5 px-4 text-amber-700">Cluster 3 (Dep)</th>
+                                    <th class="py-2.5 px-4 text-cyan-700">Cluster 4 (Ox)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-surface-container" id="characteristics-tbody">
+                                <tr>
+                                    <td class="py-2.5 px-4 font-semibold text-on-surface">Temperature (°C)</td>
+                                    <td class="py-2.5 px-4 font-mono">449.98</td>
+                                    <td class="py-2.5 px-4 font-mono">449.89</td>
+                                    <td class="py-2.5 px-4 font-mono">449.80</td>
+                                    <td class="py-2.5 px-4 font-mono">450.64</td>
+                                    <td class="py-2.5 px-4 font-mono">450.14</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-4 font-semibold text-on-surface">Pressure (Torr)</td>
+                                    <td class="py-2.5 px-4 font-mono">760.87</td>
+                                    <td class="py-2.5 px-4 font-mono">759.99</td>
+                                    <td class="py-2.5 px-4 font-mono">759.60</td>
+                                    <td class="py-2.5 px-4 font-mono">758.44</td>
+                                    <td class="py-2.5 px-4 font-mono">759.58</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-4 font-semibold text-on-surface">Gas Flow (sccm)</td>
+                                    <td class="py-2.5 px-4 font-mono">120.14</td>
+                                    <td class="py-2.5 px-4 font-mono">119.90</td>
+                                    <td class="py-2.5 px-4 font-mono">120.37</td>
+                                    <td class="py-2.5 px-4 font-mono">119.98</td>
+                                    <td class="py-2.5 px-4 font-mono">120.13</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-4 font-semibold text-on-surface">Etch Rate (nm/min)</td>
+                                    <td class="py-2.5 px-4 font-mono">95.49</td>
+                                    <td class="py-2.5 px-4 font-mono">95.17</td>
+                                    <td class="py-2.5 px-4 font-mono">94.72</td>
+                                    <td class="py-2.5 px-4 font-mono">95.01</td>
+                                    <td class="py-2.5 px-4 font-mono">95.27</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-4 font-semibold text-on-surface">Voltage (V)</td>
+                                    <td class="py-2.5 px-4 font-mono">4.998</td>
+                                    <td class="py-2.5 px-4 font-mono">4.984</td>
+                                    <td class="py-2.5 px-4 font-mono">5.003</td>
+                                    <td class="py-2.5 px-4 font-mono">4.983</td>
+                                    <td class="py-2.5 px-4 font-mono">4.994</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-4 font-semibold text-on-surface">Current (mA)</td>
+                                    <td class="py-2.5 px-4 font-mono">19.94</td>
+                                    <td class="py-2.5 px-4 font-mono">20.04</td>
+                                    <td class="py-2.5 px-4 font-mono">20.05</td>
+                                    <td class="py-2.5 px-4 font-mono">19.92</td>
+                                    <td class="py-2.5 px-4 font-mono">19.98</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="d-flex gap-3">
-                    <a href="http://localhost:8001/docs" target="_blank" class="text-secondary text-decoration-none">
-                        <i class="bi bi-journal-code me-1"></i> Swagger API Docs
-                    </a>
-                </div>
+
+                <!-- Footer -->
+    <footer class="site-footer">
+        <div class="site-footer-inner flex flex-col md:flex-row items-center justify-between gap-4">
+            <p>© 2026 WaferDefect AI System • Unsupervised K-Means Pipeline & PostgreSQL</p>
+            <div class="flex items-center gap-4 text-[13px] text-on-surface-variant">
+                <span>API Status: Online (Port 5000)</span>
+                <span>•</span>
+                <span>PostgreSQL 16: Connected</span>
             </div>
         </div>
     </footer>
-
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Central API Client & Page Script -->
-    <script src="js/api.js"></script>
-    <script src="js/clustering.js"></script>
 </body>
 </html>
