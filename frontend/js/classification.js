@@ -46,12 +46,12 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const FIELD_SPECS = {
-        "input-temp": { key: "temperature_c", min: 300.0, max: 600.0, unit: "°C", label: "Chamber Temperature" },
-        "input-pressure": { key: "pressure_torr", min: 500.0, max: 1000.0, unit: "Torr", label: "Base Chamber Pressure" },
-        "input-gas": { key: "gas_flow_sccm", min: 50.0, max: 200.0, unit: "sccm", label: "Gas Flow Rate" },
-        "input-etch": { key: "etch_rate_nm_min", min: 50.0, max: 200.0, unit: "nm/min", label: "Plasma Etch Rate" },
-        "input-voltage": { key: "voltage_v", min: 2.0, max: 10.0, unit: "V", label: "RF Voltage" },
-        "input-current": { key: "current_ma", min: 10.0, max: 40.0, unit: "mA", label: "Plasma Current" }
+        "input-temp": { key: "temperature_c", min: 380.0, max: 530.0, unit: "°C", label: "Chamber Temperature" },
+        "input-pressure": { key: "pressure_torr", min: 600.0, max: 900.0, unit: "Torr", label: "Base Chamber Pressure" },
+        "input-gas": { key: "gas_flow_sccm", min: 70.0, max: 170.0, unit: "sccm", label: "Gas Flow Rate" },
+        "input-etch": { key: "etch_rate_nm_min", min: 50.0, max: 150.0, unit: "nm/min", label: "Plasma Etch Rate" },
+        "input-voltage": { key: "voltage_v", min: 3.0, max: 7.0, unit: "V", label: "RF Voltage" },
+        "input-current": { key: "current_ma", min: 10.0, max: 30.0, unit: "mA", label: "Plasma Current" }
     };
 
     // Baseline initial metrics for fallback rendering
@@ -200,12 +200,12 @@ document.addEventListener("DOMContentLoaded", () => {
      * Merender Top Influential Features secara dinamis
      */
     const FIELD_RANGES = {
-        "temperature_c": { min: 300.0, max: 600.0 },
-        "pressure_torr": { min: 500.0, max: 1000.0 },
-        "gas_flow_sccm": { min: 50.0, max: 200.0 },
-        "etch_rate_nm_min": { min: 50.0, max: 200.0 },
-        "voltage_v": { min: 2.0, max: 10.0 },
-        "current_ma": { min: 10.0, max: 40.0 }
+        "temperature_c": { min: 380.0, max: 530.0 },
+        "pressure_torr": { min: 600.0, max: 900.0 },
+        "gas_flow_sccm": { min: 70.0, max: 170.0 },
+        "etch_rate_nm_min": { min: 50.0, max: 150.0 },
+        "voltage_v": { min: 3.0, max: 7.0 },
+        "current_ma": { min: 10.0, max: 30.0 }
     };
 
     /**
@@ -247,9 +247,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             return `
                 <div class="p-2.5 rounded-xl bg-surface-container flex flex-col gap-1.5 border border-outline-variant/30 transition-all hover:border-outline-variant">
-                    <div class="flex justify-between items-baseline gap-1">
-                        <span class="font-title-sm text-title-sm text-on-surface font-semibold truncate" title="${item.label}">${item.label}</span>
-                        <span class="font-mono text-[12px] font-semibold text-on-surface bg-surface-container-high px-2 py-0.5 rounded-md border border-outline-variant/40 shrink-0">${item.value} ${item.unit}</span>
+                    <div class="flex flex-wrap sm:flex-nowrap justify-between items-baseline gap-2">
+                        <span class="font-title-sm text-title-sm text-on-surface font-semibold break-words sm:min-w-0" title="${item.label}">${item.label}</span>
+                        <span class="font-mono text-[12px] font-semibold text-on-surface bg-surface-container-high px-2 py-0.5 rounded-md border border-outline-variant/40 shrink-0 ml-auto">${item.value} ${item.unit}</span>
                     </div>
                     <div class="flex justify-between items-center text-[11px] pt-0.5">
                         <span class="text-on-surface-variant font-medium">Importance: <strong class="text-on-surface font-bold">${impPct}%</strong></span>

@@ -296,11 +296,11 @@
                                         <label class="font-label-md text-label-md text-on-surface"
                                             for="input-temp">Chamber Temperature</label>
                                         <span
-                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">300 – 600 °C</span>
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">380 – 530 °C</span>
                                     </div>
                                     <input
                                         class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                        id="input-temp" step="0.1" type="number" value="450.0" placeholder="e.g. 450.0" />
+                                        id="input-temp" min="380.0" max="530.0" step="0.1" type="number" value="450.0" placeholder="e.g. 450.0" />
                                     <div class="invalid-feedback" id="feedback-temp"></div>
                                 </div>
                                 <!-- 2. Pressure -->
@@ -309,11 +309,11 @@
                                         <label class="font-label-md text-label-md text-on-surface"
                                             for="input-pressure">Base Chamber Pressure</label>
                                         <span
-                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">500 – 1000 Torr</span>
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">600 – 900 Torr</span>
                                     </div>
                                     <input
                                         class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                        id="input-pressure" step="0.1" type="number" value="760.0" placeholder="e.g. 760.0" />
+                                        id="input-pressure" min="600.0" max="900.0" step="0.1" type="number" value="760.0" placeholder="e.g. 760.0" />
                                     <div class="invalid-feedback" id="feedback-pressure"></div>
                                 </div>
                                 <!-- 3. Gas Flow -->
@@ -322,11 +322,11 @@
                                         <label class="font-label-md text-label-md text-on-surface" for="input-gas">Gas
                                             Flow Rate</label>
                                         <span
-                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">50 – 200 sccm</span>
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">70 – 170 sccm</span>
                                     </div>
                                     <input
                                         class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                        id="input-gas" step="0.1" type="number" value="120.0" placeholder="e.g. 120.0" />
+                                        id="input-gas" min="70.0" max="170.0" step="0.1" type="number" value="120.0" placeholder="e.g. 120.0" />
                                     <div class="invalid-feedback" id="feedback-gas"></div>
                                 </div>
                                 <!-- 4. Etch Rate -->
@@ -335,11 +335,11 @@
                                         <label class="font-label-md text-label-md text-on-surface" for="input-etch">Plasma
                                             Etch Rate</label>
                                         <span
-                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">50 – 200 nm/min</span>
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">50 – 150 nm/min</span>
                                     </div>
                                     <input
                                         class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                        id="input-etch" step="0.1" type="number" value="95.0" placeholder="e.g. 95.0" />
+                                        id="input-etch" min="50.0" max="150.0" step="0.1" type="number" value="95.0" placeholder="e.g. 95.0" />
                                     <div class="invalid-feedback" id="feedback-etch"></div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-space-sm">
@@ -349,11 +349,11 @@
                                             <label class="font-label-md text-label-md text-on-surface"
                                                 for="input-voltage">RF Voltage</label>
                                             <span
-                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">2.0 – 10 V</span>
+                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">3.0 – 7.0 V</span>
                                         </div>
                                         <input
                                             class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-3 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                            id="input-voltage" step="0.1" type="number" value="5.0" placeholder="e.g. 5.0" />
+                                            id="input-voltage" min="3.0" max="7.0" step="0.1" type="number" value="5.0" placeholder="e.g. 5.0" />
                                         <div class="invalid-feedback" id="feedback-voltage"></div>
                                     </div>
                                     <!-- 6. Current -->
@@ -362,11 +362,11 @@
                                             <label class="font-label-md text-label-md text-on-surface"
                                                 for="input-current">Plasma Current</label>
                                             <span
-                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">10 – 40 mA</span>
+                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">10 – 30 mA</span>
                                         </div>
                                         <input
                                             class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-3 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                            id="input-current" step="0.1" type="number" value="20.0" placeholder="e.g. 20.0" />
+                                            id="input-current" min="10.0" max="30.0" step="0.1" type="number" value="20.0" placeholder="e.g. 20.0" />
                                         <div class="invalid-feedback" id="feedback-current"></div>
                                     </div>
                                 </div>
@@ -386,6 +386,9 @@
                                 </div>
                                 <p class="font-label-sm text-label-sm text-on-surface-variant/80 text-left pt-1">
                                     All numeric fields strictly validated against supported fab metrology limits.
+                                </p>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant/70 text-left pt-0.5">
+                                    Rentang data latih: Temperature 401-509 C, Pressure 642-866 Torr, Gas Flow 86-154 sccm, Etch Rate 64-131 nm/min, RF Voltage 3.5-6.4 V, Current 13-27 mA.
                                 </p>
                             </form>
 
@@ -444,27 +447,27 @@
                                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left">
                                         <div class="p-2.5 rounded-xl bg-surface-container-low">
                                             <div class="font-label-sm text-on-surface-variant text-[11px]">Temperature</div>
-                                            <div class="font-title-sm text-on-surface font-semibold">300 – 600 °C</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">380 – 530 °C</div>
                                         </div>
                                         <div class="p-2.5 rounded-xl bg-surface-container-low">
                                             <div class="font-label-sm text-on-surface-variant text-[11px]">Pressure</div>
-                                            <div class="font-title-sm text-on-surface font-semibold">500 – 1000 Torr</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">600 – 900 Torr</div>
                                         </div>
                                         <div class="p-2.5 rounded-xl bg-surface-container-low">
                                             <div class="font-label-sm text-on-surface-variant text-[11px]">Gas Flow</div>
-                                            <div class="font-title-sm text-on-surface font-semibold">50 – 200 sccm</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">70 – 170 sccm</div>
                                         </div>
                                         <div class="p-2.5 rounded-xl bg-surface-container-low">
                                             <div class="font-label-sm text-on-surface-variant text-[11px]">Etch Rate</div>
-                                            <div class="font-title-sm text-on-surface font-semibold">50 – 200 nm/min</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">50 – 150 nm/min</div>
                                         </div>
                                         <div class="p-2.5 rounded-xl bg-surface-container-low">
                                             <div class="font-label-sm text-on-surface-variant text-[11px]">RF Voltage</div>
-                                            <div class="font-title-sm text-on-surface font-semibold">2.0 – 10.0 V</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">3.0 – 7.0 V</div>
                                         </div>
                                         <div class="p-2.5 rounded-xl bg-surface-container-low">
                                             <div class="font-label-sm text-on-surface-variant text-[11px]">Current</div>
-                                            <div class="font-title-sm text-on-surface font-semibold">10.0 – 40.0 mA</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">10.0 – 30.0 mA</div>
                                         </div>
                                     </div>
                                 </div>
@@ -680,7 +683,7 @@
                                                 <span class="font-label-md text-label-md text-on-surface">Feature Importance</span>
                                                 <span class="font-label-sm text-label-sm text-on-surface-variant" id="normal-factors-badge">Model Attribution</span>
                                             </div>
-                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="normal-factors-list">
+                                            <div class="grid grid-cols-1 gap-2.5" id="normal-factors-list">
                                                 <!-- Dynamically populated from backend feature_contributions -->
                                             </div>
                                         </div>
@@ -845,7 +848,7 @@
                                                 <span class="font-label-md text-label-md text-on-surface">Top Influential Features</span>
                                                 <span class="font-label-sm text-label-sm text-tertiary" id="defect-factors-badge">Feature Impact</span>
                                             </div>
-                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="defect-factors-list">
+                                            <div class="grid grid-cols-1 gap-2.5" id="defect-factors-list">
                                                 <!-- Dynamically populated from backend feature_contributions -->
                                             </div>
                                         </div>
@@ -883,7 +886,7 @@
                                             Nilai yang dimasukkan berada di luar batas toleransi instrumen etsa. Pastikan nilai berada di antara batas minimum dan maksimum spesifikasi wafer.
                                         </p>
                                         <div class="mt-2 text-label-sm text-error bg-surface-container-lowest/90 px-3 py-1.5 rounded-lg border border-error/20 inline-block font-mono" id="error-hint">
-                                            Supported Range: 50.0 - 200.0 nm/min
+                                            Supported Range: 50.0 - 150.0 nm/min
                                         </div>
                                     </div>
                                 </div>

@@ -1,305 +1,299 @@
 import logging
+import math
 from typing import Dict, Any, List, Optional
 import numpy as np
 from .model_service import model_service
 
 logger = logging.getLogger(__name__)
 
+FEATURE_KEYS = ["temperature_c", "pressure_torr", "gas_flow_sccm",
+                "etch_rate_nm_min", "voltage_v", "current_ma"]
+FEATURE_ALIASES = {
+    "temperature_c": ["temperature_c", "temperature", "temp", "wafer_temp"],
+    "pressure_torr": ["pressure_torr", "pressure", "chamber_pressure"],
+    "gas_flow_sccm": ["gas_flow_sccm", "flow", "gas_flow_rate", "gas_flow"],
+    "etch_rate_nm_min": ["etch_rate_nm_min", "etch_rate", "rate"],
+    "voltage_v": ["voltage_v", "voltage", "rf_voltage"],
+    "current_ma": ["current_ma", "current", "plasma_current"],
+}
+ACTION_NAMES_FALLBACK = ["Turunkan Parameter", "Pertahankan", "Naikkan Parameter"]
+
 
 class RLControlService:
     """
     Reinforcement Learning Service for In-situ Semiconductor Process Control using Q-Learning.
-    Operates on 6 continuous sensor features discretized into 31,250 discrete states (10x5x5x5x5x5)
+    Operates on 6 dataset-scale sensor features (temperature_c, pressure_torr, gas_flow_sccm,
+    etch_rate_nm_min, voltage_v, current_ma) discretized into 31,250 discrete states (10x5x5x5x5x5)
     and selects discrete actions from 3 choices:
       0: 'Turunkan Parameter'
       1: 'Pertahankan'
       2: 'Naikkan Parameter'
+    Reward target/scale, transition step/noise, and trained states are read from metadata v2.
+    The Q-table is never updated here (evaluation/simulation only).
     """
 
     def __init__(self):
         self.model_service = model_service
 
-    def _discretize(self, values: List[float], bounds: List[List[float]], n_bins: List[int]) -> List[int]:
-        bin_coords = []
-        for val, (low, high), bins in zip(values, bounds, n_bins):
-            val_clamped = max(low, min(high, float(val)))
-            step = (high - low) / bins
-            idx = int((val_clamped - low) / step)
-            if idx >= bins:
-                idx = bins - 1
-            bin_coords.append(idx)
-        return bin_coords
-
-    def evaluate_policy(self, sensor_inputs: Dict[str, Any]) -> Dict[str, Any]:
+    # ------------------------------------------------------------------ util
+    def _rl_ctx(self) -> Optional[Dict[str, Any]]:
+        """Bangun (dan cache) semua konstanta dari metadata + Q-table."""
         metadata = self.model_service.get_rl_metadata()
         qtable = self.model_service.get_rl_qtable()
-
         if metadata is None or qtable is None:
-            return {
-                "status": "pending_model",
-                "action_name": "Pertahankan",
-                "action_id": 1,
-                "q_value": 0.0,
-                "q_table_match_status": "UNTRAINED",
-                "q_table_match_label": "Untrained State",
-                "message": "RL Model artifacts missing."
-            }
+            return None
+        cache = getattr(self, "_rl_cache", None)
+        if cache is not None and cache["meta_id"] == id(metadata) and cache["q_id"] == id(qtable):
+            return cache
 
+        n_bins = np.array(metadata["n_bins"], dtype=int)
+        bounds = metadata["state_bounds"]
+        low = np.array([b[0] for b in bounds], dtype=float)
+        high = np.array([b[1] for b in bounds], dtype=float)
+        strides = np.array([int(np.prod(n_bins[i + 1:])) for i in range(len(n_bins))])
+        feat_names = list(metadata.get("feature_names", FEATURE_KEYS))
+        rew = metadata["reward"]
+        trans = metadata["transition"]
+
+        trained_idx = np.array(metadata.get("trained_state_indices", []), dtype=int)
+        if trained_idx.size == 0:  # fallback jika metadata lama tanpa daftar trained state
+            trained_idx = np.where(np.any(qtable != 0, axis=1))[0]
+        trained_coords = (np.array(np.unravel_index(trained_idx, tuple(n_bins))).T
+                          if trained_idx.size else np.zeros((0, len(n_bins)), dtype=int))
+        trained_mask = np.zeros(qtable.shape[0], dtype=bool)
+        trained_mask[trained_idx] = True
+
+        ctrl = list(metadata.get("controllable_features", feat_names[:3]))
+        ctx = {
+            "meta_id": id(metadata), "q_id": id(qtable),
+            "qtable": qtable, "n_bins": n_bins, "low": low, "high": high,
+            "bin_w": (high - low) / n_bins, "strides": strides,
+            "n_states": int(np.prod(n_bins)),
+            "feat_names": feat_names,
+            "ctrl_idx": [feat_names.index(c) for c in ctrl],
+            "target": np.array([rew["target"][c] for c in ctrl], dtype=float),
+            "scale": np.array([rew["scale"][c] for c in ctrl], dtype=float),
+            "floor": float(rew.get("floor", -100.0)),
+            "step": np.array([trans["step"][c] for c in ctrl], dtype=float),
+            "noise": np.array([trans["noise_std"][c] for c in ctrl], dtype=float),
+            "defaults": np.array(metadata["dataset_stats"]["mean"], dtype=float),
+            "dstd": np.array(metadata["dataset_stats"]["std"], dtype=float),
+            "action_names": list(metadata.get("action_names", ACTION_NAMES_FALLBACK)),
+            "episode_len": int(metadata.get("training", {}).get("episode_len", 20)),
+            "trained_idx": trained_idx, "trained_coords": trained_coords,
+            "trained_mask": trained_mask,
+        }
+        self._rl_cache = ctx
+        return ctx
+
+    def _parse_features(self, ctx, sensor_inputs: Dict[str, Any]):
+        """Baca 6 fitur (skala dataset). Default = rata-rata dataset. Nilai di luar bounds di-clip dan dilaporkan."""
+        vals = []
+        for i, key in enumerate(FEATURE_KEYS):
+            v = ctx["defaults"][i]
+            for alias in FEATURE_ALIASES[key]:
+                if alias in sensor_inputs and sensor_inputs[alias] not in (None, ""):
+                    v = float(sensor_inputs[alias])
+                    break
+            if not math.isfinite(v):
+                raise ValueError(f"Nilai {key} tidak valid")
+            vals.append(v)
+        x = np.array(vals, dtype=float)
+        out_of_range = [FEATURE_KEYS[i] for i in range(len(x)) if x[i] < ctx["low"][i] or x[i] > ctx["high"][i]]
+        return np.clip(x, ctx["low"], ctx["high"]), out_of_range
+
+    def _bins(self, ctx, x: np.ndarray) -> np.ndarray:
+        idx = ((np.clip(x, ctx["low"], ctx["high"]) - ctx["low"]) / ctx["bin_w"]).astype(int)
+        return np.minimum(idx, ctx["n_bins"] - 1)
+
+    def _lookup(self, ctx, x: np.ndarray) -> Dict[str, Any]:
+        """Status state jujur: MATCH (pernah dilatih) / UNTRAINED (pakai state terlatih terdekat)."""
+        coords = self._bins(ctx, x)
+        s = int(np.dot(coords, ctx["strides"]))
+        if not (0 <= s < ctx["n_states"]):
+            return {"status": "INVALID", "state": s, "coords": coords.tolist(), "matched": -1,
+                    "distance": None, "q": np.zeros(3), "action": 1}
+        if ctx["trained_mask"][s]:
+            q = ctx["qtable"][s]
+            return {"status": "MATCH", "state": s, "coords": coords.tolist(), "matched": s,
+                    "distance": 0, "q": q, "action": int(np.argmax(q))}
+        if ctx["trained_idx"].size == 0:
+            return {"status": "UNTRAINED", "state": s, "coords": coords.tolist(), "matched": s,
+                    "distance": None, "q": np.zeros(3), "action": 1}
+        d = np.abs(ctx["trained_coords"] - coords).sum(axis=1)
+        j = int(np.argmin(d))
+        ms = int(ctx["trained_idx"][j])
+        q = ctx["qtable"][ms]
+        return {"status": "UNTRAINED", "state": s, "coords": coords.tolist(), "matched": ms,
+                "distance": int(d[j]), "q": q, "action": int(np.argmax(q))}
+
+    # --------------------------------------------------------------- policy
+    def evaluate_policy(self, sensor_inputs: Dict[str, Any]) -> Dict[str, Any]:
+        ctx = self._rl_ctx()
+        if ctx is None:
+            return {"status": "pending_model", "action_name": "Pertahankan", "action_id": 1,
+                    "q_value": 0.0, "q_table_match_status": "UNTRAINED",
+                    "q_table_match_label": "Untrained State", "message": "RL Model artifacts missing."}
         try:
-            state_bounds = metadata.get("state_bounds", [
-                (300, 600), (500, 1000), (50, 200), (50, 200), (2, 10), (10, 40)
-            ])
-            n_bins = metadata.get("n_bins", [10, 5, 5, 5, 5, 5])
-            action_names = ["Turunkan Parameter", "Pertahankan", "Naikkan Parameter"]
-
-            temp = float(sensor_inputs.get("temperature_c", sensor_inputs.get("temp", sensor_inputs.get("wafer_temp", 200.0))))
-            if temp < 300.0:
-                temp_for_state = 300.0 + ((temp - 100.0) / 250.0) * 300.0
+            x, out_of_range = self._parse_features(ctx, sensor_inputs)
+            lk = self._lookup(ctx, x)
+            names = ctx["action_names"]
+            a = lk["action"]
+            q = [float(v) for v in lk["q"]]
+            labels = {"MATCH": "Q-Table Match",
+                      "UNTRAINED": "Untrained State",
+                      "INVALID": "Invalid State"}
+            if lk["status"] == "MATCH":
+                rationale = (f"Action dipilih karena memiliki Q-value tertinggi (Q = {q[a]:.2f}) "
+                             f"pada state terdiskritisasi saat ini.")
+                policy_selection = "Greedy Q-Table Policy"
             else:
-                temp_for_state = temp
-
-            raw_pressure = float(sensor_inputs.get("pressure_torr", sensor_inputs.get("pressure", sensor_inputs.get("chamber_pressure", 15.0))))
-            if raw_pressure < 300.0:
-                pressure_for_state = 500.0 + ((raw_pressure - 5.0) / 45.0) * 500.0
-            else:
-                pressure_for_state = raw_pressure
-
-            flow = float(sensor_inputs.get("gas_flow_sccm", sensor_inputs.get("flow", sensor_inputs.get("gas_flow_rate", 120.0))))
-            rf_power = float(sensor_inputs.get("rf_power_w", sensor_inputs.get("rf_power", sensor_inputs.get("power", 850.0))))
-            duration = float(sensor_inputs.get("duration_s", sensor_inputs.get("duration", sensor_inputs.get("etch_duration", 60.0))))
-            est_etch = float(sensor_inputs.get("etch_rate_nm_min", sensor_inputs.get("etch_rate", sensor_inputs.get("rate", 1.2))))
-
-            if est_etch < 10.0:
-                etch_for_state = 50.0 + ((est_etch - 0.5) / 2.5) * 150.0
-            else:
-                etch_for_state = est_etch
-
-            voltage_for_state = max(2.0, min(10.0, 2.0 + ((rf_power - 400.0) / 1100.0) * 8.0))
-            current_for_state = max(10.0, min(40.0, 10.0 + ((duration - 20.0) / 160.0) * 30.0))
-
-            features_list = [temp_for_state, pressure_for_state, flow, etch_for_state, voltage_for_state, current_for_state]
-
-            bin_coords = self._discretize(features_list, state_bounds, n_bins)
-            total_discrete_states = int(np.prod(n_bins))
-            state_idx = int(np.ravel_multi_index(bin_coords, n_bins))
-
-            if 0 <= state_idx < total_discrete_states:
-                q_values_raw = qtable[state_idx]
-                is_directly_trained = bool(np.any(q_values_raw != 0))
-
-                if is_directly_trained:
-                    match_status = "MATCH"
-                    match_label = "Q-Table Match"
-                    q_vals = [float(v) for v in q_values_raw]
-                    best_action_idx = int(np.argmax(q_values_raw))
-                    matched_state = state_idx
-                else:
-                    match_status = "UNTRAINED"
-                    match_label = "Untrained State"
-                    nonzero_indices = np.where(np.any(qtable != 0, axis=1))[0]
-                    if len(nonzero_indices) > 0:
-                        current_coords = np.array(bin_coords)
-                        best_dist = float("inf")
-                        nearest_idx = nonzero_indices[0]
-                        for cand_idx in nonzero_indices:
-                            cand_coords = np.array(np.unravel_index(cand_idx, n_bins))
-                            dist = np.sum(np.abs(current_coords - cand_coords))
-                            if dist < best_dist:
-                                best_dist = dist
-                                nearest_idx = cand_idx
-                        q_vals = [float(v) for v in qtable[nearest_idx]]
-                        best_action_idx = int(np.argmax(qtable[nearest_idx]))
-                        matched_state = int(nearest_idx)
-                    else:
-                        q_vals = [0.0, 0.0, 0.0]
-                        best_action_idx = 1
-                        matched_state = state_idx
-            else:
-                match_status = "INVALID"
-                match_label = "Invalid State"
-                q_vals = [0.0, 0.0, 0.0]
-                best_action_idx = 1
-                matched_state = -1
-
-            selected_action_name = action_names[best_action_idx]
-            max_q_val = round(q_vals[best_action_idx], 2)
-
-            q_values_dict = {
-                action_names[i]: round(q_vals[i], 2) for i in range(len(action_names))
-            }
-
-            action_title = f"Selected Action: {selected_action_name}"
-            rationale = f"Action dipilih karena memiliki Q-value tertinggi (Q = {max_q_val:.2f}) pada state terdiskritisasi saat ini."
-
+                rationale = (f"State saat ini belum pernah dilatih. Rekomendasi memakai state terlatih terdekat "
+                             f"(jarak {lk['distance']} bin) dengan Q-value tertinggi (Q = {q[a]:.2f}).")
+                policy_selection = "Greedy (nearest trained state)"
             return {
-                "status": "success",
-                "algorithm": "Q-Learning",
-                "state_index": state_idx,
-                "matched_state": matched_state,
-                "bin_coordinates": bin_coords,
-                "q_table_match_status": match_status,
-                "q_table_match_label": match_label,
-                "action_id": best_action_idx,
-                "selected_action": selected_action_name,
-                "action_name": selected_action_name,
-                "action_title": action_title,
-                "q_value": max_q_val,
-                "q_values": q_values_dict,
-                "policy_selection": "Greedy Q-Table Policy",
-                "rationale": rationale,
-                "estimated_etch_rate": round(est_etch, 2),
-                "inputs_received": {
-                    "temperature_c": temp,
-                    "pressure_torr": raw_pressure,
-                    "gas_flow_sccm": flow,
-                    "rf_power_w": rf_power,
-                    "duration_s": duration,
-                    "etch_rate_nm_min": round(est_etch, 2)
-                }
+                "status": "success", "algorithm": "Q-Learning",
+                "state_index": lk["state"], "matched_state": lk["matched"],
+                "match_distance": lk["distance"], "bin_coordinates": lk["coords"],
+                "q_table_match_status": lk["status"], "q_table_match_label": labels[lk["status"]],
+                "action_id": a, "selected_action": names[a], "action_name": names[a],
+                "action_title": f"Selected Action: {names[a]}",
+                "q_value": round(q[a], 2),
+                "q_values": {names[i]: round(q[i], 2) for i in range(len(names))},
+                "policy_selection": policy_selection, "rationale": rationale,
+                "estimated_etch_rate": round(float(x[3]), 2),
+                "out_of_range_features": out_of_range,
+                "inputs_received": {k: round(float(x[i]), 3) for i, k in enumerate(FEATURE_KEYS)},
             }
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(f"Error evaluating Q-learning policy: {e}", exc_info=True)
-            return {
-                "status": "error",
-                "selected_action": "Pertahankan",
-                "action_id": 1,
-                "q_value": 0.0,
-                "q_table_match_status": "INVALID",
-                "q_table_match_label": "Invalid State",
-                "message": f"Q-Learning inference error: {str(e)}"
-            }
+            return {"status": "error", "selected_action": "Pertahankan", "action_id": 1, "q_value": 0.0,
+                    "q_table_match_status": "INVALID", "q_table_match_label": "Invalid State",
+                    "message": f"Q-Learning inference error: {e}"}
 
+    # --------------------------------------------------------------- reward
     def calculate_reward(self, features: Dict[str, float]) -> float:
-        temp = float(features.get("temperature_c", 200.0))
-        press = float(features.get("pressure_torr", 15.0))
-        flow = float(features.get("gas_flow_sccm", 120.0))
+        """10 - 2 * sum(((x - target) / scale)^2) pada parameter yang dikontrol. Target/skala dari metadata."""
+        ctx = self._rl_ctx()
+        if ctx is None:
+            raise RuntimeError("RL artifacts missing")
+        x = np.array([float(features[k]) for k in FEATURE_KEYS], dtype=float)
+        dev = (x[ctx["ctrl_idx"]] - ctx["target"]) / ctx["scale"]
+        r = 10.0 - 2.0 * float(np.sum(dev ** 2))
+        return round(max(ctx["floor"], r), 2)
 
-        dev_temp = (temp - 200.0) / 20.0
-        dev_press = (press - 15.0) / 5.0
-        dev_flow = (flow - 120.0) / 20.0
+    # ----------------------------------------------------------- transition
+    def _transition(self, ctx, x: np.ndarray, action_id: int, rng) -> np.ndarray:
+        mult = (-1.0, 0.0, 1.0)[action_id]
+        nx = x.copy()
+        for k, i in enumerate(ctx["ctrl_idx"]):
+            nx[i] += mult * ctx["step"][k] + rng.normal(0.0, ctx["noise"][k])
+        return np.clip(nx, ctx["low"], ctx["high"])
 
-        sq_dev = dev_temp**2 + dev_press**2 + dev_flow**2
-        reward = 10.0 - (sq_dev * 2.0)
-        return round(float(reward), 2)
-
-    def simulate_step(self, sensor_inputs: Dict[str, Any], action_id: Optional[int] = None) -> Dict[str, Any]:
+    def simulate_step(self, sensor_inputs: Dict[str, Any], action_id: Optional[int] = None,
+                      rng: Optional[np.random.Generator] = None) -> Dict[str, Any]:
+        ctx = self._rl_ctx()
+        if ctx is None:
+            return {"status": "pending_model", "message": "RL Model artifacts missing."}
+        if action_id is not None and action_id not in (0, 1, 2):
+            return {"status": "error", "message": f"action_id tidak valid: {action_id} (harus 0, 1, atau 2)"}
         policy = self.evaluate_policy(sensor_inputs)
+        if policy.get("status") != "success":
+            return policy
+        rng = rng or np.random.default_rng()
+        names = ctx["action_names"]
         if action_id is None:
-            action_id = policy.get("action_id", 1)
-
-        curr_features = policy.get("inputs_received", {
-            "temperature_c": 200.0,
-            "pressure_torr": 15.0,
-            "gas_flow_sccm": 120.0,
-            "rf_power_w": 850.0,
-            "duration_s": 60.0,
-            "etch_rate_nm_min": 1.2
-        })
-
-        delta_mult = {0: -1.0, 1: 0.0, 2: 1.0}.get(action_id, 0.0)
-        rng = np.random.default_rng()
-        noise = rng.normal(0, 0.02, size=3)
-
-        next_temp = round(float(np.clip(curr_features["temperature_c"] + (delta_mult * 3.0) + (noise[0] * 2.0), 100.0, 350.0)), 1)
-        next_press = round(float(np.clip(curr_features["pressure_torr"] + (delta_mult * 1.0) + (noise[1] * 0.5), 5.0, 50.0)), 1)
-        next_flow = round(float(np.clip(curr_features["gas_flow_sccm"] + (delta_mult * 2.0) + (noise[2] * 2.0), 50.0, 250.0)), 1)
-
-        next_features = {
-            "temperature_c": next_temp,
-            "pressure_torr": next_press,
-            "gas_flow_sccm": next_flow,
-            "rf_power_w": curr_features["rf_power_w"],
-            "duration_s": curr_features["duration_s"],
-            "etch_rate_nm_min": round((curr_features["rf_power_w"] * 0.001) + (next_temp * 0.00175), 2)
-        }
-
-        reward = self.calculate_reward(next_features)
-        next_policy = self.evaluate_policy(next_features)
-
-        action_names = ["Turunkan Parameter", "Pertahankan", "Naikkan Parameter"]
-        action_name = action_names[action_id]
-
-        reward_evaluation = (
-            "Action menghasilkan reward positif berdasarkan reward function environment."
-            if reward >= 0 else
-            "Action menghasilkan penalty berdasarkan reward function environment."
-        )
-
+            action_id = policy["action_id"]
+        x, _ = self._parse_features(ctx, sensor_inputs)
+        nx = self._transition(ctx, x, action_id, rng)
+        curr = {k: round(float(x[i]), 3) for i, k in enumerate(FEATURE_KEYS)}
+        nxt = {k: round(float(nx[i]), 3) for i, k in enumerate(FEATURE_KEYS)}
+        reward = self.calculate_reward(nxt)
+        next_policy = self.evaluate_policy(nxt)
+        q_selected = policy["q_values"][names[action_id]]  # Q untuk action yang benar-benar dijalankan
+        evaluation = ("Reward positif: kondisi hasil action berada dekat target rata-rata wafer normal."
+                      if reward >= 0 else
+                      "Reward negatif: kondisi hasil action masih jauh dari target rata-rata wafer normal.")
         return {
             "status": "success",
-            "current_state": {
-                "state_index": policy.get("state_index"),
-                "features": curr_features
-            },
-            "selected_action": {
-                "action_id": action_id,
-                "action_name": action_name,
-                "q_value": policy.get("q_value", 0.0)
-            },
-            "next_state": {
-                "state_index": next_policy.get("state_index"),
-                "features": next_features
-            },
-            "reward": reward,
-            "evaluation": reward_evaluation,
-            "q_table_match_status": policy.get("q_table_match_status", "UNTRAINED"),
-            "q_table_match_label": policy.get("q_table_match_label", "Untrained State")
+            "current_state": {"state_index": policy["state_index"], "features": curr},
+            "selected_action": {"action_id": action_id, "action_name": names[action_id], "q_value": q_selected},
+            "next_state": {"state_index": next_policy.get("state_index"), "features": nxt},
+            "reward": reward, "evaluation": evaluation,
+            "q_table_match_status": policy["q_table_match_status"],
+            "q_table_match_label": policy["q_table_match_label"],
         }
 
-    def simulate_episodes(self, sensor_inputs: Dict[str, Any], num_episodes: int = 10) -> Dict[str, Any]:
-        episodes = []
-        episode_rewards = []
-        curr_state = dict(sensor_inputs)
-
-        for ep in range(1, num_episodes + 1):
-            step_res = self.simulate_step(curr_state)
-            reward = step_res["reward"]
-            action_name = step_res["selected_action"]["action_name"]
-            episodes.append({
-                "episode": ep,
-                "reward": reward,
-                "action": action_name,
-                "state_index": step_res["next_state"]["state_index"]
-            })
-            episode_rewards.append(reward)
-            curr_state = step_res["next_state"]["features"]
-
-        avg_reward = round(float(np.mean(episode_rewards)), 2) if episode_rewards else 0.0
-
+    # ------------------------------------------------------------- episodes
+    def simulate_episodes(self, sensor_inputs: Dict[str, Any], n_episodes: int = 10,
+                          rng: Optional[np.random.Generator] = None) -> Dict[str, Any]:
+        """EVALUASI (bukan training): n_episodes independen, tiap episode episode_len step greedy.
+        Episode 1 mulai dari input pengguna; episode lain mulai dari input + jitter (seperti saat training).
+        Reward per episode = total reward selama episode. Q-table tidak diubah."""
+        ctx = self._rl_ctx()
+        if ctx is None:
+            return {"status": "pending_model", "message": "RL Model artifacts missing."}
+        if n_episodes < 1:
+            return {"status": "error", "message": f"n_episodes tidak valid: {n_episodes} (minimal 1)"}
+        rng = rng or np.random.default_rng()
+        try:
+            x0, _ = self._parse_features(ctx, sensor_inputs)
+        except (TypeError, ValueError) as e:
+            return {"status": "error", "message": f"Input tidak valid: {e}"}
+        rewards: List[float] = []
+        episodes: List[Dict[str, Any]] = []
+        fallback_steps, total_steps = 0, 0
+        for ep in range(n_episodes):
+            x = x0.copy()
+            if ep > 0:
+                x[ctx["ctrl_idx"]] += rng.normal(0.0, 1.5, size=len(ctx["ctrl_idx"])) * ctx["dstd"][ctx["ctrl_idx"]]
+                x = np.clip(x, ctx["low"], ctx["high"])
+            total = 0.0
+            for _ in range(ctx["episode_len"]):
+                lk = self._lookup(ctx, x)
+                fallback_steps += int(lk["status"] != "MATCH")
+                total_steps += 1
+                x = self._transition(ctx, x, lk["action"], rng)
+                total += self.calculate_reward({k: float(x[i]) for i, k in enumerate(FEATURE_KEYS)})
+            total = round(total, 2)
+            rewards.append(total)
+            episodes.append({"episode": ep + 1, "reward": total,
+                             "final_temperature_c": round(float(x[0]), 2)})
         return {
-            "status": "success",
-            "num_episodes": num_episodes,
-            "episodes": episodes,
-            "episode_rewards": episode_rewards,
-            "final_reward": episode_rewards[-1] if episode_rewards else 0.0,
-            "average_reward": avg_reward,
-            "summary": f"Diperoleh {num_episodes} episode simulasi Q-Learning. Total return rata-rata per episode: {avg_reward}."
+            "status": "success", "mode": "evaluation",
+            "total_episodes": n_episodes, "num_episodes": n_episodes,
+            "steps_per_episode": ctx["episode_len"],
+            "episode_rewards": rewards, "episodes": episodes,
+            "final_reward": rewards[-1], "average_reward": round(float(np.mean(rewards)), 2),
+            "untrained_step_ratio": round(fallback_steps / max(1, total_steps), 3),
+            "note": "Evaluasi policy dengan Q-table yang sudah ada (tanpa update/training).",
         }
 
     def get_info(self) -> Dict[str, Any]:
+        ctx = self._rl_ctx()
         metadata = self.model_service.get_rl_metadata()
-        qtable = self.model_service.get_rl_qtable()
 
-        if metadata is None or qtable is None:
+        if ctx is None:
             return {
                 "status": "pending_model",
                 "available": False,
                 "message": "RL Model artifacts not found."
             }
 
-        nonzero_count = int(np.count_nonzero(np.any(qtable != 0, axis=1))) if qtable is not None else 0
-
+        qtable = ctx["qtable"]
         return {
             "status": "success",
             "available": True,
             "algorithm": "Q-Learning",
-            "qtable_shape": list(qtable.shape) if qtable is not None else [],
+            "qtable_shape": list(qtable.shape),
             "total_discrete_states": int(len(qtable)),
-            "trained_states_count": nonzero_count,
+            "trained_states_count": int(ctx["trained_idx"].size),
             "active_q_values_count": int(np.count_nonzero(qtable)),
-            "action_space": ["Turunkan Parameter", "Pertahankan", "Naikkan Parameter"],
+            "action_space": ctx["action_names"],
+            "feature_names": ctx["feat_names"],
             "state_bounds": metadata.get("state_bounds", []),
             "n_bins": metadata.get("n_bins", []),
+            "steps_per_episode": ctx["episode_len"],
         }
 
 

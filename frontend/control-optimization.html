@@ -97,13 +97,22 @@
 
                     <!-- SLIDERS GRID -->
                     <div class="space-y-5">
+                        <!-- Chamber Temperature -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">Chamber Temperature</label>
+                                <span id="temp-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">450 °C</span>
+                            </div>
+                            <input id="temp-slider" type="range" min="300" max="600" step="1" value="450" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
+                        </div>
+
                         <!-- Chamber Pressure -->
                         <div>
                             <div class="flex justify-between items-center mb-1.5">
                                 <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">Chamber Pressure</label>
-                                <span id="pressure-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">15.0 mTorr</span>
+                                <span id="pressure-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">760 Torr</span>
                             </div>
-                            <input id="pressure-slider" type="range" min="5" max="50" step="0.1" value="15.0" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
+                            <input id="pressure-slider" type="range" min="500" max="1000" step="1" value="760" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
                         </div>
 
                         <!-- Gas Flow Rate -->
@@ -112,48 +121,47 @@
                                 <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">Gas Flow Rate</label>
                                 <span id="flow-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">120 sccm</span>
                             </div>
-                            <input id="flow-slider" type="range" min="50" max="250" step="1" value="120" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
+                            <input id="flow-slider" type="range" min="50" max="200" step="1" value="120" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
                         </div>
 
-                        <!-- Plasma RF Power -->
+                        <!-- Etch Rate -->
                         <div>
                             <div class="flex justify-between items-center mb-1.5">
-                                <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">Plasma RF Power</label>
-                                <span id="power-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">850 W</span>
+                                <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">Etch Rate</label>
+                                <span id="rate-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">95 nm/min</span>
                             </div>
-                            <input id="power-slider" type="range" min="400" max="1500" step="10" value="850" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
+                            <input id="rate-slider" type="range" min="50" max="200" step="1" value="95" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
                         </div>
 
-                        <!-- Wafer Temperature -->
+                        <!-- RF Voltage -->
                         <div>
                             <div class="flex justify-between items-center mb-1.5">
-                                <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">Wafer Temperature</label>
-                                <span id="temp-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">200 °C</span>
+                                <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">RF Voltage</label>
+                                <span id="voltage-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">5.0 V</span>
                             </div>
-                            <input id="temp-slider" type="range" min="100" max="350" step="1" value="200" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
+                            <input id="voltage-slider" type="range" min="2" max="10" step="0.1" value="5.0" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
                         </div>
 
-                        <!-- Etch Duration -->
+                        <!-- Plasma Current -->
                         <div>
                             <div class="flex justify-between items-center mb-1.5">
-                                <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">Etch Duration</label>
-                                <span id="time-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">60 s</span>
+                                <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">Plasma Current</label>
+                                <span id="current-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">20 mA</span>
                             </div>
-                            <input id="time-slider" type="range" min="20" max="180" step="1" value="60" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
-                        </div>
-
-                        <!-- Estimated Etch Rate -->
-                        <div>
-                            <div class="flex justify-between items-center mb-1.5">
-                                <label class="text-xs font-bold uppercase tracking-wider text-[#4a4455]">Estimated Etch Rate</label>
-                                <span id="rate-val" class="text-sm font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-2.5 py-0.5 rounded-lg">1.20 nm/min</span>
-                            </div>
-                            <input id="rate-slider" type="range" min="0.5" max="3.0" step="0.05" value="1.20" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
+                            <input id="current-slider" type="range" min="10" max="40" step="1" value="20" class="w-full h-2 bg-[#f8f4ee] rounded-lg appearance-none cursor-pointer accent-[#7c3aed]" />
                         </div>
                     </div>
+
+                    <!-- POLICY RECOMMENDATION (single text line) -->
+                    <p id="recommendation-line" class="text-xs text-[#6b6575] mt-5">
+                        Rekomendasi action: <span id="recommendation-action" class="font-semibold text-[#1d1c18]">-</span>
+                        <span id="recommendation-direction" class="hidden"></span>
+                        <span id="recommendation-status" class="hidden ml-1 text-[10px] font-bold text-[#7c3aed] bg-[#f3e8ff] px-2 py-0.5 rounded-full"></span>
+                        <span id="recommendation-note" class="hidden"></span>
+                    </p>
                 </div>
 
-                <!-- SIMULATION STEP OUTPUT CARD (RETAINED) -->
+                <!-- SIMULATION STEP OUTPUT CARD -->
                 <div id="simulation-results-panel" class="bg-white rounded-3xl p-6 border border-[#f1eee8] shadow-sm">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-[#7c3aed] mb-3 flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-sm">science</span> SIMULATION STEP OUTPUT
@@ -164,7 +172,7 @@
                             <span id="step-reward-val" class="text-base font-extrabold text-gray-400">-</span>
                         </div>
                         <div class="bg-[#fef9f2] p-3 rounded-xl border border-[#f1eee8]">
-                            <span class="text-[#6b6575] block text-[10px] uppercase font-semibold">NEXT STATE TEMP</span>
+                            <span class="text-[#6b6575] block text-[10px] uppercase font-semibold">NEXT STATE</span>
                             <span id="next-temp-val" class="text-base font-extrabold text-gray-400">-</span>
                         </div>
                     </div>
@@ -172,59 +180,9 @@
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: ACTION SPACE & CONVERGENCE CURVE (7 COLS) -->
+            <!-- RIGHT COLUMN: CONVERGENCE CURVE (7 COLS) -->
             <div class="lg:col-span-7 space-y-6">
-                <!-- ACTION SPACE GRID CARD (RETAINED) -->
-                <div class="bg-white rounded-3xl p-8 border border-[#f1eee8] shadow-sm">
-                    <div class="flex items-center justify-between mb-6">
-                        <div>
-                            <h2 class="text-xl font-bold text-[#1d1c18]">Action Space & Policy Adjustments</h2>
-                            <p class="text-xs text-[#6b6575]">6 Discrete Control Recipe Modifications</p>
-                        </div>
-                        <span class="text-xs font-extrabold text-[#7c3aed] bg-[#f3e8ff] px-3 py-1.5 rounded-full">Discrete Actions</span>
-                    </div>
-
-                    <!-- 6 ACTION CARDS -->
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div id="card-action-0" class="action-card p-4 rounded-2xl border-2 border-[#f1eee8] bg-[#fef9f2] hover:border-[#7c3aed] transition-all cursor-pointer">
-                            <span class="inline-block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Action 0</span>
-                            <h4 class="font-bold text-sm text-[#1d1c18]">Decrease Temp</h4>
-                            <p class="text-xs text-[#7c3aed] font-bold mt-1">-5°C Target</p>
-                        </div>
-
-                        <div id="card-action-1" class="action-card p-4 rounded-2xl border-2 border-[#f1eee8] bg-[#fef9f2] hover:border-[#7c3aed] transition-all cursor-pointer">
-                            <span class="inline-block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Action 1</span>
-                            <h4 class="font-bold text-sm text-[#1d1c18]">Hold Steady</h4>
-                            <p class="text-xs text-[#7c3aed] font-bold mt-1">Nominal Recipe</p>
-                        </div>
-
-                        <div id="card-action-2" class="action-card p-4 rounded-2xl border-2 border-[#f1eee8] bg-[#fef9f2] hover:border-[#7c3aed] transition-all cursor-pointer">
-                            <span class="inline-block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Action 2</span>
-                            <h4 class="font-bold text-sm text-[#1d1c18]">Increase Temp</h4>
-                            <p class="text-xs text-[#7c3aed] font-bold mt-1">+5°C Target</p>
-                        </div>
-
-                        <div id="card-action-3" class="action-card p-4 rounded-2xl border-2 border-[#f1eee8] bg-[#fef9f2] hover:border-[#7c3aed] transition-all cursor-pointer">
-                            <span class="inline-block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Action 3</span>
-                            <h4 class="font-bold text-sm text-[#1d1c18]">Reduce Pressure</h4>
-                            <p class="text-xs text-[#7c3aed] font-bold mt-1">-2 mTorr Target</p>
-                        </div>
-
-                        <div id="card-action-4" class="action-card p-4 rounded-2xl border-2 border-[#f1eee8] bg-[#fef9f2] hover:border-[#7c3aed] transition-all cursor-pointer">
-                            <span class="inline-block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Action 4</span>
-                            <h4 class="font-bold text-sm text-[#1d1c18]">Increase Pressure</h4>
-                            <p class="text-xs text-[#7c3aed] font-bold mt-1">+2 mTorr Target</p>
-                        </div>
-
-                        <div id="card-action-5" class="action-card p-4 rounded-2xl border-2 border-[#f1eee8] bg-[#fef9f2] hover:border-[#7c3aed] transition-all cursor-pointer">
-                            <span class="inline-block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Action 5</span>
-                            <h4 class="font-bold text-sm text-[#1d1c18]">Adjust Gas Flow</h4>
-                            <p class="text-xs text-[#7c3aed] font-bold mt-1">+5 sccm Target</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CONVERGENCE CURVE CHART CARD (RETAINED) -->
+                <!-- CONVERGENCE CURVE CHART CARD -->
                 <div class="bg-white rounded-3xl p-8 border border-[#f1eee8] shadow-sm">
                     <div class="flex items-center justify-between mb-4">
                         <div>

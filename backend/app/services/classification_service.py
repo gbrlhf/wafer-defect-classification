@@ -15,12 +15,12 @@ STEP_MAPPING = {
 }
 
 SUPPORTED_RANGES = {
-    "temperature_c": {"min": 300.0, "max": 600.0, "unit": "°C", "label": "Chamber Temperature"},
-    "pressure_torr": {"min": 500.0, "max": 1000.0, "unit": "Torr", "label": "Base Chamber Pressure"},
-    "gas_flow_sccm": {"min": 50.0, "max": 200.0, "unit": "sccm", "label": "Gas Flow Rate"},
-    "etch_rate_nm_min": {"min": 50.0, "max": 200.0, "unit": "nm/min", "label": "Plasma Etch Rate"},
-    "voltage_v": {"min": 2.0, "max": 10.0, "unit": "V", "label": "RF Voltage"},
-    "current_ma": {"min": 10.0, "max": 40.0, "unit": "mA", "label": "Plasma Current"},
+    "temperature_c": {"min": 380.0, "max": 530.0, "unit": "°C", "label": "Chamber Temperature"},
+    "pressure_torr": {"min": 600.0, "max": 900.0, "unit": "Torr", "label": "Base Chamber Pressure"},
+    "gas_flow_sccm": {"min": 70.0, "max": 170.0, "unit": "sccm", "label": "Gas Flow Rate"},
+    "etch_rate_nm_min": {"min": 50.0, "max": 150.0, "unit": "nm/min", "label": "Plasma Etch Rate"},
+    "voltage_v": {"min": 3.0, "max": 7.0, "unit": "V", "label": "RF Voltage"},
+    "current_ma": {"min": 10.0, "max": 30.0, "unit": "mA", "label": "Plasma Current"},
 }
 
 FEATURE_KEY_MAP = {
