@@ -210,68 +210,15 @@
                                     </div>
                                 </div>
 
-                                <!-- Sensor Grid: 2 Columns -->
-                                <div class="grid grid-cols-2 gap-3">
-                                    <!-- Temperature -->
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex justify-between items-center px-1">
-                                            <label for="input-temp" class="font-label-sm text-on-surface font-medium">Temperature</label>
-                                            <span class="text-[10px] text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded">°C</span>
-                                        </div>
-                                        <input type="number" step="0.01" id="input-temp" value="449.89" required
-                                            class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md rounded-2xl px-3.5 py-2 outline-none border border-transparent focus:border-primary-container transition-all" />
+                                <!-- Baseline Parameter Ingestion Notice (Requirement 3 & 5) -->
+                                <div class="p-4 rounded-2xl bg-surface-container-low border border-surface-container flex flex-col gap-1.5 my-1">
+                                    <div class="flex items-center gap-2 text-on-surface font-semibold text-label-md">
+                                        <span class="material-symbols-outlined text-primary text-[18px]">tune</span>
+                                        <span>Automated Baseline Parameters</span>
                                     </div>
-                                    <!-- Pressure -->
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex justify-between items-center px-1">
-                                            <label for="input-pressure" class="font-label-sm text-on-surface font-medium">Pressure</label>
-                                            <span class="text-[10px] text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded">Torr</span>
-                                        </div>
-                                        <input type="number" step="0.01" id="input-pressure" value="759.99" required
-                                            class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md rounded-2xl px-3.5 py-2 outline-none border border-transparent focus:border-primary-container transition-all" />
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-3">
-                                    <!-- Gas Flow -->
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex justify-between items-center px-1">
-                                            <label for="input-gas" class="font-label-sm text-on-surface font-medium">Gas Flow</label>
-                                            <span class="text-[10px] text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded">sccm</span>
-                                        </div>
-                                        <input type="number" step="0.01" id="input-gas" value="119.90" required
-                                            class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md rounded-2xl px-3.5 py-2 outline-none border border-transparent focus:border-primary-container transition-all" />
-                                    </div>
-                                    <!-- Etch Rate -->
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex justify-between items-center px-1">
-                                            <label for="input-etch" class="font-label-sm text-on-surface font-medium">Etch Rate</label>
-                                            <span class="text-[10px] text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded">nm/min</span>
-                                        </div>
-                                        <input type="number" step="0.01" id="input-etch" value="95.17" required
-                                            class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md rounded-2xl px-3.5 py-2 outline-none border border-transparent focus:border-primary-container transition-all" />
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-3">
-                                    <!-- Voltage -->
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex justify-between items-center px-1">
-                                            <label for="input-voltage" class="font-label-sm text-on-surface font-medium">Voltage</label>
-                                            <span class="text-[10px] text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded">V</span>
-                                        </div>
-                                        <input type="number" step="0.01" id="input-voltage" value="4.98" required
-                                            class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md rounded-2xl px-3.5 py-2 outline-none border border-transparent focus:border-primary-container transition-all" />
-                                    </div>
-                                    <!-- Current -->
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex justify-between items-center px-1">
-                                            <label for="input-current" class="font-label-sm text-on-surface font-medium">Current</label>
-                                            <span class="text-[10px] text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded">mA</span>
-                                        </div>
-                                        <input type="number" step="0.01" id="input-current" value="20.04" required
-                                            class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md rounded-2xl px-3.5 py-2 outline-none border border-transparent focus:border-primary-container transition-all" />
-                                    </div>
+                                    <p class="font-body-sm text-on-surface-variant text-[13px] leading-relaxed">
+                                        Sistem akan menggunakan parameter baseline sensor fabrikasi untuk process step yang dipilih dan menjalankan analisis clustering dengan K-Means Pipeline.
+                                    </p>
                                 </div>
 
                                 <!-- Action Button -->
@@ -285,7 +232,7 @@
                             <!-- Loading State Card (Requirement 9) -->
                             <div id="clustering-loading" class="hidden p-4 rounded-2xl bg-primary-fixed/30 border border-primary-fixed flex items-center justify-center gap-3">
                                 <span class="material-symbols-outlined text-primary text-[24px] animate-spin">progress_activity</span>
-                                <span class="font-label-md text-primary font-bold">Analyzing wafer data...</span>
+                                <span class="font-label-md text-primary font-bold">Analyzing wafer profile...</span>
                             </div>
 
                             <!-- Error State Card (Requirement 10) -->
@@ -304,10 +251,10 @@
                                 </button>
                             </div>
 
-                            <!-- Prediction Success Result Card -->
-                            <div id="clustering-result" class="hidden p-4 rounded-2xl bg-surface-container-low border border-primary-fixed flex flex-col gap-2 transition-all">
+                            <!-- Prediction Success Result Card (Separated Cluster ID & Interpretation) -->
+                            <div id="clustering-result" class="hidden p-5 rounded-2xl bg-surface-container-low border border-primary-fixed flex flex-col gap-3 transition-all shadow-sm">
                                 <div class="flex items-center justify-between">
-                                    <span class="px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm font-semibold text-[11px]" id="result-cluster-badge">
+                                    <span class="px-3 py-1 rounded-full bg-primary-container text-on-primary-container font-label-sm font-bold text-[12px]" id="result-cluster-badge">
                                         Cluster 1
                                     </span>
                                     <span class="font-label-sm text-emerald-600 font-semibold flex items-center gap-1">
@@ -315,12 +262,27 @@
                                         <span id="result-db-record">Saved #--</span>
                                     </span>
                                 </div>
-                                <h3 class="font-title-lg text-on-surface font-bold text-[17px]" id="result-cluster-name">
-                                    Cluster 1 - Etching
-                                </h3>
-                                <div class="grid grid-cols-2 gap-2 pt-1 text-[12px] text-on-surface-variant">
-                                    <div>Distance to Centroid: <strong class="text-on-surface font-semibold" id="result-distance">0.0516</strong></div>
-                                    <div>Process: <strong class="text-on-surface font-semibold" id="result-process">Etching</strong></div>
+                                
+                                <div class="flex flex-col gap-0.5">
+                                    <span class="font-label-sm text-on-surface-variant text-[11px] uppercase tracking-wider font-semibold">Assigned Cluster</span>
+                                    <h3 class="font-title-lg text-on-surface font-bold text-[18px]" id="result-cluster-id-text">
+                                        Cluster 1
+                                    </h3>
+                                </div>
+
+                                <div class="p-3 rounded-xl bg-surface-container-lowest border border-surface-container flex flex-col gap-1">
+                                    <span class="font-label-sm text-on-surface-variant text-[11px] uppercase tracking-wider font-semibold">Cluster Interpretation</span>
+                                    <div class="font-body-md text-primary font-semibold text-[14px]" id="result-cluster-interpretation">
+                                        Etching Process Regimen
+                                    </div>
+                                    <p class="font-body-sm text-on-surface-variant text-[12px]" id="result-cluster-desc">
+                                        Representasi gabungan dari parameter sensor baseline dan tahapan proses yang dievaluasi oleh K-Means pipeline.
+                                    </p>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2 pt-2 text-[12px] text-on-surface-variant border-t border-surface-container">
+                                    <div>Process Step: <strong class="text-on-surface font-semibold" id="result-process">Etching</strong></div>
+                                    <div>Distance to Centroid: <strong class="text-on-surface font-semibold" id="result-distance">0.0024</strong></div>
                                 </div>
                             </div>
 
@@ -511,9 +473,9 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary text-[22px]">pie_chart</span>
-                            <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">Cluster Distribution (Actual K=5)</h2>
+                            <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">Dataset Cluster Distribution (K=5)</h2>
                         </div>
-                        <span class="font-label-sm text-on-surface-variant font-medium">5,000 Total Wafers</span>
+                        <span class="font-label-sm text-on-surface-variant font-medium">5,000 Total Training Wafers (Baseline Statistics)</span>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-space-md" id="cluster-cards-container">
@@ -680,46 +642,7 @@
                     </div>
                 </div>
 
-                <!-- Recent Clustering Runs (PostgreSQL History - Requirement 19) -->
-                <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-surface-container flex flex-col gap-space-md">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary text-[22px]">history</span>
-                            <h2 class="font-title-lg text-title-lg text-on-surface font-bold">Recent Clustering Runs</h2>
-                        </div>
-                        <button type="button" id="refresh-history-btn" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant text-[12px] font-semibold transition-all">
-                            <span class="material-symbols-outlined text-[16px]">refresh</span>
-                            <span>Refresh History</span>
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-[13px] border-collapse">
-                            <thead>
-                                <tr class="border-b border-surface-container bg-surface-container-low text-on-surface-variant font-label-md">
-                                    <th class="py-2.5 px-4 font-bold">Time (UTC)</th>
-                                    <th class="py-2.5 px-4 font-bold">Process Step</th>
-                                    <th class="py-2.5 px-4 font-bold">Assigned Cluster</th>
-                                    <th class="py-2.5 px-4 font-bold">Distance to Centroid</th>
-                                    <th class="py-2.5 px-4 font-bold">Persistence</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-surface-container" id="history-tbody">
-                                <tr>
-                                    <td colspan="5" class="py-4 text-center text-on-surface-variant text-[13px]">
-                                        Loading recent runs from PostgreSQL...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
+                <!-- Footer -->
     <footer class="site-footer">
         <div class="site-footer-inner flex flex-col md:flex-row items-center justify-between gap-4">
             <p>© 2026 WaferDefect AI System • Unsupervised K-Means Pipeline & PostgreSQL</p>

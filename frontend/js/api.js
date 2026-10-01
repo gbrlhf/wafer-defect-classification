@@ -58,27 +58,83 @@ const ApiClient = {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ features: features || {} })
             });
-            return await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                return {
+                    success: false,
+                    status: "error",
+                    http_status: response.status,
+                    error_code: "INVALID_JSON_RESPONSE",
+                    message: `Server mengembalikan status HTTP ${response.status} dengan format non-JSON.`
+                };
+            }
+            if (!response.ok) {
+                return {
+                    success: false,
+                    status: "error",
+                    http_status: response.status,
+                    error_code: data.error_code || "HTTP_ERROR",
+                    message: data.message || `Server mengembalikan kode status ${response.status}`,
+                    field: data.field,
+                    supported_range: data.supported_range,
+                    details: data
+                };
+            }
+            return data;
         } catch (error) {
-            console.error("Classification API error:", error);
-            throw error;
+            console.error("Classification API network error:", error);
+            return {
+                success: false,
+                status: "error",
+                error_code: "NETWORK_ERROR",
+                message: "Tidak dapat terhubung ke Backend API (Connection Refused). Pastikan server backend Flask berjalan di port 5000."
+            };
         }
     },
 
     /**
      * Send feature inputs to Unsupervised Clustering model (KMeans pipeline)
      */
-    async predictClustering(features) {
+    async predictClustering(data) {
         try {
+            const payload = data && typeof data === 'object' ? data : { process_step: data };
             const response = await fetch(`${API_BASE_URL}/clustering/predict`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ features: features || {} })
+                body: JSON.stringify(payload)
             });
-            return await response.json();
+            let resData;
+            try {
+                resData = await response.json();
+            } catch (parseErr) {
+                return {
+                    success: false,
+                    status: "error",
+                    http_status: response.status,
+                    message: `Server returned status ${response.status} with non-JSON response.`
+                };
+            }
+            if (!response.ok) {
+                return {
+                    success: false,
+                    status: "error",
+                    http_status: response.status,
+                    error_type: resData.error_type || "HTTP_ERROR",
+                    message: resData.message || `Server returned error (${response.status})`,
+                    details: resData
+                };
+            }
+            return resData;
         } catch (error) {
-            console.error("Clustering API error:", error);
-            throw error;
+            console.error("Clustering API network error:", error);
+            return {
+                success: false,
+                status: "error",
+                error_type: "network_error",
+                message: "Unable to connect to Flask backend. Please verify backend is running on port 5000."
+            };
         }
     },
 

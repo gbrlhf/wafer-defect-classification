@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 from typing import Dict, Any, Optional, List
 import pandas as pd
 import numpy as np
@@ -8,6 +8,53 @@ from ..core.database import SessionLocal
 from ..models.prediction import PredictionRecord
 
 logger = logging.getLogger(__name__)
+
+# Valid categorical process steps supported by the K-Means Pipeline
+VALID_PROCESS_STEPS = ["Lithography", "Etching", "CMP", "Deposition", "Oxidation"]
+
+# Authoritative sensor baseline parameter mapping for each process step (from dataset training centroid profiles)
+PROCESS_STEP_BASELINES = {
+    "Lithography": {
+        "temperature_c": 449.98,
+        "pressure_torr": 760.87,
+        "gas_flow_sccm": 120.14,
+        "etch_rate_nm_min": 95.49,
+        "voltage_v": 4.998,
+        "current_ma": 19.94,
+    },
+    "Etching": {
+        "temperature_c": 449.89,
+        "pressure_torr": 759.99,
+        "gas_flow_sccm": 119.90,
+        "etch_rate_nm_min": 95.17,
+        "voltage_v": 4.984,
+        "current_ma": 20.04,
+    },
+    "CMP": {
+        "temperature_c": 449.80,
+        "pressure_torr": 759.60,
+        "gas_flow_sccm": 120.37,
+        "etch_rate_nm_min": 94.72,
+        "voltage_v": 5.003,
+        "current_ma": 20.05,
+    },
+    "Deposition": {
+        "temperature_c": 450.64,
+        "pressure_torr": 758.44,
+        "gas_flow_sccm": 119.98,
+        "etch_rate_nm_min": 95.01,
+        "voltage_v": 4.983,
+        "current_ma": 19.92,
+    },
+    "Oxidation": {
+        "temperature_c": 450.14,
+        "pressure_torr": 759.58,
+        "gas_flow_sccm": 120.13,
+        "etch_rate_nm_min": 95.27,
+        "voltage_v": 4.994,
+        "current_ma": 19.98,
+    },
+}
 
 # Authoritative cluster profiles from cluster_profiles.json
 FALLBACK_PROFILES = {
@@ -23,7 +70,7 @@ FALLBACK_PROFILES = {
             "pressure_torr": 760.87,
             "gas_flow_sccm": 120.14,
             "etch_rate_nm_min": 95.49,
-            "voltage_v": 4.99,
+            "voltage_v": 4.998,
             "current_ma": 19.94
         },
         "pca_coords": {"pc1": -0.829, "pc2": 1.854, "svg_x": 372.2, "svg_y": 93.2}
@@ -40,7 +87,7 @@ FALLBACK_PROFILES = {
             "pressure_torr": 759.99,
             "gas_flow_sccm": 119.90,
             "etch_rate_nm_min": 95.17,
-            "voltage_v": 4.98,
+            "voltage_v": 4.984,
             "current_ma": 20.04
         },
         "pca_coords": {"pc1": -0.683, "pc2": -1.666, "svg_x": 391.3, "svg_y": 410.0}
@@ -57,7 +104,7 @@ FALLBACK_PROFILES = {
             "pressure_torr": 759.60,
             "gas_flow_sccm": 120.37,
             "etch_rate_nm_min": 94.72,
-            "voltage_v": 5.00,
+            "voltage_v": 5.003,
             "current_ma": 20.05
         },
         "pca_coords": {"pc1": -0.363, "pc2": -0.176, "svg_x": 432.8, "svg_y": 275.8}
@@ -74,7 +121,7 @@ FALLBACK_PROFILES = {
             "pressure_torr": 758.44,
             "gas_flow_sccm": 119.98,
             "etch_rate_nm_min": 95.01,
-            "voltage_v": 4.98,
+            "voltage_v": 4.983,
             "current_ma": 19.92
         },
         "pca_coords": {"pc1": 2.239, "pc2": 0.127, "svg_x": 771.0, "svg_y": 248.5}
@@ -91,54 +138,46 @@ FALLBACK_PROFILES = {
             "pressure_torr": 759.58,
             "gas_flow_sccm": 120.13,
             "etch_rate_nm_min": 95.27,
-            "voltage_v": 4.99,
+            "voltage_v": 4.994,
             "current_ma": 19.98
         },
-        "pca_coords": {"pc1": -0.364, "pc2": -0.139, "svg_x": 432.7, "svg_y": 272.5}
+        "pca_coords": {"pc1": -0.363, "pc2": -0.139, "svg_x": 432.8, "svg_y": 272.5}
     }
 }
-
-REQUIRED_NUMERIC_FEATURES = [
-    "temperature_c",
-    "pressure_torr",
-    "gas_flow_sccm",
-    "etch_rate_nm_min",
-    "voltage_v",
-    "current_ma"
-]
-
-VALID_PROCESS_STEPS = ["Lithography", "Etching", "CMP", "Deposition", "Oxidation"]
 
 
 class ClusteringService:
     """
-    Handles feature preprocessing, unsupervised clustering inference,
-    distance to centroid calculation, and PostgreSQL persistence.
+    Handles feature preprocessing, baseline ingestion per Process Step,
+    K-Means pipeline prediction (k=5), distance computation, PCA projection,
+    and PostgreSQL persistence.
     """
 
     def __init__(self):
         self.model_service = model_service
-        self._pca = None
+        self._pca: Optional[PCA] = None
         self._init_pca()
 
     def _init_pca(self):
-        """Fits a 2D PCA projector on the cluster centroids for 2D visualization."""
-        try:
-            pipeline = self.model_service.get_clustering()
-            if pipeline and hasattr(pipeline, "named_steps") and "kmeans" in pipeline.named_steps:
-                kmeans = pipeline.named_steps["kmeans"]
-                self._pca = PCA(n_components=2)
-                self._pca.fit(kmeans.cluster_centers_)
-        except Exception as e:
-            logger.warning(f"Could not initialize PCA from cluster centers: {e}")
-            self._pca = None
+        """Initializes 2D PCA projector fitted onto the 5 cluster centers."""
+        pipeline = self.model_service.get_clustering()
+        if pipeline is not None and hasattr(pipeline, "named_steps"):
+            try:
+                kmeans = pipeline.named_steps.get("kmeans")
+                if kmeans is not None and hasattr(kmeans, "cluster_centers_"):
+                    centers = kmeans.cluster_centers_
+                    self._pca = PCA(n_components=2, random_state=42)
+                    self._pca.fit(centers)
+                    logger.info("Successfully fitted PCA(n=2) on KMeans cluster centers.")
+            except Exception as e:
+                logger.warning(f"Could not fit PCA on cluster centers: {e}")
 
     def get_all_profiles(self) -> Dict[str, Any]:
-        """Returns all statistical cluster profiles from cluster_profiles.json."""
-        loaded = self.model_service.get_cluster_profiles()
-        if loaded:
+        """Returns full statistical profiles for all 5 detected wafer clusters."""
+        profiles = self.model_service.get_cluster_profiles()
+        if profiles:
             enriched = {}
-            for k, v in loaded.items():
+            for k, v in profiles.items():
                 fb = FALLBACK_PROFILES.get(str(k), {})
                 enriched[str(k)] = {
                     "cluster_id": int(k),
@@ -171,59 +210,53 @@ class ClusteringService:
             }
         }
 
-    def validate_features(self, features: Dict[str, Any]) -> Dict[str, Any]:
+    def predict(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Validates presence and numeric types of all required features.
-        Raises ValueError if required fields are missing or invalid.
-        """
-        if not isinstance(features, dict) or not features:
-            raise ValueError("Request body must contain valid feature dictionary.")
-
-        missing = [f for f in REQUIRED_NUMERIC_FEATURES if f not in features or features[f] is None or features[f] == ""]
-        if missing:
-            raise ValueError(f"Missing required numeric features: {', '.join(missing)}")
-
-        clean = {}
-        for feat in REQUIRED_NUMERIC_FEATURES:
-            try:
-                clean[feat] = float(features[feat])
-            except (ValueError, TypeError):
-                raise ValueError(f"Feature '{feat}' must be a valid number, got: {features.get(feat)}")
-
-        p_step = str(features.get("process_step", "")).strip()
-        if not p_step:
-            raise ValueError("Missing required field 'process_step'.")
-
-        # Normalize process step case
-        matched_step = next((s for s in VALID_PROCESS_STEPS if s.lower() == p_step.lower()), None)
-        if not matched_step:
-            raise ValueError(f"Invalid process_step '{p_step}'. Must be one of: {', '.join(VALID_PROCESS_STEPS)}")
-
-        clean["process_step"] = matched_step
-        return clean
-
-    def predict(self, features: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Assigns a cluster ID (0-4) using kmeans_pipeline.pkl, computes distance to centroid,
-        persists inference to PostgreSQL, and returns full evaluation payload.
+        Executes K-Means Discovery where user selects Process Step.
+        Backend retrieves baseline sensor telemetry for the chosen step,
+        combines them into the model input, executes kmeans_pipeline.predict(),
+        computes centroid distance and PCA projection, and persists to PostgreSQL.
         """
         clustering_pipeline = self.model_service.get_clustering()
         if clustering_pipeline is None:
             return {
+                "success": False,
                 "status": "error",
                 "error_type": "model_missing",
-                "message": "Clustering model ('kmeans_pipeline.pkl') is not available on server.",
+                "message": "Clustering model ('kmeans_pipeline.pkl') is unavailable on server.",
                 "cluster_id": None
             }
 
-        # 1. Feature validation (raises ValueError on bad input)
-        clean_features = self.validate_features(features)
-        input_df = pd.DataFrame([clean_features])
+        if not isinstance(data, dict) or not data:
+            raise ValueError("Request body must contain valid JSON data.")
 
-        # 2. Model inference
+        # Extract process_step from payload
+        raw_step = data.get("process_step")
+        if not raw_step and "features" in data and isinstance(data["features"], dict):
+            raw_step = data["features"].get("process_step")
+
+        if not raw_step or not str(raw_step).strip():
+            raise ValueError("Missing required field 'process_step'. Please select a process step.")
+
+        p_step = str(raw_step).strip()
+        matched_step = next((s for s in VALID_PROCESS_STEPS if s.lower() == p_step.lower()), None)
+        if not matched_step:
+            raise ValueError(f"Invalid process_step '{p_step}'. Must be one of: {', '.join(VALID_PROCESS_STEPS)}")
+
+        # 1. Retrieve baseline parameters for the selected process step
+        baseline = PROCESS_STEP_BASELINES[matched_step]
+
+        # 2. Construct internal feature dictionary
+        clean_features = {
+            **baseline,
+            "process_step": matched_step
+        }
+
+        # 3. Model inference: Pipeline evaluates ColumnTransformer -> StandardScaler -> KMeans
+        input_df = pd.DataFrame([clean_features])
         cluster_val = int(clustering_pipeline.predict(input_df)[0])
 
-        # 3. Distance to Centroid & PCA projection
+        # 4. Distance to Centroid & PCA projection
         preprocessor = clustering_pipeline.named_steps["preprocessor"]
         scaler = clustering_pipeline.named_steps["scaler"]
         kmeans = clustering_pipeline.named_steps["kmeans"]
@@ -252,12 +285,13 @@ class ClusteringService:
             "svg_y": round(max(50.0, min(450.0, svg_y)), 1)
         }
 
-        # 4. Profile Information
+        # 5. Profile Information & Interpretation
         all_profiles = self.get_all_profiles()
         profile_info = all_profiles.get(str(cluster_val), FALLBACK_PROFILES.get(str(cluster_val), {}))
         cluster_name = profile_info.get("cluster_name", f"Cluster {cluster_val}")
+        cluster_interpretation = f"{profile_info.get('proses_dominan', matched_step)} Process Regimen"
 
-        # 5. PostgreSQL Persistence
+        # 6. PostgreSQL Persistence
         db_id = None
         if SessionLocal is not None:
             db = SessionLocal()
@@ -268,8 +302,8 @@ class ClusteringService:
                         **clean_features,
                         "distance_to_centroid": round(distance, 4)
                     },
-                    prediction=f"Cluster {cluster_val} - {profile_info.get('proses_dominan', 'Cluster')}",
-                    confidence=None # No fake confidence
+                    prediction=f"Cluster {cluster_val} - {profile_info.get('proses_dominan', matched_step)}",
+                    confidence=None
                 )
                 db.add(rec)
                 db.commit()
@@ -285,11 +319,15 @@ class ClusteringService:
             raise RuntimeError("Database engine is not initialized. Cannot record prediction.")
 
         return {
+            "success": True,
             "status": "success",
             "cluster_id": cluster_val,
+            "cluster_label": f"Cluster {cluster_val}",
             "cluster_name": cluster_name,
-            "process_step": clean_features["process_step"],
+            "cluster_interpretation": cluster_interpretation,
+            "process_step": matched_step,
             "distance_to_centroid": round(distance, 4),
+            "baseline_parameters": baseline,
             "profile": profile_info,
             "point_coordinates": point_coords,
             "metrics": {
@@ -297,7 +335,7 @@ class ClusteringService:
                 "silhouette_score": 0.812
             },
             "db_record_id": db_id,
-            "message": f"Assigned to {cluster_name} with distance to centroid {round(distance, 4)}."
+            "message": f"Assigned to Cluster {cluster_val} ({profile_info.get('proses_dominan', matched_step)}) with distance to centroid {round(distance, 4)}."
         }
 
     def get_history(self, limit: int = 10) -> List[Dict[str, Any]]:

@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 from flask import Blueprint, jsonify, request
 from ..services.clustering_service import clustering_service
 
@@ -10,33 +10,36 @@ router = Blueprint("clustering", __name__, url_prefix="/api/clustering")
 @router.route("/predict", methods=["POST"])
 def predict_cluster():
     """
-    Executes unsupervised clustering assignment on provided wafer features.
-    Accepts JSON body: { "features": { ... } } or direct feature key-value pairs.
-    Returns HTTP 400 for validation errors, HTTP 500 for database / internal errors.
+    Executes unsupervised clustering assignment on selected process step.
+    Accepts JSON body: { "process_step": "Oxidation" } or { "features": { "process_step": "..." } }.
+    Returns HTTP 200 with cluster result, HTTP 400 for validation errors, HTTP 500 for server errors.
     """
     data = request.get_json(silent=True)
     if data is None:
         return jsonify({
+            "success": False,
             "status": "error",
+            "error_type": "invalid_json",
             "message": "Invalid JSON payload in request body."
         }), 400
 
-    features = data.get("features", data)
     try:
-        result = clustering_service.predict(features)
+        result = clustering_service.predict(data)
         if result.get("status") == "error":
             return jsonify(result), 500
         return jsonify(result), 200
     except ValueError as ve:
         logger.warning(f"Clustering validation error: {ve}")
         return jsonify({
+            "success": False,
             "status": "error",
             "error_type": "validation_error",
             "message": str(ve)
         }), 400
     except RuntimeError as re:
-        logger.error(f"Clustering system/database error: {re}")
+        logger.error(f"Clustering database/runtime error: {re}")
         return jsonify({
+            "success": False,
             "status": "error",
             "error_type": "persistence_error",
             "message": str(re)
@@ -44,6 +47,7 @@ def predict_cluster():
     except Exception as e:
         logger.error(f"Unexpected clustering error: {e}", exc_info=True)
         return jsonify({
+            "success": False,
             "status": "error",
             "error_type": "server_error",
             "message": "Internal clustering execution failure."

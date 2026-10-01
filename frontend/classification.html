@@ -296,11 +296,12 @@
                                         <label class="font-label-md text-label-md text-on-surface"
                                             for="input-temp">Chamber Temperature</label>
                                         <span
-                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">°C</span>
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">300 – 600 °C</span>
                                     </div>
                                     <input
                                         class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                        id="input-temp" step="0.1" type="number" value="420.5" />
+                                        id="input-temp" step="0.1" type="number" value="450.0" placeholder="e.g. 450.0" />
+                                    <div class="invalid-feedback" id="feedback-temp"></div>
                                 </div>
                                 <!-- 2. Pressure -->
                                 <div class="flex flex-col gap-1">
@@ -308,48 +309,52 @@
                                         <label class="font-label-md text-label-md text-on-surface"
                                             for="input-pressure">Base Chamber Pressure</label>
                                         <span
-                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">mTorr</span>
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">500 – 1000 Torr</span>
                                     </div>
                                     <input
                                         class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                        id="input-pressure" step="0.1" type="number" value="15.2" />
+                                        id="input-pressure" step="0.1" type="number" value="760.0" placeholder="e.g. 760.0" />
+                                    <div class="invalid-feedback" id="feedback-pressure"></div>
                                 </div>
                                 <!-- 3. Gas Flow -->
                                 <div class="flex flex-col gap-1">
                                     <div class="flex justify-between items-center px-1">
                                         <label class="font-label-md text-label-md text-on-surface" for="input-gas">Gas
-                                            Flow (CF4/Ar)</label>
+                                            Flow Rate</label>
                                         <span
-                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">sccm</span>
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">50 – 200 sccm</span>
                                     </div>
                                     <input
                                         class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                        id="input-gas" step="0.1" type="number" value="120.0" />
+                                        id="input-gas" step="0.1" type="number" value="120.0" placeholder="e.g. 120.0" />
+                                    <div class="invalid-feedback" id="feedback-gas"></div>
                                 </div>
                                 <!-- 4. Etch Rate -->
                                 <div class="flex flex-col gap-1">
                                     <div class="flex justify-between items-center px-1">
-                                        <label class="font-label-md text-label-md text-on-surface" for="input-etch">Etch
-                                            Rate</label>
+                                        <label class="font-label-md text-label-md text-on-surface" for="input-etch">Plasma
+                                            Etch Rate</label>
                                         <span
-                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">nm/min</span>
+                                            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">50 – 200 nm/min</span>
                                     </div>
                                     <input
                                         class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-4 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                        id="input-etch" step="0.1" type="number" value="310.8" />
+                                        id="input-etch" step="0.1" type="number" value="95.0" placeholder="e.g. 95.0" />
+                                    <div class="invalid-feedback" id="feedback-etch"></div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-space-sm">
                                     <!-- 5. Voltage -->
                                     <div class="flex flex-col gap-1">
                                         <div class="flex justify-between items-center px-1">
                                             <label class="font-label-md text-label-md text-on-surface"
-                                                for="input-voltage">Bias Voltage</label>
+                                                for="input-voltage">RF Voltage</label>
                                             <span
-                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">V</span>
+                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">2.0 – 10 V</span>
                                         </div>
                                         <input
                                             class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-3 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                            id="input-voltage" step="0.1" type="number" value="24.5" />
+                                            id="input-voltage" step="0.1" type="number" value="5.0" placeholder="e.g. 5.0" />
+                                        <div class="invalid-feedback" id="feedback-voltage"></div>
                                     </div>
                                     <!-- 6. Current -->
                                     <div class="flex flex-col gap-1">
@@ -357,46 +362,33 @@
                                             <label class="font-label-md text-label-md text-on-surface"
                                                 for="input-current">Plasma Current</label>
                                             <span
-                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">mA</span>
+                                                class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded-full">10 – 40 mA</span>
                                         </div>
                                         <input
                                             class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-2xl px-3 py-2.5 outline-none focus:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all"
-                                            id="input-current" step="0.1" type="number" value="150.2" />
+                                            id="input-current" step="0.1" type="number" value="20.0" placeholder="e.g. 20.0" />
+                                        <div class="invalid-feedback" id="feedback-current"></div>
                                     </div>
                                 </div>
 
                                 <!-- Action Buttons -->
                                 <div class="flex flex-col sm:flex-row items-center gap-space-sm pt-4">
                                     <button
-                                        class="w-full sm:flex-1 py-3 px-6 rounded-full bg-gradient-to-r from-primary-container to-surface-tint text-on-primary font-label-lg text-label-lg shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+                                        class="w-full sm:flex-1 py-3 px-6 rounded-full bg-gradient-to-r from-primary-container to-surface-tint text-on-primary font-label-lg text-label-lg shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
                                         id="btn-predict" type="button">
                                         <span class="material-symbols-outlined text-[20px]">auto_awesome</span>
                                         Predict Defect
                                     </button>
                                     <button
-                                        class="w-full sm:w-auto py-3 px-6 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-all"
+                                        class="w-full sm:w-auto py-3 px-6 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-all cursor-pointer"
                                         id="btn-clear" type="button">
                                         Clear
                                     </button>
-                                    <p
-                                        class="w-full sm:flex-1 font-label-sm text-label-sm text-on-surface-variant/80 text-left sm:text-left">
-                                        All numeric fields validated against standard fab recipe distributions.
-                                    </p>
                                 </div>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant/80 text-left pt-1">
+                                    All numeric fields strictly validated against supported fab metrology limits.
+                                </p>
                             </form>
-
-                            <!-- Supportive Micro Card: Batch Health -->
-                            <div class="bg-surface-container-low rounded-3xl p-5 flex items-center gap-4">
-                                <div
-                                    class="w-12 h-12 rounded-2xl bg-secondary-fixed flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined text-secondary text-[24px]">verified</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="font-title-md text-title-md text-on-surface">Substrate Metrology
-                                        Spec</span>
-                                    <span class="font-body-sm text-body-sm text-on-surface-variant">Calibrated for 300mm
-                                        standard silicon substrates adhering to SEMI M1 standards.</span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -419,8 +411,115 @@
                         <!-- MAIN RESULT CONTAINER (Dynamic swapping content) -->
                         <div
                             class="bg-surface-container-lowest rounded-3xl p-7 shadow-sm relative min-h-[560px] flex flex-col justify-between overflow-hidden">
-                            <!-- STATE 1: NORMAL (Default) -->
-                            <div class="state-view flex flex-col gap-6" id="view-normal">
+                            <!-- STATE: INITIAL / EMPTY (Menunggu Input) -->
+                            <div class="state-view flex flex-col gap-6" id="view-empty">
+                                <div class="flex flex-wrap items-center justify-between gap-space-sm pb-4 border-b border-surface-container">
+                                    <div class="flex items-center gap-3">
+                                        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-title-md text-title-md">
+                                            <span class="material-symbols-outlined text-[20px]">hourglass_empty</span> MENUNGGU INPUT
+                                        </span>
+                                        <span class="font-label-md text-label-md text-on-surface-variant">Ready for Metrology Analysis</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-label-sm text-label-sm text-on-surface-variant">Model Engine</span>
+                                        <span class="font-label-md text-label-md px-3 py-1 rounded-full bg-surface-container text-secondary font-medium">RandomForest Ready</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface-container-low rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-3 my-auto py-8">
+                                    <div class="w-16 h-16 rounded-full bg-primary-fixed/30 flex items-center justify-center text-primary mb-1">
+                                        <span class="material-symbols-outlined text-[36px]">precision_manufacturing</span>
+                                    </div>
+                                    <span class="font-title-lg text-title-lg text-on-surface font-semibold">Chamber Metrology Telemetry Ready</span>
+                                    <p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+                                        Masukkan parameter proses chamber pada formulir atau gunakan tombol preset <strong>Sample: Normal</strong> / <strong>Sample: Defect</strong>, lalu klik <strong>Predict Defect</strong> untuk menganalisis anomali wafer.
+                                    </p>
+                                </div>
+
+                                <div class="bg-surface-container-lowest border border-surface-container rounded-2xl p-4 flex flex-col gap-2.5">
+                                    <span class="font-label-md text-label-md text-on-surface flex items-center gap-1.5 font-semibold">
+                                        <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+                                        Supported Chamber Operational Limits
+                                    </span>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left">
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Temperature</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">300 – 600 °C</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Pressure</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">500 – 1000 Torr</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Gas Flow</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">50 – 200 sccm</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Etch Rate</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">50 – 200 nm/min</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">RF Voltage</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">2.0 – 10.0 V</div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-surface-container-low">
+                                            <div class="font-label-sm text-on-surface-variant text-[11px]">Current</div>
+                                            <div class="font-title-sm text-on-surface font-semibold">10.0 – 40.0 mA</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STATE: LOADING (Analyzing Wafer) -->
+                            <div class="state-view hidden flex-col gap-6" id="view-loading">
+                                <div class="flex flex-wrap items-center justify-between gap-space-sm pb-4 border-b border-surface-container">
+                                    <div class="flex items-center gap-3">
+                                        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary-fixed text-on-primary-fixed font-title-md text-title-md animate-pulse">
+                                            <span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> ANALYZING WAFER...
+                                        </span>
+                                        <span class="font-label-md text-label-md text-on-surface-variant">Inference in Progress</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-label-sm text-label-sm text-on-surface-variant">Engine</span>
+                                        <span class="font-label-md text-label-md px-3 py-1 rounded-full bg-surface-container text-primary font-medium">RandomForest ML</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface-container-low rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-4 my-auto py-12">
+                                    <div class="relative w-20 h-20 flex items-center justify-center">
+                                        <div class="absolute inset-0 rounded-full border-4 border-surface-container-highest border-t-primary animate-spin"></div>
+                                        <div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-sm">
+                                            <span class="material-symbols-outlined text-primary text-[24px] animate-pulse">memory</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-1 max-w-sm">
+                                        <span class="font-title-md text-title-md text-on-surface font-semibold">Evaluating Supervised Metrology Model</span>
+                                        <p class="font-body-sm text-body-sm text-on-surface-variant">
+                                            Menjalankan feature transformation StandardScaler dan voting probabilitas pada 100 decision trees...
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface-container-lowest border border-surface-container rounded-2xl p-4 flex flex-col gap-2">
+                                    <div class="flex items-center justify-between text-body-sm text-on-surface">
+                                        <span class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+                                            Validasi Schema &amp; Batas Fisik Parameter
+                                        </span>
+                                        <span class="font-label-sm text-secondary font-medium">Passed</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-body-sm text-on-surface">
+                                        <span class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-primary text-[18px] animate-spin">sync</span>
+                                            StandardScaler &amp; Random Forest Classification
+                                        </span>
+                                        <span class="font-label-sm text-primary font-medium">Running...</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STATE 1: NORMAL -->
+                            <div class="state-view hidden flex-col gap-6" id="view-normal">
                                 <!-- Header status row -->
                                 <div
                                     class="flex flex-wrap items-center justify-between gap-space-sm pb-4 border-b border-surface-container">
@@ -430,49 +529,9 @@
                                             <span class="material-symbols-outlined text-[20px] text-secondary"
                                                 style="font-variation-settings: 'FILL' 1;">check_circle</span> NORMAL
                                         </span>
-                                        <span class="font-label-md text-label-md text-on-surface-variant">Class 0 ·
-                                            Nominal Run</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-label-sm text-label-sm text-on-surface-variant">Recipe
-                                            Run</span>
-                                        <span
-                                            class="font-label-md text-label-md px-3 py-1 rounded-full bg-surface-container text-on-surface">#WF-9042A</span>
                                     </div>
                                 </div>
-                                <!-- Confidence Meter -->
-                                <div class="bg-surface-container-low rounded-2xl p-4 flex flex-col gap-2">
-                                    <div class="flex justify-between items-center">
-                                        <span
-                                            class="font-label-lg text-label-lg text-on-surface flex items-center gap-1.5">
-                                            <span
-                                                class="material-symbols-outlined text-secondary text-[18px]">verified_user</span>
-                                            Model Confidence
-                                        </span>
-                                        <span class="font-title-md text-title-md text-secondary font-bold">94.2%</span>
-                                    </div>
-                                    <div
-                                        class="w-full h-3 rounded-full bg-surface-container-highest overflow-hidden p-0.5">
-                                        <div class="h-full rounded-full bg-gradient-to-r from-secondary to-primary-container transition-all duration-700"
-                                            style="width: 94.2%;"></div>
-                                    </div>
-                                </div>
-                                <!-- Explanation Box -->
-                                <div class="bg-secondary-fixed/30 rounded-2xl p-4 flex items-start gap-3">
-                                    <div
-                                        class="p-2 rounded-xl bg-surface-container-lowest text-secondary shrink-0 mt-0.5">
-                                        <span class="material-symbols-outlined text-[20px]">smart_toy</span>
-                                    </div>
-                                    <div class="flex flex-col gap-0.5">
-                                        <span class="font-title-md text-title-md text-on-secondary-fixed">Metrology
-                                            Diagnostic Passed</span>
-                                        <p class="font-body-md text-body-md text-on-surface-variant">
-                                            Wafer tidak terindikasi mengalami defect. Seluruh parameter berada dalam
-                                            toleransi optimal proses fabrikasi standar.
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- Visualizations Split: Wafer Die Grid & SHAP Importance -->
+                                <!-- Visualizations Split: Wafer Die Grid & Feature Importance -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md pt-2">
                                     <!-- Substrate Metrology Map (Circular Wafer View) -->
                                     <div
@@ -614,80 +673,18 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <!-- Parameter Feature Importance (SHAP values) -->
+                                    <!-- Parameter Feature Importance -->
                                     <div class="bg-surface-container-low rounded-2xl p-4 flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between pb-3">
-                                                <span class="font-label-md text-label-md text-on-surface">SHAP Feature
-                                                    Attribution</span>
-                                                <span
-                                                    class="font-label-sm text-label-sm text-on-surface-variant">Relative
-                                                    Impact</span>
+                                                <span class="font-label-md text-label-md text-on-surface">Feature Importance</span>
+                                                <span class="font-label-sm text-label-sm text-on-surface-variant" id="normal-factors-badge">Model Attribution</span>
                                             </div>
-                                            <div class="flex flex-col gap-3.5">
-                                                <!-- Feature 1 -->
-                                                <div class="flex flex-col gap-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span
-                                                            class="font-body-sm text-body-sm text-on-surface">Temperature
-                                                            (°C)</span>
-                                                        <span
-                                                            class="font-label-sm text-label-sm text-on-surface font-semibold">38.4%</span>
-                                                    </div>
-                                                    <div
-                                                        class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
-                                                        <div class="h-full rounded-full bg-primary"
-                                                            style="width: 38.4%;"></div>
-                                                    </div>
-                                                </div>
-                                                <!-- Feature 2 -->
-                                                <div class="flex flex-col gap-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="font-body-sm text-body-sm text-on-surface">Etch
-                                                            Rate (nm/min)</span>
-                                                        <span
-                                                            class="font-label-sm text-label-sm text-on-surface font-semibold">27.1%</span>
-                                                    </div>
-                                                    <div
-                                                        class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
-                                                        <div class="h-full rounded-full bg-primary-container"
-                                                            style="width: 27.1%;"></div>
-                                                    </div>
-                                                </div>
-                                                <!-- Feature 3 -->
-                                                <div class="flex flex-col gap-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="font-body-sm text-body-sm text-on-surface">Base
-                                                            Pressure (mTorr)</span>
-                                                        <span
-                                                            class="font-label-sm text-label-sm text-on-surface font-semibold">19.5%</span>
-                                                    </div>
-                                                    <div
-                                                        class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
-                                                        <div class="h-full rounded-full bg-secondary"
-                                                            style="width: 19.5%;"></div>
-                                                    </div>
-                                                </div>
-                                                <!-- Feature 4 -->
-                                                <div class="flex flex-col gap-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="font-body-sm text-body-sm text-on-surface">Gas Flow
-                                                            (CF4/Ar)</span>
-                                                        <span
-                                                            class="font-label-sm text-label-sm text-on-surface font-semibold">15.0%</span>
-                                                    </div>
-                                                    <div
-                                                        class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
-                                                        <div class="h-full rounded-full bg-secondary-container"
-                                                            style="width: 15.0%;"></div>
-                                                    </div>
-                                                </div>
+                                            <div class="flex flex-col gap-3.5" id="normal-factors-list">
+                                                <!-- Dynamically populated from backend feature_contributions -->
                                             </div>
                                         </div>
-                                        <div class="pt-3 border-t border-surface-container text-right">
-                                            <span class="font-label-sm text-label-sm text-on-surface-variant">Global
-                                                Shapley Values (XGBoost + LightGBM ensemble)</span>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -702,49 +699,9 @@
                                                 style="font-variation-settings: 'FILL' 1;">warning</span> DEFECT
                                             DETECTED
                                         </span>
-                                        <span class="font-label-md text-label-md text-tertiary">Ring / Peripheral
-                                            Anomaly</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-label-sm text-label-sm text-on-surface-variant">Recipe
-                                            Run</span>
-                                        <span
-                                            class="font-label-md text-label-md px-3 py-1 rounded-full bg-surface-container text-on-surface">#WF-4019E</span>
                                     </div>
                                 </div>
-                                <!-- Confidence Meter -->
-                                <div class="bg-surface-container-low rounded-2xl p-4 flex flex-col gap-2">
-                                    <div class="flex justify-between items-center">
-                                        <span
-                                            class="font-label-lg text-label-lg text-on-surface flex items-center gap-1.5">
-                                            <span
-                                                class="material-symbols-outlined text-tertiary text-[18px]">emergency</span>
-                                            Anomaly Probability
-                                        </span>
-                                        <span class="font-title-md text-title-md text-tertiary font-bold">88.7%</span>
-                                    </div>
-                                    <div
-                                        class="w-full h-3 rounded-full bg-surface-container-highest overflow-hidden p-0.5">
-                                        <div class="h-full rounded-full bg-gradient-to-r from-tertiary-container to-tertiary transition-all duration-700"
-                                            style="width: 88.7%;"></div>
-                                    </div>
-                                </div>
-                                <!-- Explanation Box -->
-                                <div class="bg-tertiary-fixed/40 rounded-2xl p-4 flex items-start gap-3">
-                                    <div
-                                        class="p-2 rounded-xl bg-surface-container-lowest text-tertiary shrink-0 mt-0.5">
-                                        <span class="material-symbols-outlined text-[20px]">report_problem</span>
-                                    </div>
-                                    <div class="flex flex-col gap-0.5">
-                                        <span class="font-title-md text-title-md text-on-tertiary-fixed">Chamber Thermal
-                                            Spike Disruption</span>
-                                        <p class="font-body-md text-body-md text-on-surface-variant">
-                                            Wafer terindikasi mengalami cacat klaster konsentris (Ring Defect).
-                                            Fluktuasi suhu dan tekanan mTorr melebihi batas kendali kritis proses etsa.
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- Visualizations Split: Wafer Die Grid with Defects & SHAP -->
+                                <!-- Visualizations Split: Wafer Die Grid with Defects & Feature Importance -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md pt-2">
                                     <div
                                         class="bg-surface-container-low rounded-2xl p-4 flex flex-col items-center justify-between">
@@ -883,71 +840,67 @@
                                     <div class="bg-surface-container-low rounded-2xl p-4 flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between pb-3">
-                                                <span class="font-label-md text-label-md text-on-surface">Top
-                                                    Contributory Factors</span>
-                                                <span class="font-label-sm text-label-sm text-tertiary">Deviation
-                                                    +3.2σ</span>
+                                                <span class="font-label-md text-label-md text-on-surface">Top Influential Features</span>
+                                                <span class="font-label-sm text-label-sm text-tertiary" id="defect-factors-badge">Feature Impact</span>
                                             </div>
-                                            <div class="flex flex-col gap-3.5">
-                                                <div class="flex flex-col gap-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span
-                                                            class="font-body-sm text-body-sm text-on-surface">Temperature
-                                                            (512.4°C)</span>
-                                                        <span
-                                                            class="font-label-sm text-label-sm text-tertiary font-semibold">51.2%</span>
-                                                    </div>
-                                                    <div
-                                                        class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
-                                                        <div class="h-full rounded-full bg-tertiary"
-                                                            style="width: 51.2%;"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="flex flex-col gap-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="font-body-sm text-body-sm text-on-surface">Pressure
-                                                            (32.8 mTorr)</span>
-                                                        <span
-                                                            class="font-label-sm text-label-sm text-on-surface font-semibold">28.4%</span>
-                                                    </div>
-                                                    <div
-                                                        class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
-                                                        <div class="h-full rounded-full bg-tertiary-container"
-                                                            style="width: 28.4%;"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="flex flex-col gap-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="font-body-sm text-body-sm text-on-surface">Gas Flow
-                                                            (CF4/Ar)</span>
-                                                        <span
-                                                            class="font-label-sm text-label-sm text-on-surface font-semibold">12.1%</span>
-                                                    </div>
-                                                    <div
-                                                        class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
-                                                        <div class="h-full rounded-full bg-primary"
-                                                            style="width: 12.1%;"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="flex flex-col gap-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="font-body-sm text-body-sm text-on-surface">Plasma
-                                                            Current (mA)</span>
-                                                        <span
-                                                            class="font-label-sm text-label-sm text-on-surface font-semibold">8.3%</span>
-                                                    </div>
-                                                    <div
-                                                        class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
-                                                        <div class="h-full rounded-full bg-secondary"
-                                                            style="width: 8.3%;"></div>
-                                                    </div>
-                                                </div>
+                                            <div class="flex flex-col gap-3.5" id="defect-factors-list">
+                                                <!-- Dynamically populated from backend feature_contributions -->
                                             </div>
                                         </div>
                                         <div class="pt-3 border-t border-surface-container text-right">
-                                            <span class="font-label-sm text-label-sm text-tertiary">Action: Recommend
-                                                chamber purge &amp; recalibration</span>
+                                            <span class="font-label-sm text-label-sm text-tertiary">Action: Recommend chamber purge &amp; recalibration</span>
                                         </div>
+                                    </div>
+                                </div>
+                                                        </div>
+
+                            <!-- STATE: ERROR (Validation or System Failure) -->
+                            <div class="state-view hidden flex-col gap-6" id="view-error">
+                                <div class="flex flex-wrap items-center justify-between gap-space-sm pb-4 border-b border-surface-container">
+                                    <div class="flex items-center gap-3">
+                                        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-error-container text-on-error-container font-title-md text-title-md">
+                                            <span class="material-symbols-outlined text-[20px] text-error">error</span> UNABLE TO PROCESS
+                                        </span>
+                                        <span class="font-label-md text-label-md text-error" id="error-badge-subtitle">Input Validation Error</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-label-sm text-label-sm text-on-surface-variant">Action Required</span>
+                                        <span class="font-label-md text-label-md px-3 py-1 rounded-full bg-error-container/30 text-error font-medium">Correction Needed</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-error-container/20 border border-error/30 rounded-2xl p-5 flex items-start gap-4">
+                                    <div class="p-2.5 rounded-xl bg-surface-container-lowest text-error shrink-0 mt-0.5 shadow-sm">
+                                        <span class="material-symbols-outlined text-[24px]">report_problem</span>
+                                    </div>
+                                    <div class="flex flex-col gap-1 text-left flex-1">
+                                        <span class="font-title-md text-title-md text-error font-semibold" id="error-title">
+                                            Input Parameter Out of Supported Range
+                                        </span>
+                                        <p class="font-body-md text-body-md text-on-surface-variant" id="error-message">
+                                            Nilai yang dimasukkan berada di luar batas toleransi instrumen etsa. Pastikan nilai berada di antara batas minimum dan maksimum spesifikasi wafer.
+                                        </p>
+                                        <div class="mt-2 text-label-sm text-error bg-surface-container-lowest/90 px-3 py-1.5 rounded-lg border border-error/20 inline-block font-mono" id="error-hint">
+                                            Supported Range: 50.0 - 200.0 nm/min
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface-container-low rounded-2xl p-4 flex flex-col gap-3">
+                                    <span class="font-label-md text-label-md text-on-surface flex items-center gap-1.5 font-semibold">
+                                        <span class="material-symbols-outlined text-secondary text-[18px]">build_circle</span>
+                                        Rekomendasi Pemulihan Parameter
+                                    </span>
+                                    <p class="font-body-sm text-body-sm text-on-surface-variant">
+                                        Untuk melanjutkan inferensi deteksi defect, perbaiki nilai input yang tidak valid pada formulir atau gunakan tombol preset di bawah ini:
+                                    </p>
+                                    <div class="flex flex-wrap gap-2 pt-1">
+                                        <button type="button" id="btn-fix-nominal" class="py-2 px-4 rounded-full bg-primary-container text-on-primary font-label-md hover:brightness-105 transition-all flex items-center gap-1.5 cursor-pointer">
+                                            <span class="material-symbols-outlined text-[18px]">restart_alt</span> Gunakan Preset Nominal (95 nm/min)
+                                        </button>
+                                        <button type="button" id="btn-fix-defect" class="py-2 px-4 rounded-full bg-surface-container text-on-surface font-label-md hover:bg-surface-container-high transition-all flex items-center gap-1.5 cursor-pointer">
+                                            <span class="material-symbols-outlined text-[18px]">warning</span> Gunakan Preset Defect (135 nm/min)
+                                        </button>
                                     </div>
                                 </div>
                             </div>
