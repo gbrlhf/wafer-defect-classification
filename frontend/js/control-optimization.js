@@ -1,312 +1,386 @@
 /**
- * Control Optimization Page JavaScript
- * Connects In-situ Semiconductor Process Control UI to Reinforcement Learning (Q-Table)
- * Backend API.
+ * Control Optimization - Q-Learning Process Control Agent
+ * Connects Fab Chamber Controls to Backend Q-Learning REST API.
  */
+
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Initializing Control Optimization RL controller...");
+    console.log("Initializing Control Optimization Q-Learning Controller...");
 
-    // Helper to safely find elements by tag and text content
-    function findElementByText(tag, textSnippet) {
-        return Array.from(document.querySelectorAll(tag)).find(el => 
-            el.textContent && el.textContent.includes(textSnippet)
-        );
-    }
-
-    // Sliders & Value Labels
-    const tempSlider = document.getElementById("temp-slider");
-    const tempVal = document.getElementById("temp-val");
-
+    // UI Sliders
     const pressureSlider = document.getElementById("pressure-slider");
     const pressureVal = document.getElementById("pressure-val");
 
     const flowSlider = document.getElementById("flow-slider");
     const flowVal = document.getElementById("flow-val");
 
-    const rfSlider = document.getElementById("rf-power-slider");
-    const rfVal = document.getElementById("rf-power-val");
+    const powerSlider = document.getElementById("power-slider");
+    const powerVal = document.getElementById("power-val");
 
-    const durationSlider = document.getElementById("duration-slider");
-    const durationVal = document.getElementById("duration-val");
+    const tempSlider = document.getElementById("temp-slider");
+    const tempVal = document.getElementById("temp-val");
+
+    const timeSlider = document.getElementById("time-slider");
+    const timeVal = document.getElementById("time-val");
+
+    const rateSlider = document.getElementById("rate-slider");
+    const rateVal = document.getElementById("rate-val");
 
     // Action Buttons
-    const btnStep = document.getElementById("btn-step");
+    const btnSimulate = document.getElementById("btn-recommend");
     const btnEpisodes = document.getElementById("btn-episodes");
     const btnReset = document.getElementById("btn-reset");
 
-    // UI Target Display Elements (Safe Selection)
-    // 1. Recommendation Card Title (h3 with "Recommended Action")
-    const actionCardTitle = findElementByText("h3", "Recommended Action") || document.querySelector("h3.font-headline-sm");
-    
-    // 2. Rationale element (p containing "Agent Rationale")
-    const actionRationale = findElementByText("p", "Agent Rationale") || document.querySelector(".bg-gradient-to-br p");
-    
-    // 3. Policy Output Tensor element (span containing "Policy Output Tensor")
-    const policyTensorText = findElementByText("span", "Policy Output Tensor") || findElementByText("span", "Policy Output");
-    
-    // 4. Confidence Badge (span containing percentage inside recommendation card)
-    let confidenceBadge = null;
-    const confLabel = findElementByText("span", "Confidence Level");
-    if (confLabel && confLabel.parentElement) {
-        confidenceBadge = confLabel.parentElement.querySelector("span:last-child");
+    // Simulation Step Output Display Elements
+    const stepRewardVal = document.getElementById("step-reward-val");
+    const nextTempVal = document.getElementById("next-temp-val");
+    const stepEvalText = document.getElementById("step-eval-text");
+
+    // Episodes Summary Metrics
+    const epCountVal = document.getElementById("episodes-count-val");
+    const finalRewardVal = document.getElementById("final-reward-val");
+    const avgRewardVal = document.getElementById("avg-reward-val");
+
+    // Error Container
+    const errorContainer = document.getElementById("error-notification");
+    const errorMsgText = document.getElementById("error-message-text");
+    const btnCloseError = document.getElementById("btn-close-error");
+
+    // Action Cards (0 to 5)
+    const actionCards = Array.from({ length: 6 }, (_, i) => document.getElementById(`card-action-${i}`));
+
+    // Chart Setup
+    let rewardChart = null;
+    const canvas = document.getElementById("rewardCanvas");
+
+    function initChart() {
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        rewardChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Q-Learning Reward per Episode',
+                    data: [],
+                    borderColor: '#7c3aed',
+                    backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#7c3aed',
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                        ticks: { color: '#6b6575', font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                        ticks: { color: '#6b6575', font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `Reward: ${context.parsed.y.toFixed(2)}`
+                        }
+                    }
+                }
+            }
+        });
     }
 
-    // 5. Execute Action Button
-    const btnExecute = findElementByText("button", "Execute Action");
+    initChart();
 
-    // 6. Action Space Grid buttons
-    const actionButtons = document.querySelectorAll("#action-grid button");
+    function showError(msg) {
+        if (errorContainer && errorMsgText) {
+            errorMsgText.textContent = msg;
+            errorContainer.classList.remove("hidden");
+        }
+    }
 
-    // 7. Middle Metrics Cards (Markov Dynamics)
-    const metricCards = document.querySelectorAll(".grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div");
-    const stateMetricValue = metricCards.length > 0 ? metricCards[0].querySelector(".font-title-md") : null;
-    const rewardMetricValue = metricCards.length > 2 ? metricCards[2].querySelector(".font-title-md") : null;
-    const statusMetricValue = metricCards.length > 3 ? metricCards[3].querySelector(".font-title-md") : null;
+    function hideError() {
+        if (errorContainer) {
+            errorContainer.classList.add("hidden");
+        }
+    }
 
-    // 8. Preset Dropdowns
-    const presetSelects = document.querySelectorAll("select");
-    const statePresetSelect = presetSelects.length > 0 ? presetSelects[0] : null;
-
-    // Debounce timer for smooth slider dragging
-    let debounceTimer = null;
-    let isEvaluating = false;
+    if (btnCloseError) {
+        btnCloseError.addEventListener("click", hideError);
+    }
 
     function getSensorInputs() {
+        const p = parseFloat(pressureSlider.value);
+        const f = parseFloat(flowSlider.value);
+        const pow = parseFloat(powerSlider.value);
+        const t = parseFloat(tempSlider.value);
+        const dur = parseFloat(timeSlider.value);
+        const rate = parseFloat(rateSlider.value);
+
         return {
-            temperature_c: parseFloat(tempSlider ? tempSlider.value : 412),
-            pressure_torr: parseFloat(pressureSlider ? (parseFloat(pressureSlider.value) / 10).toFixed(1) : 18.4),
-            gas_flow_sccm: parseFloat(flowSlider ? flowSlider.value : 105),
-            voltage_v: parseFloat(rfSlider ? (parseFloat(rfSlider.value) / 180).toFixed(2) : 4.7),
-            etch_rate_nm_min: parseFloat(durationSlider ? durationSlider.value : 68) * 1.3
+            chamber_pressure: p,
+            gas_flow_rate: f,
+            rf_power: pow,
+            wafer_temp: t,
+            etch_duration: dur,
+            etch_rate: rate,
+
+            // Aliases for backend compatibility
+            pressure_torr: p,
+            gas_flow_sccm: f,
+            rf_power_w: pow,
+            temperature_c: t,
+            duration_s: dur,
+            etch_rate_nm_min: rate
         };
     }
 
-    async function evaluateRLPolicy() {
-        if (isEvaluating) return;
-        isEvaluating = true;
+    function updateSliderLabels() {
+        if (pressureVal) pressureVal.textContent = `${parseFloat(pressureSlider.value).toFixed(1)} mTorr`;
+        if (flowVal) flowVal.textContent = `${flowSlider.value} sccm`;
+        if (powerVal) powerVal.textContent = `${powerSlider.value} W`;
+        if (tempVal) tempVal.textContent = `${tempSlider.value} °C`;
+        if (timeVal) timeVal.textContent = `${timeSlider.value} s`;
+        if (rateVal) rateVal.textContent = `${parseFloat(rateSlider.value).toFixed(2)} nm/min`;
+    }
 
+    function updateCardHighlights(actionId, inputs) {
+        const temp = inputs.wafer_temp || 200;
+        const press = inputs.chamber_pressure || 15;
+        const flow = inputs.gas_flow_rate || 120;
+
+        actionCards.forEach((card, idx) => {
+            if (!card) return;
+            let isHighlight = false;
+
+            if (actionId === 0) {
+                // Turunkan Parameter
+                if (idx === 0 && temp >= 200) isHighlight = true; // Decrease Temp
+                if (idx === 3 && press >= 20) isHighlight = true; // Reduce Pressure
+            } else if (actionId === 1) {
+                // Pertahankan
+                if (idx === 1) isHighlight = true; // Hold Steady
+            } else if (actionId === 2) {
+                // Naikkan Parameter
+                if (idx === 2 && temp < 200) isHighlight = true; // Increase Temp
+                if (idx === 4 && press < 15) isHighlight = true; // Increase Pressure
+                if (idx === 5 && (flow < 110 || flow > 130)) isHighlight = true; // Adjust Gas Flow
+                if (!isHighlight && idx === 2) isHighlight = true; // Default fallback for Naikkan
+            }
+
+            if (isHighlight) {
+                card.className = "action-card p-4 rounded-2xl border-2 border-[#7c3aed] bg-[#f3e8ff] transition-all cursor-pointer shadow-sm";
+            } else {
+                card.className = "action-card p-4 rounded-2xl border-2 border-[#f1eee8] bg-[#fef9f2] hover:border-[#7c3aed] transition-all cursor-pointer";
+            }
+        });
+    }
+
+    // Set UI to Clean Fresh/Idle Initial State
+    function initFreshState() {
+        hideError();
+        updateSliderLabels();
+
+        // Simulation Step Output Idle State
+        if (stepRewardVal) {
+            stepRewardVal.textContent = "-";
+            stepRewardVal.className = "text-base font-extrabold text-gray-400";
+        }
+        if (nextTempVal) {
+            nextTempVal.textContent = "-";
+            nextTempVal.className = "text-base font-extrabold text-gray-400";
+        }
+        if (stepEvalText) {
+            stepEvalText.textContent = "Simulasi belum dijalankan.";
+            stepEvalText.className = "text-xs text-[#6b6575] bg-[#f8f4ee] p-3 rounded-xl border border-[#e2dcd2]";
+        }
+
+        // Unhighlight Action Cards
+        actionCards.forEach((card) => {
+            if (card) {
+                card.className = "action-card p-4 rounded-2xl border-2 border-[#f1eee8] bg-[#fef9f2] hover:border-[#7c3aed] transition-all cursor-pointer";
+            }
+        });
+
+        // Episodes Summary Panel Idle State
+        if (epCountVal) epCountVal.textContent = "0";
+        if (finalRewardVal) {
+            finalRewardVal.textContent = "-";
+            finalRewardVal.className = "text-lg font-extrabold text-gray-400";
+        }
+        if (avgRewardVal) {
+            avgRewardVal.textContent = "-";
+            avgRewardVal.className = "text-lg font-extrabold text-gray-400";
+        }
+
+        // Clear Convergence Chart Data
+        if (rewardChart) {
+            rewardChart.data.labels = [];
+            rewardChart.data.datasets[0].data = [];
+            rewardChart.update();
+        }
+    }
+
+    async function simulateSingleStep() {
+        hideError();
         const inputs = getSensorInputs();
-        console.log("Evaluating RL Policy with inputs:", inputs);
+
+        if (btnSimulate) {
+            btnSimulate.disabled = true;
+            btnSimulate.innerHTML = `<span class="material-symbols-outlined animate-spin text-lg">progress_activity</span> Simulating...`;
+        }
 
         try {
-            const response = await ApiClient.predictControl(inputs);
-            console.log("RL Response from Backend:", response);
+            const response = await fetch("http://localhost:5000/api/control-optimization/simulate-step", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sensor_inputs: inputs })
+            });
 
-            if (response && response.status === "success") {
-                updateUIWithRLRecommendation(response);
+            if (!response.ok) {
+                throw new Error(`Backend connection failed (HTTP ${response.status})`);
             }
-        } catch (error) {
-            console.error("Failed to query RL control API:", error);
+
+            const data = await response.json();
+
+            if (data.status === "success") {
+                const reward = data.reward != null ? data.reward : 0.0;
+                const nextFeatures = data.next_state ? data.next_state.features : {};
+                const selectedAction = data.selected_action ? data.selected_action.action_name : "Pertahankan";
+                const actionId = data.selected_action ? data.selected_action.action_id : 1;
+
+                if (stepRewardVal) {
+                    stepRewardVal.textContent = reward >= 0 ? `+${reward.toFixed(2)}` : `${reward.toFixed(2)}`;
+                    stepRewardVal.className = reward >= 0 ? "text-base font-extrabold text-emerald-600" : "text-base font-extrabold text-rose-600";
+                }
+
+                if (nextTempVal) {
+                    const nextTemp = nextFeatures.temperature_c != null ? nextFeatures.temperature_c : inputs.wafer_temp;
+                    nextTempVal.textContent = `${nextTemp.toFixed(1)} °C`;
+                    nextTempVal.className = "text-base font-extrabold text-[#7c3aed]";
+                }
+
+                if (stepEvalText) {
+                    const evalMsg = data.evaluation || "Action menghasilkan reward berdasarkan reward function.";
+                    stepEvalText.textContent = `[${selectedAction}] - ${evalMsg}`;
+                    stepEvalText.className = "text-xs text-[#4a4455] bg-[#f8f4ee] p-3 rounded-xl border border-[#e2dcd2]";
+                }
+
+                // Highlight Action Cards dynamically based on selected action and features
+                updateCardHighlights(actionId, inputs);
+
+                // If output environment updated etch rate
+                if (nextFeatures.etch_rate_nm_min != null && rateSlider) {
+                    rateSlider.value = nextFeatures.etch_rate_nm_min;
+                    updateSliderLabels();
+                }
+            } else {
+                showError(data.message || "Invalid response from Control Optimization API.");
+            }
+        } catch (err) {
+            console.error("Step Simulation Error:", err);
+            showError(`Simulation failed: ${err.message}`);
         } finally {
-            isEvaluating = false;
-        }
-    }
-
-    function updateUIWithRLRecommendation(data) {
-        // Update Title
-        if (actionCardTitle) {
-            actionCardTitle.textContent = data.action_title || `Recommended Action: ${data.action_name}`;
-        }
-
-        // Update Rationale
-        if (actionRationale) {
-            actionRationale.innerHTML = `<strong class="text-on-surface">Agent Rationale:</strong> ${data.rationale}`;
-        }
-
-        // Update Policy Tensor
-        if (policyTensorText) {
-            policyTensorText.textContent = data.policy_tensor || `State #${data.state_index}`;
-        }
-
-        // Update Confidence
-        if (confidenceBadge) {
-            confidenceBadge.textContent = `${data.confidence_percent}%`;
-        }
-
-        // Update Middle Section (Markov Dynamics)
-        if (stateMetricValue) {
-            if (data.action_name === "Pertahankan") {
-                stateMetricValue.textContent = `State #${data.state_index} (Nominal)`;
-            } else {
-                stateMetricValue.textContent = `State #${data.state_index} (Drift)`;
+            if (btnSimulate) {
+                btnSimulate.disabled = false;
+                btnSimulate.innerHTML = `<span class="material-symbols-outlined text-lg">play_arrow</span> Simulate Process Control`;
             }
         }
-
-        if (rewardMetricValue && data.q_values) {
-            const bestQ = Math.max(...Object.values(data.q_values));
-            rewardMetricValue.textContent = `+${bestQ.toFixed(2)} Q-val`;
-        }
-
-        if (statusMetricValue) {
-            statusMetricValue.textContent = data.action_name === "Pertahankan" 
-                ? "Optimal Yield: 99.4%" 
-                : "Correction Active";
-        }
-
-        // Highlight matching button in Action Space Grid
-        highlightActionButton(data.action_name);
     }
 
-    function highlightActionButton(actionName) {
-        actionButtons.forEach(btn => {
-            const btnText = btn.textContent.toLowerCase();
-            let matches = false;
+    async function runTenEpisodes() {
+        hideError();
+        const inputs = getSensorInputs();
 
-            if (actionName === "Turunkan Parameter") {
-                matches = btnText.includes("decrease") || btnText.includes("reduce") || btnText.includes("turunkan");
-            } else if (actionName === "Pertahankan") {
-                matches = btnText.includes("hold") || btnText.includes("steady") || btnText.includes("pertahankan");
-            } else if (actionName === "Naikkan Parameter") {
-                matches = btnText.includes("increase") || btnText.includes("adjust") || btnText.includes("naikkan");
-            }
-
-            if (matches) {
-                btn.className = "p-space-md rounded-2xl bg-primary-fixed text-on-primary-fixed ring-2 ring-primary transition-all text-left flex flex-col gap-1 shadow-md scale-[1.02]";
-            } else {
-                btn.className = "p-space-md rounded-2xl bg-surface-container-low hover:bg-surface-container-high transition-all text-left flex flex-col gap-1 active:scale-[0.98]";
-            }
-        });
-    }
-
-    function setupSlider(slider, labelEl, transformFn) {
-        if (!slider || !labelEl) return;
-        slider.addEventListener("input", (e) => {
-            const val = transformFn ? transformFn(e.target.value) : e.target.value;
-            labelEl.textContent = val;
-
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                evaluateRLPolicy();
-            }, 180);
-        });
-    }
-
-    // Connect Sliders
-    setupSlider(tempSlider, tempVal, v => v);
-    setupSlider(pressureSlider, pressureVal, v => (parseFloat(v) / 10).toFixed(1));
-    setupSlider(flowSlider, flowVal, v => v);
-    setupSlider(rfSlider, rfVal, v => v);
-    setupSlider(durationSlider, durationVal, v => v);
-
-    // Initial evaluation on load
-    evaluateRLPolicy();
-
-    // Action function to simulate convergence toward optimal target
-    function stepSimulation() {
-        if (tempSlider && tempVal) {
-            let cur = parseFloat(tempSlider.value);
-            if (cur > 420) cur = Math.max(420, cur - 3);
-            else if (cur < 420) cur = Math.min(420, cur + 3);
-            tempSlider.value = cur;
-            tempVal.textContent = cur;
-        }
-
-        if (pressureSlider && pressureVal) {
-            let cur = parseFloat(pressureSlider.value);
-            // Target nominal is 15.0 mTorr (slider 150)
-            if (cur > 150) cur = Math.max(150, cur - 8);
-            else if (cur < 150) cur = Math.min(150, cur + 8);
-            pressureSlider.value = cur;
-            pressureVal.textContent = (cur / 10).toFixed(1);
-        }
-
-        if (flowSlider && flowVal) {
-            let cur = parseFloat(flowSlider.value);
-            if (cur > 120) cur = Math.max(120, cur - 5);
-            else if (cur < 120) cur = Math.min(120, cur + 5);
-            flowSlider.value = cur;
-            flowVal.textContent = cur;
-        }
-
-        evaluateRLPolicy();
-    }
-
-    // Simulate Process Control (Step)
-    if (btnStep) {
-        btnStep.addEventListener("click", () => {
-            btnStep.classList.add("scale-95");
-            setTimeout(() => btnStep.classList.remove("scale-95"), 150);
-            stepSimulation();
-        });
-    }
-
-    // Execute Action Button (inside recommendation card)
-    if (btnExecute) {
-        btnExecute.addEventListener("click", () => {
-            btnExecute.classList.add("scale-95");
-            setTimeout(() => btnExecute.classList.remove("scale-95"), 150);
-            stepSimulation();
-        });
-    }
-
-    // Run 10 Episodes simulation
-    if (btnEpisodes) {
-        btnEpisodes.addEventListener("click", async () => {
+        if (btnEpisodes) {
             btnEpisodes.disabled = true;
-            btnEpisodes.classList.add("opacity-70");
-            for (let i = 0; i < 6; i++) {
-                stepSimulation();
-                await new Promise(r => setTimeout(r, 350));
+            btnEpisodes.innerHTML = `<span class="material-symbols-outlined animate-spin text-lg">progress_activity</span> Evaluating 10 Ep...`;
+        }
+
+        try {
+            const response = await fetch("http://localhost:5000/api/control-optimization/simulate-episodes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sensor_inputs: inputs, num_episodes: 10 })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Backend connection failed (HTTP ${response.status})`);
             }
-            btnEpisodes.classList.remove("opacity-70");
-            btnEpisodes.disabled = false;
-        });
+
+            const data = await response.json();
+
+            if (data.status === "success" && (data.episode_rewards || data.episodes)) {
+                const rewards = data.episode_rewards || (data.episodes ? data.episodes.map(e => e.reward) : []);
+                const numEp = data.num_episodes || rewards.length;
+                const finalReward = data.final_reward != null ? data.final_reward : (rewards.length > 0 ? rewards[rewards.length - 1] : 0.0);
+                const avgReward = data.average_reward != null ? data.average_reward : (rewards.length > 0 ? (rewards.reduce((a, b) => a + b, 0) / rewards.length) : 0.0);
+
+                // Update Chart dataset cleanly with 10 actual episode data points
+                if (rewardChart) {
+                    rewardChart.data.labels = rewards.map((_, i) => `Ep ${i + 1}`);
+                    rewardChart.data.datasets[0].data = rewards;
+                    rewardChart.update();
+                }
+
+                // Update Summary Panel
+                if (epCountVal) epCountVal.textContent = numEp;
+                if (finalRewardVal) {
+                    finalRewardVal.textContent = finalReward >= 0 ? `+${finalReward.toFixed(2)}` : `${finalReward.toFixed(2)}`;
+                    finalRewardVal.className = finalReward >= 0 ? "text-lg font-extrabold text-emerald-600" : "text-lg font-extrabold text-rose-600";
+                }
+                if (avgRewardVal) {
+                    avgRewardVal.textContent = avgReward >= 0 ? `+${avgReward.toFixed(2)}` : `${avgReward.toFixed(2)}`;
+                    avgRewardVal.className = avgReward >= 0 ? "text-lg font-extrabold text-[#7c3aed]" : "text-lg font-extrabold text-rose-600";
+                }
+            } else {
+                showError(data.message || "Invalid response from Control Optimization API.");
+            }
+        } catch (err) {
+            console.error("Run Episodes Error:", err);
+            showError(`Simulation failed: ${err.message}`);
+        } finally {
+            if (btnEpisodes) {
+                btnEpisodes.disabled = false;
+                btnEpisodes.innerHTML = `<span class="material-symbols-outlined text-lg">view_timeline</span> Run 10 Episodes`;
+            }
+        }
     }
 
-    // Reset Values
-    if (btnReset) {
-        btnReset.addEventListener("click", () => {
-            if (tempSlider) { tempSlider.value = 412; if (tempVal) tempVal.textContent = "412"; }
-            if (pressureSlider) { pressureSlider.value = 184; if (pressureVal) pressureVal.textContent = "18.4"; }
-            if (flowSlider) { flowSlider.value = 105; if (flowVal) flowVal.textContent = "105"; }
-            if (rfSlider) { rfSlider.value = 850; if (rfVal) rfVal.textContent = "850"; }
-            if (durationSlider) { durationSlider.value = 68; if (durationVal) durationVal.textContent = "68"; }
-            evaluateRLPolicy();
-        });
+    function resetRecipe() {
+        hideError();
+
+        // Reset Sliders to Default Nominal Values
+        if (pressureSlider) pressureSlider.value = 15.0;
+        if (flowSlider) flowSlider.value = 120;
+        if (powerSlider) powerSlider.value = 850;
+        if (tempSlider) tempSlider.value = 200;
+        if (timeSlider) timeSlider.value = 60;
+        if (rateSlider) rateSlider.value = 1.20;
+
+        // Reset UI to Fresh Idle State
+        initFreshState();
     }
 
-    // Connect Initial State Formulation Preset Selector
-    if (statePresetSelect) {
-        statePresetSelect.addEventListener("change", (e) => {
-            const selected = e.target.value;
-            if (selected.includes("Thermal Drift")) {
-                if (tempSlider) { tempSlider.value = 435; if (tempVal) tempVal.textContent = "435"; }
-                if (pressureSlider) { pressureSlider.value = 195; if (pressureVal) pressureVal.textContent = "19.5"; }
-            } else if (selected.includes("Pressure Surge")) {
-                if (pressureSlider) { pressureSlider.value = 240; if (pressureVal) pressureVal.textContent = "24.0"; }
-            } else if (selected.includes("Nominal Center")) {
-                if (tempSlider) { tempSlider.value = 420; if (tempVal) tempVal.textContent = "420"; }
-                if (pressureSlider) { pressureSlider.value = 150; if (pressureVal) pressureVal.textContent = "15.0"; }
-                if (flowSlider) { flowSlider.value = 120; if (flowVal) flowVal.textContent = "120"; }
-            } else if (selected.includes("Radial")) {
-                if (tempSlider) { tempSlider.value = 398; if (tempVal) tempVal.textContent = "398"; }
-                if (flowSlider) { flowSlider.value = 90; if (flowVal) flowVal.textContent = "90"; }
-            }
-            evaluateRLPolicy();
-        });
-    }
-
-    // Connect manual clicks on action grid buttons
-    actionButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const text = btn.textContent.toLowerCase();
-            if (text.includes("increase temp") && tempSlider) {
-                tempSlider.value = Math.min(440, parseFloat(tempSlider.value) + 5);
-                if (tempVal) tempVal.textContent = tempSlider.value;
-            } else if (text.includes("decrease temp") && tempSlider) {
-                tempSlider.value = Math.max(390, parseFloat(tempSlider.value) - 5);
-                if (tempVal) tempVal.textContent = tempSlider.value;
-            } else if (text.includes("increase pressure") && pressureSlider) {
-                pressureSlider.value = Math.min(250, parseFloat(pressureSlider.value) + 20);
-                if (pressureVal) pressureVal.textContent = (parseFloat(pressureSlider.value) / 10).toFixed(1);
-            } else if (text.includes("reduce pressure") && pressureSlider) {
-                pressureSlider.value = Math.max(100, parseFloat(pressureSlider.value) - 20);
-                if (pressureVal) pressureVal.textContent = (parseFloat(pressureSlider.value) / 10).toFixed(1);
-            } else if (text.includes("adjust gas") && flowSlider) {
-                flowSlider.value = Math.min(150, parseFloat(flowSlider.value) + 10);
-                if (flowVal) flowVal.textContent = flowSlider.value;
-            }
-            evaluateRLPolicy();
-        });
+    // Slider Event Listeners (Only Update Display Values, Do NOT Trigger API or Plot Data)
+    [pressureSlider, flowSlider, powerSlider, tempSlider, timeSlider, rateSlider].forEach(slider => {
+        if (slider) {
+            slider.addEventListener("input", updateSliderLabels);
+        }
     });
+
+    // Attach Event Listeners to Buttons
+    if (btnSimulate) btnSimulate.addEventListener("click", simulateSingleStep);
+    if (btnEpisodes) btnEpisodes.addEventListener("click", runTenEpisodes);
+    if (btnReset) btnReset.addEventListener("click", resetRecipe);
+
+    // Initial Fresh Load State (No automatic API trigger)
+    initFreshState();
 });

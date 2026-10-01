@@ -30,6 +30,12 @@ if settings.database_url:
                 bind=engine,
             )
         )
+        try:
+            from ..models import prediction, model_metrics
+            Base.metadata.create_all(bind=engine)
+            logger.info("Successfully connected to PostgreSQL and verified database tables.")
+        except Exception as table_err:
+            logger.warning(f"Could not auto-create database tables on startup: {table_err}")
     except Exception as exc:
         logger.error(f"Error initializing SQLAlchemy engine: {exc}")
         engine = None

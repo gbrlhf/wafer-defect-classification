@@ -199,6 +199,18 @@ document.addEventListener("DOMContentLoaded", () => {
     /**
      * Merender Top Influential Features secara dinamis
      */
+    const FIELD_RANGES = {
+        "temperature_c": { min: 300.0, max: 600.0 },
+        "pressure_torr": { min: 500.0, max: 1000.0 },
+        "gas_flow_sccm": { min: 50.0, max: 200.0 },
+        "etch_rate_nm_min": { min: 50.0, max: 200.0 },
+        "voltage_v": { min: 2.0, max: 10.0 },
+        "current_ma": { min: 10.0, max: 40.0 }
+    };
+
+    /**
+     * Merender Top Influential Features secara dinamis dengan animasi gerak bar responsif
+     */
     function renderInfluentialFeatures(featuresList, containerId, isDefect) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -207,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ? featuresList
             : DEFAULT_BASELINE_FEATURES;
 
-        // Vibrant, high-contrast bar colors for all 6 features (avoiding invisible bg-surface-variant)
+        // Vibrant, high-contrast bar colors for all 6 features
         const barColors = isDefect
             ? ["bg-tertiary", "bg-primary", "bg-secondary", "bg-tertiary-container", "bg-primary-container", "bg-secondary-container"]
             : ["bg-primary", "bg-secondary", "bg-tertiary", "bg-primary-container", "bg-secondary-container", "bg-tertiary-container"];
@@ -222,25 +234,41 @@ document.addEventListener("DOMContentLoaded", () => {
             const impPct = item.model_importance_pct !== undefined ? item.model_importance_pct : (item.contribution_percent || 0.0);
             const devStr = item.deviation || (item.deviation_sigma !== undefined ? (item.deviation_sigma >= 0 ? `+${item.deviation_sigma}σ` : `${item.deviation_sigma}σ`) : "0.00σ");
 
-            // Ensure every bar (including Gas Flow Rate at 5.3%) has clear, animated visual width
-            const barWidth = Math.max(impPct, 8.0);
+            // Calculate dynamic bar width based on parameter input value within its supported min-max range
+            const range = FIELD_RANGES[item.feature];
+            let normValPct = impPct;
+            if (range && item.value !== undefined) {
+                const rawVal = parseFloat(item.value);
+                if (!isNaN(rawVal)) {
+                    normValPct = ((rawVal - range.min) / (range.max - range.min)) * 100.0;
+                }
+            }
+            const targetWidth = Math.min(Math.max(normValPct, 6.0), 100.0).toFixed(1);
 
             return `
-                <div class="p-3 rounded-xl bg-surface-container flex flex-col gap-1.5 border border-outline-variant/30 transition-all hover:border-outline-variant">
-                    <div class="flex justify-between items-center">
-                        <span class="font-title-sm text-title-sm text-on-surface font-semibold">${item.label}</span>
-                        <span class="font-mono text-body-sm font-semibold text-on-surface bg-surface-container-high px-2.5 py-0.5 rounded-md border border-outline-variant/40">${item.value} ${item.unit}</span>
+                <div class="p-2.5 rounded-xl bg-surface-container flex flex-col gap-1.5 border border-outline-variant/30 transition-all hover:border-outline-variant">
+                    <div class="flex justify-between items-baseline gap-1">
+                        <span class="font-title-sm text-title-sm text-on-surface font-semibold truncate" title="${item.label}">${item.label}</span>
+                        <span class="font-mono text-[12px] font-semibold text-on-surface bg-surface-container-high px-2 py-0.5 rounded-md border border-outline-variant/40 shrink-0">${item.value} ${item.unit}</span>
                     </div>
-                    <div class="flex justify-between items-center text-label-md pt-0.5">
-                        <span class="text-on-surface-variant font-medium">Model Importance: <strong class="text-on-surface font-bold">${impPct}%</strong></span>
-                        <span class="font-mono ${devClass}">Deviation: <strong>${devStr}</strong></span>
+                    <div class="flex justify-between items-center text-[11px] pt-0.5">
+                        <span class="text-on-surface-variant font-medium">Importance: <strong class="text-on-surface font-bold">${impPct}%</strong></span>
+                        <span class="font-mono ${devClass}">Dev: <strong>${devStr}</strong></span>
                     </div>
                     <div class="w-full h-1.5 rounded-full bg-surface-container-highest overflow-hidden mt-0.5">
-                        <div class="h-full rounded-full ${barColor} transition-all duration-700" style="width: ${barWidth}%;"></div>
+                        <div class="feature-bar h-full rounded-full ${barColor} transition-all duration-700" style="width: 0%;" data-target-width="${targetWidth}%"></div>
                     </div>
                 </div>
             `;
         }).join("");
+
+        // Trigger smooth 700ms animation fill from 0 to target width
+        setTimeout(() => {
+            container.querySelectorAll(".feature-bar").forEach(bar => {
+                const tw = bar.getAttribute("data-target-width");
+                if (tw) bar.style.width = tw;
+            });
+        }, 50);
     }
 
     async function executePrediction() {

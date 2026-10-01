@@ -3,6 +3,8 @@ from typing import Dict, Any, Tuple, Optional, List
 import numpy as np
 import pandas as pd
 from .model_service import model_service
+from ..core.database import SessionLocal
+from ..models.prediction import PredictionRecord
 
 logger = logging.getLogger(__name__)
 
@@ -160,6 +162,37 @@ class ClassificationService:
                 else f"Wafer substrate nominal (Class 0) with {normal_prob_pct}% normal probability."
             )
 
+            # Persist prediction record to PostgreSQL database
+            db_record_id = None
+            if SessionLocal is not None:
+                db = SessionLocal()
+                try:
+                    rec = PredictionRecord(
+                        task_type="classification",
+                        features={
+                            **clean_row,
+                            "process_step": clean_step,
+                            "defect_status": "Defect Anomaly (Class 1)" if is_defect else "Nominal Wafer (Class 0)",
+                            "defect_probability": defect_prob,
+                            "defect_probability_percent": defect_prob_pct,
+                            "normal_probability": normal_prob,
+                            "normal_probability_percent": normal_prob_pct,
+                            "decision_threshold": decision_threshold,
+                            "primary_defect_factor": influential_features[0]["label"] if influential_features else "-"
+                        },
+                        prediction=label_name,
+                        confidence=defect_prob if is_defect else normal_prob
+                    )
+                    db.add(rec)
+                    db.commit()
+                    db.refresh(rec)
+                    db_record_id = rec.id
+                except Exception as db_err:
+                    logger.error(f"Error saving classification prediction to PostgreSQL: {db_err}")
+                    db.rollback()
+                finally:
+                    db.close()
+
             return {
                 "success": True,
                 "status": "success",
@@ -175,6 +208,7 @@ class ClassificationService:
                 "influential_features": influential_features,
                 "feature_contributions": influential_features,
                 "message": message,
+                "db_record_id": db_record_id,
             }, 200
 
         except Exception as e:
