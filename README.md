@@ -14,7 +14,7 @@ Model dilatih di **Google Colab**, lalu file model (`.joblib` / `.pkl`) dipakai 
 
 ## Teknologi
 - **Frontend:** HTML, Tailwind CSS, JavaScript, Chart.js
-- **Backend:** Python Flask, scikit-learn, pandas, NumPy
+- **Backend:** Python Flask, scikit-learn
 - **Database:** PostgreSQL + SQLAlchemy (menyimpan riwayat prediksi)
 - **Deploy:** Docker Compose, ngrok
 
