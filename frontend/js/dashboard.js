@@ -26,4 +26,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+    const optimizationButton = document.querySelector(
+        'a[href="control-optimization.html"]'
+    );
+
+    if (optimizationButton) {
+
+        optimizationButton.addEventListener("click", () => {
+
+            console.log(
+                "Opening Control Optimization..."
+            );
+
+        });
+
+    }
+
 });

@@ -79,20 +79,40 @@
 </head>
 
 <body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
-    <!-- Main Site Navigation Bar -->
-    <header class="site-header">
-        <div class="site-header-inner">
-            <a href="index.html" class="brand-logo">
-                <img src="assets/logo.png" alt="WaferDefect AI" />
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#f1eee8]">
+        <div class="h-24 max-w-[1400px] mx-auto px-8 flex items-center justify-between">
+
+            <!-- LOGO UTUH -->
+            <a href="index.html" class="flex items-center">
+                <img src="assets/logo.png" alt="WaferDefect AI" class="w-[300px] h-auto object-contain" />
             </a>
 
-            <nav class="hidden md:flex items-center gap-1.5 p-1 bg-surface-container-low rounded-full">
-                <a href="index.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">Home</a>
-                <a href="classification.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">Classification</a>
-                <a aria-current="page" href="clustering.html" class="px-4 py-1.5 bg-primary-container text-on-primary-container font-label-lg text-label-lg rounded-full font-bold">Clustering</a>
-                <a href="control-optimization.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">Control Optimization</a>
-                <a href="about.html" class="px-4 py-1.5 font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all">About</a>
+            <!-- NAVBAR -->
+            <nav class="flex items-center gap-1.5 px-2 py-1.5 bg-[#f8f4ee] rounded-full">
+
+                <!-- HOME ACTIVE -->
+                <a href="index.html" class="px-7 py-3 bg-[#7c3aed] text-white font-label-lg text-label-lg rounded-full">
+                Home
+            </a>
+
+                <a href="classification.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                Classification
+            </a>
+
+                <a href="clustering.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                Clustering
+            </a>
+
+                <a href="control-optimization.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                Control Optimization
+            </a>
+
+                <a href="about.html" class="px-7 py-3 text-[#4a4455] font-label-lg text-label-lg rounded-full hover:bg-white transition-all">
+                About
+            </a>
+
             </nav>
+
         </div>
     </header>
 
