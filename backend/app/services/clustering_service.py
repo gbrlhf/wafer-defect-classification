@@ -192,6 +192,35 @@ class ClusteringService:
             return enriched
         return FALLBACK_PROFILES
 
+    def get_pca_variance_percent(self) -> Dict[str, Optional[float]]:
+        """
+        PCA explained variance (%) as computed in the clustering notebook, read from pca_info.json
+        (keys: explained_variance_percent [PC1, PC2] and total_percent). Values are None when the
+        file is missing or malformed, so the frontend shows "-" instead of invented numbers.
+        Note: the web PCA marker (_init_pca) is fitted on the 5 cluster centers, not on the full
+        dataset like the notebook, so its coordinates do not come from the same PCA as these percentages.
+        """
+        empty = {"pc1": None, "pc2": None, "total": None}
+        info = self.model_service.get_pca_info()
+        if not info:
+            return empty
+        try:
+            evp = info["explained_variance_percent"]
+            if isinstance(evp, dict):
+                pc1 = evp.get("PC1", evp.get("pc1"))
+                pc2 = evp.get("PC2", evp.get("pc2"))
+            else:
+                pc1, pc2 = evp[0], evp[1]
+            total = info.get("total_percent")
+            return {
+                "pc1": float(pc1),
+                "pc2": float(pc2),
+                "total": float(total) if total is not None else None,
+            }
+        except Exception as e:
+            logger.warning(f"pca_info.json has an unexpected format: {e}")
+            return empty
+
     def get_metrics(self) -> Dict[str, Any]:
         """Returns clustering quality evaluation metrics for optimal K=5 model."""
         return {
@@ -203,11 +232,7 @@ class ClusteringService:
             "davies_bouldin_index": 0.542,
             "calinski_harabasz_score": 1420.5,
             "algorithm": "K-Means Pipeline (StandardScaler + OneHotEncoder + KMeans k=5)",
-            "pca_explained_variance": {
-                "pc1": 25.7,
-                "pc2": 25.1,
-                "total": 50.8
-            }
+            "pca_explained_variance_percent": self.get_pca_variance_percent()
         }
 
     def predict(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -330,6 +355,7 @@ class ClusteringService:
             "baseline_parameters": baseline,
             "profile": profile_info,
             "point_coordinates": point_coords,
+            "pca_explained_variance_percent": self.get_pca_variance_percent(),
             "metrics": {
                 "n_clusters": 5,
                 "silhouette_score": 0.812

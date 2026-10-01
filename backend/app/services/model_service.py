@@ -40,6 +40,8 @@ class ModelService:
         self._rl_metadata: Optional[Dict[str, Any]] = None
         self._rl_qtable: Optional[Any] = None
         self._cluster_profiles: Optional[Dict[str, Any]] = None
+        self._pca_info: Optional[Dict[str, Any]] = None
+        self._pca_info_missing_logged = False
 
     def _load_joblib_file(self, filename: str) -> Optional[Any]:
         filepath = self.models_dir / filename
@@ -111,6 +113,22 @@ class ModelService:
                     logger.error(f"Failed to load cluster_profiles.json: {e}")
         return self._cluster_profiles
 
+    def get_pca_info(self) -> Optional[Dict[str, Any]]:
+        """Returns PCA explained-variance info exported from the clustering notebook (pca_info.json), or None."""
+        if self._pca_info is None:
+            pca_path = self.models_dir / "pca_info.json"
+            if not pca_path.exists():
+                if not self._pca_info_missing_logged:
+                    logger.warning(f"pca_info.json not found at {pca_path}; PCA explained variance will be shown as '-'.")
+                    self._pca_info_missing_logged = True
+                return None
+            try:
+                with open(pca_path, "r", encoding="utf-8") as f:
+                    self._pca_info = json.load(f)
+            except Exception as e:
+                logger.error(f"Failed to load pca_info.json: {e}")
+        return self._pca_info
+
     def get_rl_metadata(self) -> Optional[Dict[str, Any]]:
         """Returns metadata for Reinforcement Learning process control."""
         if self._rl_metadata is None:
@@ -166,6 +184,8 @@ class ModelService:
         self._rl_metadata = None
         self._rl_qtable = None
         self._cluster_profiles = None
+        self._pca_info = None
+        self._pca_info_missing_logged = False
         logger.info("Model cache invalidated. Next request will reload from disk.")
 
 

@@ -2,7 +2,10 @@
  * Central API Client Configuration for Wafer Defect Classification & Control System
  * Single source of truth for communication between Frontend and Backend (Flask).
  */
-const API_BASE_URL = "http://localhost:5000/api";
+// Local (localhost / 127.0.0.1 / file://) -> backend port 5000; otherwise (ngrok, server) -> same-origin "/api" via nginx proxy
+const API_BASE_URL = ["localhost", "127.0.0.1", ""].includes(window.location.hostname)
+    ? "http://localhost:5000/api"
+    : "/api";
 
 const ApiClient = {
     /**

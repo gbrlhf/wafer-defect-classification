@@ -20,6 +20,19 @@ services:
     networks:
       - wafer-network
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: wafer-defect-frontend
+    ports:
+      - "8090:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - wafer-network
+
   postgres:
     image: postgres:16-alpine
     container_name: wafer-postgres

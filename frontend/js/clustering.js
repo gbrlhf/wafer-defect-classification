@@ -42,6 +42,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // Interactive SVG Scatter Plot
     const scatterSvg = document.getElementById("scatter-svg");
 
+    // PCA explained-variance labels (values come from backend pca_info.json; "-" when unavailable)
+    const pcaVarianceSubtitle = document.getElementById("pca-variance-subtitle");
+    const pc1AxisLabel = document.getElementById("pc1-axis-label");
+    const pc2AxisLabel = document.getElementById("pc2-axis-label");
+
+    function renderPcaVariance(variance) {
+        const fmt = (v) => (typeof v === "number" && isFinite(v)) ? `${v.toFixed(2)}%` : "-";
+        const v = variance || {};
+        if (pc1AxisLabel) pc1AxisLabel.textContent = `PC1 (${fmt(v.pc1)})`;
+        if (pc2AxisLabel) pc2AxisLabel.textContent = `PC2 (${fmt(v.pc2)})`;
+        if (pcaVarianceSubtitle) pcaVarianceSubtitle.textContent = `Explained Variance: ${fmt(v.total)} (PC1: ${fmt(v.pc1)}, PC2: ${fmt(v.pc2)})`;
+    }
+
     const PRESET_STEP_MAP = {
         "0": "Lithography",
         "1": "Etching",
@@ -235,6 +248,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Highlight matching cluster card in Dataset Cluster Distribution
         highlightClusterCard(result.cluster_id);
 
+        if (result.pca_explained_variance_percent) {
+            renderPcaVariance(result.pca_explained_variance_percent);
+        }
+
         // Update Dynamic Evaluated Wafer Marker on SVG PCA Plot
         if (result.point_coordinates) {
             updateWaferMarker(result.point_coordinates, result.cluster_id, result.cluster_name, result.distance_to_centroid);
@@ -301,6 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (metrics) {
                 if (summaryClustersCount) summaryClustersCount.textContent = metrics.n_clusters || 5;
                 if (summarySilhouette) summarySilhouette.textContent = (metrics.silhouette_score || 0.812).toFixed(3);
+                renderPcaVariance(metrics.pca_explained_variance_percent);
             }
         } catch (err) {
             console.warn("Could not load initial metrics/profiles:", err);

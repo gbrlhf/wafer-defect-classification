@@ -73,9 +73,9 @@
             }
         };
     </script>
-    <link href="css/clustering.css" rel="stylesheet" />
-    <script defer src="js/api.js"></script>
-    <script defer src="js/clustering.js"></script>
+    <link href="css/clustering.css?v=20261001-pca" rel="stylesheet" />
+    <script defer src="js/api.js?v=20261001-pca"></script>
+    <script defer src="js/clustering.js?v=20261001-pca"></script>
 </head>
 
 <body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
@@ -321,7 +321,7 @@
                                         <h2 class="font-title-lg text-title-lg text-on-surface font-bold">2D PCA Manifold Projection</h2>
                                     </div>
                                     <span class="font-label-sm text-on-surface-variant" id="pca-variance-subtitle">
-                                        Explained Variance: 50.8% (PC1: 25.7%, PC2: 25.1%)
+                                        Explained Variance: - (PC1: -, PC2: -)
                                     </span>
                                 </div>
                                 <!-- Action Toolbar -->
@@ -369,10 +369,10 @@
                                     <g fill="#4A4455" font-family="Plus Jakarta Sans" font-size="11" font-weight="600">
                                         <text text-anchor="end" x="905" y="278">PC1 (+)</text>
                                         <text text-anchor="start" x="60" y="278">PC1 (-)</text>
-                                        <text font-size="12" text-anchor="middle" x="480" y="492" id="pc1-axis-label">Principal Component 1 (25.7% Variance)</text>
+                                        <text font-size="12" text-anchor="middle" x="480" y="492" id="pc1-axis-label">PC1 (-)</text>
                                         <text text-anchor="start" x="495" y="38">PC2 (+)</text>
                                         <text text-anchor="start" x="495" y="475">PC2 (-)</text>
-                                        <text font-size="12" text-anchor="middle" transform="rotate(-90 20 260)" x="20" y="260" id="pc2-axis-label">Principal Component 2 (25.1% Variance)</text>
+                                        <text font-size="12" text-anchor="middle" transform="rotate(-90 20 260)" x="20" y="260" id="pc2-axis-label">PC2 (-)</text>
                                     </g>
 
                                     <!-- Centroid Rings & Density Ellipses for 5 Clusters -->
