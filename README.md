@@ -91,4 +91,7 @@ Penjelasan lengkap tiap fungsi: [`backend/docs/README.md`](backend/docs/README.m
 | Nama | Peran |
 |---|---|
 | Gibral | Project Lead & Backend |
-| _(anggota lain)_ | _(isi peran)_ |
+| Hassyfa | Frontend |
+| Vyasa | ML Engineer 1 |
+| Naila M | ML Engineer 2 |
+| Nur Sabrina | ML Engineer 3 |
