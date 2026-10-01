@@ -1,0 +1,590 @@
+/* Control Optimization - CSS terpisah dari HTML/JS */
+
+:root {
+    --primary: #630ed4;
+    --primary-fixed: #eaddff;
+    --primary-fixed-dim: #d2bbff;
+    --on-primary: #fff;
+    --on-primary-fixed: #25005a;
+    --secondary: #006398;
+    --secondary-container: #5bb8fe;
+    --secondary-fixed: #cce5ff;
+    --on-secondary: #fff;
+    --on-secondary-fixed: #001d31;
+    --on-secondary-fixed-variant: #004b73;
+    --tertiary: #a0002f;
+    --tertiary-container: #c81a42;
+    --surface: #fef9f2;
+    --surface-container-lowest: #fff;
+    --surface-container-low: #f8f3ec;
+    --surface-container: #f2ede6;
+    --surface-container-high: #ece7e1;
+    --surface-container-highest: #e6e2db;
+    --on-surface: #1d1c18;
+    --on-surface-variant: #4a4455;
+    --outline: #7b7487;
+    --font: "Plus Jakarta Sans", sans-serif;
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%
+}
+
+body {
+    font-family: var(--font);
+    color: var(--on-surface);
+    background: var(--surface);
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased
+}
+
+a {
+    text-decoration: none;
+    color: inherit
+}
+
+button,
+input,
+select {
+    font: inherit
+}
+
+button {
+    border: 0;
+    cursor: pointer
+}
+
+main>:first-child {
+    margin-top: 0!important
+}
+
+main>:last-child {
+    margin-bottom: 0!important
+}
+
+::-webkit-scrollbar {
+    display: none
+}
+
+.page-control>header {
+    height: 80px;
+    background: rgba(255, 255, 255, .85);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 2px 16px -4px rgba(124, 58, 237, .06)
+}
+
+.page-control>header>div {
+    height: 80px;
+    max-width: 1320px;
+    margin: auto;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px
+}
+
+.page-control header nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(248, 243, 236, .7);
+    padding: 6px;
+    border-radius: 999px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .04)
+}
+
+.page-control header nav a {
+    padding: 6px 16px;
+    border-radius: 999px;
+    color: var(--on-surface-variant);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    transition: .2s
+}
+
+.page-control header nav a:hover {
+    color: var(--on-surface);
+    background: var(--surface-container-high)
+}
+
+.page-control header nav a[aria-current=page] {
+    color: #fff;
+    background: var(--primary);
+    font-weight: 700
+}
+
+.page-control header .w-10.h-10 {
+    width: 40px;
+    height: 40px;
+    border-radius: 16px;
+    background: rgba(234, 221, 255, .6);
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.page-control header .w-9.h-9 {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary-fixed);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.page-control header svg {
+    width: 24px;
+    height: 24px
+}
+
+.page-control main {
+    padding-top: 80px;
+    flex: 1;
+    width: 100%;
+    background: var(--surface)
+}
+
+.page-control main>.flex.flex-col {
+    width: 100%
+}
+
+.page-control main>.flex.flex-col>.relative {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 40px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px
+}
+
+.page-control .bg-surface-container-lowest {
+    background: var(--surface-container-lowest)
+}
+
+.page-control .bg-surface-container-low {
+    background: var(--surface-container-low)
+}
+
+.page-control .bg-surface-container {
+    background: var(--surface-container)
+}
+
+.page-control .bg-surface-container-high {
+    background: var(--surface-container-high)
+}
+
+.page-control .bg-primary {
+    background: var(--primary)
+}
+
+.page-control .bg-primary-fixed {
+    background: var(--primary-fixed)
+}
+
+.page-control .bg-secondary {
+    background: var(--secondary)
+}
+
+.page-control .bg-secondary-container {
+    background: var(--secondary-container)
+}
+
+.page-control .bg-secondary-fixed {
+    background: var(--secondary-fixed)
+}
+
+.page-control .bg-outline {
+    background: var(--outline)
+}
+
+.page-control .text-on-surface {
+    color: var(--on-surface)
+}
+
+.page-control .text-on-surface-variant {
+    color: var(--on-surface-variant)
+}
+
+.page-control .text-primary {
+    color: var(--primary)
+}
+
+.page-control .text-on-primary {
+    color: #fff
+}
+
+.page-control .text-on-primary-fixed {
+    color: var(--on-primary-fixed)
+}
+
+.page-control .text-secondary {
+    color: var(--secondary)
+}
+
+.page-control .text-on-secondary {
+    color: #fff
+}
+
+.page-control .text-on-secondary-fixed {
+    color: var(--on-secondary-fixed)
+}
+
+.page-control .text-on-secondary-fixed-variant {
+    color: var(--on-secondary-fixed-variant)
+}
+
+.page-control .text-tertiary {
+    color: var(--tertiary)
+}
+
+.page-control .text-tertiary-container {
+    color: var(--tertiary-container)
+}
+
+.page-control .font-body-sm {
+    font-size: 13px;
+    line-height: 20px
+}
+
+.page-control .font-body-md {
+    font-size: 15px;
+    line-height: 24px
+}
+
+.page-control .font-body-lg {
+    font-size: 18px;
+    line-height: 28px
+}
+
+.page-control .font-label-sm {
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 500;
+    letter-spacing: .025em
+}
+
+.page-control .font-label-md {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: .02em
+}
+
+.page-control .font-label-lg {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    letter-spacing: .01em
+}
+
+.page-control .font-title-md {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 600
+}
+
+.page-control .font-title-lg {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600
+}
+
+.page-control .font-headline-sm {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600
+}
+
+.page-control .font-headline-lg {
+    font-size: 40px;
+    line-height: 48px;
+    font-weight: 700
+}
+
+.page-control .flex {
+    display: flex
+}
+
+.page-control .flex-col {
+    flex-direction: column
+}
+
+.page-control .flex-1 {
+    flex: 1
+}
+
+.page-control .items-center {
+    align-items: center
+}
+
+.page-control .items-start {
+    align-items: flex-start
+}
+
+.page-control .items-end {
+    align-items: flex-end
+}
+
+.page-control .justify-center {
+    justify-content: center
+}
+
+.page-control .justify-between {
+    justify-content: space-between
+}
+
+.page-control .grid {
+    display: grid
+}
+
+.page-control .grid-cols-1 {
+    grid-template-columns: 1fr
+}
+
+.page-control .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+}
+
+.page-control .grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr))
+}
+
+.page-control .relative {
+    position: relative
+}
+
+.page-control .absolute {
+    position: absolute
+}
+
+.page-control .w-full {
+    width: 100%
+}
+
+.page-control .mx-auto {
+    margin-left: auto;
+    margin-right: auto
+}
+
+.page-control .max-w-2xl {
+    max-width: 42rem
+}
+
+.page-control .max-w-3xl {
+    max-width: 48rem
+}
+
+.page-control .gap-space-sm {
+    gap: 8px
+}
+
+.page-control .gap-space-md {
+    gap: 16px
+}
+
+.page-control .gap-space-lg {
+    gap: 24px
+}
+
+.page-control .gap-space-xl {
+    gap: 40px
+}
+
+.page-control .p-space-sm {
+    padding: 8px
+}
+
+.page-control .p-space-md {
+    padding: 16px
+}
+
+.page-control .p-space-lg {
+    padding: 24px
+}
+
+.page-control .p-space-xl {
+    padding: 40px
+}
+
+.page-control .px-space-md {
+    padding-left: 16px;
+    padding-right: 16px
+}
+
+.page-control .py-1\.5 {
+    padding-top: 6px;
+    padding-bottom: 6px
+}
+
+.page-control .py-2\.5 {
+    padding-top: 10px;
+    padding-bottom: 10px
+}
+
+.page-control .py-3 {
+    padding-top: 12px;
+    padding-bottom: 12px
+}
+
+.page-control .rounded-xl {
+    border-radius: 12px
+}
+
+.page-control .rounded-2xl {
+    border-radius: 16px
+}
+
+.page-control .rounded-full {
+    border-radius: 9999px
+}
+
+.page-control .rounded-\[2rem\] {
+    border-radius: 32px
+}
+
+.page-control .shadow-sm {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .04)
+}
+
+.page-control .text-center {
+    text-align: center
+}
+
+.page-control .font-bold {
+    font-weight: 700
+}
+
+.page-control .font-semibold {
+    font-weight: 600
+}
+
+.page-control .font-medium {
+    font-weight: 500
+}
+
+.page-control input[type=range] {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    appearance: none;
+    background: var(--surface-container-high);
+    cursor: pointer
+}
+
+.page-control input[type=range]::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .15)
+}
+
+.page-control select {
+    width: 100%;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--surface-container);
+    color: var(--on-surface);
+    outline: 0
+}
+
+.page-control select:focus {
+    background: var(--surface-container-high)
+}
+
+.page-control #btn-step,
+.page-control #btn-episodes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: .15s
+}
+
+.page-control #btn-step {
+    background: var(--primary);
+    color: #fff
+}
+
+.page-control #btn-episodes {
+    background: var(--primary-fixed);
+    color: var(--on-primary-fixed)
+}
+
+.page-control #btn-reset {
+    background: var(--surface-container);
+    color: var(--on-surface-variant);
+    border-radius: 12px;
+    padding: 12px 16px
+}
+
+.page-control #btn-step:active,
+.page-control #btn-episodes:active {
+    transform: scale(.98)
+}
+
+.page-control footer {
+    width: 100%;
+    background: var(--surface-container-low);
+    padding: 40px 0;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, .02)
+}
+
+.page-control footer>div {
+    max-width: 1320px;
+    margin: auto;
+    padding: 0 48px
+}
+
+@media(max-width:1100px) {
+    .page-control header nav {
+        display: none
+    }
+    .page-control>header>div,
+    .page-control footer>div {
+        padding-left: 32px;
+        padding-right: 32px
+    }
+    .page-control .grid-cols-3 {
+        grid-template-columns: 1fr
+    }
+}
+
+@media(max-width:768px) {
+    .page-control>header>div,
+    .page-control footer>div {
+        padding-left: 20px;
+        padding-right: 20px
+    }
+    .page-control main>.flex.flex-col>.relative {
+        padding-left: 20px;
+        padding-right: 20px
+    }
+    .page-control .p-space-xl {
+        padding: 24px
+    }
+    .page-control .grid-cols-2,
+    .page-control .grid-cols-3 {
+        grid-template-columns: 1fr
+    }
+    .page-control .font-headline-lg {
+        font-size: 30px;
+        line-height: 36px
+    }
+}

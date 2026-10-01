@@ -1,10 +1,3 @@
-/* =========================================
-   CLASSIFICATION PAGE
-   ========================================= */
-
-
-/* ---------- Base ---------- */
-
 @layer base {
     html,
     body {
@@ -23,17 +16,11 @@
     }
 }
 
-
-/* ---------- Scrollbar ---------- */
-
-::-webkit-scrollbar {
+/ Scrollbar::-webkit-scrollbar {
     display: none;
 }
 
-
-/* ---------- Global ---------- */
-
-* {
+/ Global * {
     box-sizing: border-box;
 }
 
@@ -45,18 +32,12 @@ body {
     min-height: 100vh;
 }
 
-
-/* ---------- Images ---------- */
-
-img {
+/ Images img {
     max-width: 100%;
     height: auto;
 }
 
-
-/* ---------- Material Symbols ---------- */
-
-.material-symbols-outlined {
+/ Material Symbols .material-symbols-outlined {
     font-family: "Material Symbols Outlined";
     font-weight: normal;
     font-style: normal;
@@ -72,10 +53,7 @@ img {
     -webkit-font-smoothing: antialiased;
 }
 
-
-/* ---------- Form Elements ---------- */
-
-button,
+/ Form Elements button,
 input,
 select,
 textarea {
