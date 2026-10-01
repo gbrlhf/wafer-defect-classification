@@ -1,0 +1,49 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: wafer-defect-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - APP_ENV=development
+      - API_PORT=5000
+      - DATABASE_URL=${DATABASE_URL}
+      - ALLOWED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - wafer-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: wafer-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wafer_db
+      POSTGRES_USER: wafer_user
+      POSTGRES_PASSWORD: wafer_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wafer_user -d wafer_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wafer-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  wafer-network:
+    driver: bridge
